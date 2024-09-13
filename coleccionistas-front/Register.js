@@ -21,7 +21,7 @@ const Register = () => {
         formData.append("apellido", apellido);
         
 
-        axios.post("http://localhost:8080/coleccionistas/register", formData)
+        axios.post("http://192.168.0.108:8080/coleccionistas/register", formData)
             .then(response => {
                 Alert.alert("Exito",response.data);
                 navegador.navigate("Login");

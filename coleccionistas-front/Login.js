@@ -11,7 +11,7 @@ const Login = () => {
     const ingre = () => {
 
         // axios.post("http://localhost:8080/coleccionistas/login", data)
-        axios.post(`http://localhost:8080/coleccionistas/login?mail=${mail}&password=${password}`)
+        axios.post(`http://192.168.0.108:8080/coleccionistas/login?mail=${mail}&password=${password}`)
             .then(response => {
                 Alert.alert("Éxito", response.data);
                 navegador.navigate("Home");
