@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, ActivityIndicator, StyleSheet, Button } from 'react-native';
+import { View, Text, FlatList, Image, ActivityIndicator, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
-export default function CardList({ apiUrl, extractData, extractImageUrl, title, headers }) {
+export default function CardList({ apiUrl, extractData, extractImageUrl, title, headers, type }) {
     const [cards, setCards] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
+    const navigation = useNavigation();
 
     const fetchData = (page) => {
         axios.get(apiUrl(page), { headers })
@@ -39,13 +41,15 @@ export default function CardList({ apiUrl, extractData, extractImageUrl, title, 
                 data={cards}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <View style={styles.card}>
-                        <Image
-                            source={{ uri: extractImageUrl(item) }}
-                            style={styles.image}
-                        />
-                        <Text style={styles.text}>{item.name}</Text>
-                    </View>
+                    <TouchableOpacity onPress={() => navigation.navigate('ItemDetail', { card: item, type })}>
+                        <View style={styles.card}>
+                            <Image
+                                source={{ uri: extractImageUrl(item) }}
+                                style={styles.image}
+                            />
+                            <Text style={styles.text}>{item.name}</Text>
+                        </View>
+                    </TouchableOpacity>
                 )}
             />
             {apiUrl(1) !== apiUrl() && (

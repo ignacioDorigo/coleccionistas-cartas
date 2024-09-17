@@ -1,7 +1,7 @@
 import React from 'react';
 import CardList from '../components/CardList';
 
-const ListScreen = ({ apiUrl, extractData, extractImageUrl, title, headers }) => {
+const ListScreen = ({ apiUrl, extractData, extractImageUrl, title, headers, type }) => {
     return (
         <CardList
             apiUrl={apiUrl}
@@ -9,6 +9,7 @@ const ListScreen = ({ apiUrl, extractData, extractImageUrl, title, headers }) =>
             extractImageUrl={extractImageUrl}
             title={title}
             headers={headers}
+            type={type}
         />
     );
 }

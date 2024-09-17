@@ -1,25 +1,34 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import PokemonCard from '../components/PokemonCard';
+import YuGiOhCard from '../components/YuGiOhCard';
 
-const ItemDetailScreen = () => {
+export default function ItemDetailScreen({ route }) {
+    const { card, type } = route.params; 
+
+    const renderCard = () => {
+        switch (type) {
+            case 'Pokemon':
+                return <PokemonCard card={card} />;
+            case 'YuGiOh':
+                return <YuGiOhCard card={card} />;
+            default:
+                return <Text>Tipo de carta no soportado</Text>;
+        }
+    };
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Item Detail</Text>
+            {renderCard()}
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
+        padding: 20,
     },
 });
-
-export default ItemDetailScreen;
