@@ -10,6 +10,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 import ListScreen from "./screens/ListScreen";
 import ItemDetailScreen from "./screens/ItemDetailScreen";
 import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
 
 const Tab = createBottomTabNavigator();
 const HomeStackNavigator = createNativeStackNavigator();
@@ -19,6 +20,7 @@ function AuthStack() {
     return (
         <AuthStackNavigator.Navigator initialRouteName="Login">
             <AuthStackNavigator.Screen name="Login" component={LoginScreen} />
+            <AuthStackNavigator.Screen name="Register" component={RegisterScreen} />
         </AuthStackNavigator.Navigator>
     );
 }
