@@ -1,27 +1,17 @@
 import { View, Text, Button, TextInput, Alert, StyleSheet } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
     const [mail, setMail] = useState("");
     const [password, setPassword] = useState("");
     const navegador = useNavigation();
-    const isFocused = useIsFocused();
     const { login } = useContext(AuthContext);
 
-    useEffect(() => {
-        if (isFocused) {
-            // La navegación está lista
-        }
-    }, [isFocused]);
 
     const onLoginPress = () => {
-        if (!isFocused) {
-            return;
-        }
-
         axios
             .post(
                 `http://172.20.10.4:8080/coleccionistas/login?mail=${mail}&password=${password}`

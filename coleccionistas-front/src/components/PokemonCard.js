@@ -9,7 +9,6 @@ const PokemonCard = ({ card }) => {
         return `${day}/${month}/${year}`;
     };
 
-    console.log(card);
     return (
         <View style={[styles.container, { width }]}>
             {card.images?.large ? (
