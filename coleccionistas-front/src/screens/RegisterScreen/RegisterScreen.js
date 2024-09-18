@@ -1,7 +1,8 @@
-import { View, Text, Button, TextInput, Alert, StyleSheet } from 'react-native';
+import { View, Text, Button, TextInput, Alert } from 'react-native';
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import styles from './RegisterScreen.styles';
 
 const Register = () => {
     const [mail, setMail] = useState("");
@@ -19,7 +20,7 @@ const Register = () => {
         formData.append("nombre", nombre);
         formData.append("apellido", apellido);
 
-        axios.post("http://172.20.10.4:8080/coleccionistas/register", formData)
+        axios.post("http://192.168.0.194:8080/coleccionistas/register", formData)
             .then(response => {
                 Alert.alert("Éxito", response.data);
                 navegador.navigate("Login");
@@ -82,26 +83,3 @@ const Register = () => {
 };
 
 export default Register;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 20,
-        backgroundColor: '#f0f0f0',
-    },
-    label: {
-        fontSize: 18,
-        marginBottom: 8,
-        color: '#333',
-    },
-    input: {
-        height: 50,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingLeft: 10,
-        marginBottom: 20,
-        backgroundColor: '#fff',
-    }
-});
