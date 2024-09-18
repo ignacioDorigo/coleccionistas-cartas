@@ -5,12 +5,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext, AuthProvider } from './context/AuthContext';
 
 // screens
-import HomeScreen from "./screens/HomeScreen";
-import SettingsScreen from "./screens/SettingsScreen";
-import ListScreen from "./screens/ListScreen";
-import ItemDetailScreen from "./screens/ItemDetailScreen";
-import LoginScreen from "./screens/LoginScreen";
-import RegisterScreen from "./screens/RegisterScreen";
+import HomeScreen from 'screens/HomeScreen/HomeScreen'; 
+import SettingsScreen from 'screens/SettingsScreen/SettingsScreen';
+import ItemDetailScreen from 'screens/ItemDetailScreen/ItemDetailScreen';
+import LoginScreen from 'screens/LoginScreen/LoginScreen';
+import RegisterScreen from 'screens/RegisterScreen/RegisterScreen';
+import ListScreen from 'screens/ListScreen/ListScreen';
 
 const Tab = createBottomTabNavigator();
 const HomeStackNavigator = createNativeStackNavigator();

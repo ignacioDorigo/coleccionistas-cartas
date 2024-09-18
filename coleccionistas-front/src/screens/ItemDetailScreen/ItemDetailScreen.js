@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import PokemonCard from '../components/PokemonCard';
-import YuGiOhCard from '../components/YuGiOhCard';
+import { View } from 'react-native';
+import PokemonCard from '../../components/PokemonCard';
+import YuGiOhCard from '../../components/YuGiOhCard';
+import styles from 'screens/ItemDetailScreen/ItemDetailScreen.styles';
 
 export default function ItemDetailScreen({ route }) {
     const { card, type } = route.params; 
@@ -24,11 +25,3 @@ export default function ItemDetailScreen({ route }) {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-});
