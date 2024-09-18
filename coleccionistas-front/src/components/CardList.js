@@ -10,6 +10,7 @@ export default function CardList({ apiUrl, extractData, extractImageUrl, title, 
     const [page, setPage] = useState(1);
 
     const fetchData = (page) => {
+        setLoading(true);
         axios.get(apiUrl(page), { headers })
             .then(response => {
                 setCards(extractData(response.data));
