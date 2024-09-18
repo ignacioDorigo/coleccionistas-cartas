@@ -2,7 +2,7 @@ import { View, Text, TextInput, Alert, TouchableOpacity, Image, ScrollView, Keyb
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from 'context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from "expo-status-bar";
 import styles from "./LoginScreen.styles";
@@ -16,7 +16,7 @@ const Login = () => {
     const onLoginPress = () => {
         axios
             .post(
-                `http://192.168.1.49:8080/coleccionistas/login?mail=${mail}&password=${password}`
+                `http://192.168.0.194:8080/coleccionistas/login?mail=${mail}&password=${password}`
             )
             .then((response) => {
                 Alert.alert("Éxito", response.data);
@@ -37,7 +37,7 @@ const Login = () => {
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     <View style={styles.fondoLogo}>
                         <Image
-                            source={require('../../assets/splash.png')}
+                            source={require("assets/splash.png")}
                             style={styles.image}
                         />
                     </View>

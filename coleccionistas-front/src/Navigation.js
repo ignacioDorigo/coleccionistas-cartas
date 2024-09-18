@@ -12,8 +12,8 @@ import ListScreen from 'screens/ListScreen/ListScreen';
 import ItemDetailScreen from 'screens/ItemDetailScreen/ItemDetailScreen';
 import LoginScreen from 'screens/LoginScreen/LoginScreen';
 import RegisterScreen from 'screens/RegisterScreen/RegisterScreen';
-import Wishlist from 'screens/Wishlist/Wishlist';
-import Marketplace from 'screens/Marketplace/Marketplace';
+import Wishlist from 'screens/WishlistScreen/WishlistScreen';
+import Marketplace from 'screens/MarketplaceScreen/MarketplaceScreen';
 
 const Tab = createBottomTabNavigator();
 const HomeStackNavigator = createNativeStackNavigator();

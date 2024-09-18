@@ -2,7 +2,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import CardList from 'components/CardList';
-import styles from '../ItemDetailScreen/ItemDetailScreen.styles';
+import styles from 'screens/ListScreen/ListScreen.styles';
 
 const ListScreen = ({ apiUrl, extractData, extractImageUrl, title, headers, type }) => {
     return (

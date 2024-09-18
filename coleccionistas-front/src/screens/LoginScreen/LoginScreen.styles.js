@@ -1,3 +1,5 @@
+import { StyleSheet } from 'react-native';
+
 const styles = StyleSheet.create({
     fondoLogo: {
         height: '30%',
@@ -67,3 +69,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
+
+export default styles;
