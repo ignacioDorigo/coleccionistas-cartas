@@ -2,6 +2,8 @@
 
 # dependencies
 node_modules/
+/coleccionistas-back/node_modules
+/coleccionistas-front/node_modules
 
 # Expo
 .expo/

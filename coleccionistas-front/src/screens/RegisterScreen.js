@@ -19,7 +19,7 @@ const Register = () => {
         formData.append("nombre", nombre);
         formData.append("apellido", apellido);
 
-        axios.post("http://172.20.10.4:8080/coleccionistas/register", formData)
+        axios.post("http://192.168.0.194:8080/coleccionistas/register", formData)
             .then(response => {
                 Alert.alert("Éxito", response.data);
                 navegador.navigate("Login");

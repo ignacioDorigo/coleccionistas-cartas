@@ -14,7 +14,7 @@ const Login = () => {
     const onLoginPress = () => {
         axios
             .post(
-                `http://172.20.10.4:8080/coleccionistas/login?mail=${mail}&password=${password}`
+                `http://192.168.0.194:8080/coleccionistas/login?mail=${mail}&password=${password}`
             )
             .then((response) => {
                 Alert.alert("Éxito", response.data);
