@@ -1,13 +1,28 @@
-import { View, Text, TextInput, Alert, TouchableOpacity, Image, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import {
+    View,
+    Text,
+    TextInput,
+    Alert,
+    TouchableOpacity,
+    Image,
+    ScrollView,
+    KeyboardAvoidingView,
+    Platform,
+} from "react-native";
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import { AuthContext } from 'context/AuthContext';
-import { LinearGradient } from 'expo-linear-gradient';
+import { AuthContext } from "context/AuthContext";
+import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
-import styles from "./LoginScreen.styles";
+import { useTheme } from "context/ThemeContext";
+import { lightTheme, darkTheme } from "constants/themes";
+import createStyles from "screens/LoginScreen/LoginScreen.styles";
 
-const Login = () => {
+export default function LoginScreen({ navigation }) {
+    const { isDarkTheme } = useTheme();
+    const theme = isDarkTheme ? darkTheme : lightTheme;
+    const styles = createStyles(theme);
     const [mail, setMail] = useState("");
     const [password, setPassword] = useState("");
     const navegador = useNavigation();
@@ -36,14 +51,13 @@ const Login = () => {
             >
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     <View style={styles.fondoLogo}>
-                        <Image
-                            source={require("assets/splash.png")}
-                            style={styles.image}
-                        />
+                        <Image source={require("assets/splash.png")} style={styles.image} />
                     </View>
                     <View style={styles.container}>
                         <Text style={styles.title}>Bienvenido</Text>
-                        <Text style={styles.subtitle}>Completa los campos para ingresar</Text>
+                        <Text style={styles.text}>
+                            Completa los campos para ingresar
+                        </Text>
                         <Text style={styles.label}>Email</Text>
                         <TextInput
                             style={styles.input}
@@ -63,16 +77,20 @@ const Login = () => {
                         />
                         <TouchableOpacity style={styles.ingresar} onPress={onLoginPress}>
                             <LinearGradient
-                                colors={['#7B2CBF', '#9D4EDD']}
+                                {...styles.gradientColors}
                                 style={styles.gradient}
                             >
-                                <Text style={styles.text}>Ingresar</Text>
+                                <Text style={styles.textLight}>Ingresar</Text>
                             </LinearGradient>
                         </TouchableOpacity>
 
                         <View style={styles.register}>
-                            <Text style={styles.todavia}>¿Todavía no te has registrado?</Text>
-                            <TouchableOpacity onPress={() => { navegador.navigate("Register") }}>
+                            <Text style={styles.text}>¿Todavía no te has registrado?</Text>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    navegador.navigate("Register");
+                                }}
+                            >
                                 <Text style={styles.click}>Click aquí</Text>
                             </TouchableOpacity>
                         </View>
@@ -81,8 +99,4 @@ const Login = () => {
             </KeyboardAvoidingView>
         </>
     );
-};
-
-export default Login;
-
-
+}

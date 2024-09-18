@@ -1,11 +1,25 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: theme.background,
     },
+    text: {
+        fontSize: 24,
+        marginBottom: 20,
+        color: theme.text,
+    },
+    button: {
+        backgroundColor: theme.primary,
+        padding: 10,
+    },
+    buttonText: {
+        color: theme.textLight,
+        fontSize: 18,
+    }
 });
 
-export default styles;
+export default createStyles;

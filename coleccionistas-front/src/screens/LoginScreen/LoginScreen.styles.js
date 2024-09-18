@@ -1,11 +1,11 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => StyleSheet.create({
     fondoLogo: {
         height: '30%',
         width: '100%',
         position: 'relative',
-        backgroundColor: '#3C096C',
+        backgroundColor: theme.primary,
     },
     image: {
         position: 'absolute',
@@ -17,22 +17,28 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 22,
-        backgroundColor: "#f0f0f0",
+        backgroundColor: theme.background,
     },
     title: {
         marginTop: 20,
         fontWeight: 'bold',
         fontSize: 45,
         textTransform: 'capitalize',
+        color: theme.text,
     },
-    subtitle: {
+    text: {
+        color: theme.text,
+        fontSize: 15,
+    },
+    textLight: {
+        color: theme.textLight,
         fontSize: 15,
     },
     label: {
         marginTop: 15,
         fontSize: 18,
         marginBottom: 8,
-        color: "#7B2CBF",
+        color: theme.primary,
         fontWeight: 'bold',
     },
     ingresar: {
@@ -46,14 +52,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    text: {
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold'
-    },
     input: {
         height: 50,
-        borderColor: "#ccc",
+        borderColor: theme.secundary,
         borderWidth: 1,
         borderRadius: 8,
         paddingLeft: 10,
@@ -67,7 +68,16 @@ const styles = StyleSheet.create({
     },
     click: {
         fontWeight: 'bold',
+        color: theme.secundary
+    },
+    gradient: {
+        padding: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    gradientColors: {
+        colors: [theme.primary, theme.secundary],
     },
 });
 
-export default styles;
+export default createStyles;
