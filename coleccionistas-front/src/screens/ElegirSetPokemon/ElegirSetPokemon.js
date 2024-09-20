@@ -4,6 +4,7 @@ import axios from 'axios';
 
 export default function ElegirSetPokemon({ route, navigation }) {
     const { coleccion, mail } = route.params;
+    console.log(mail);
     const [mazosDisponibles, setMazosDisponibles] = useState([]);
 
     useEffect(() => {
@@ -24,7 +25,11 @@ export default function ElegirSetPokemon({ route, navigation }) {
                 },
                 {
                     text: "ACEPTO",
-                    onPress: () => navigation.navigate('CartasSet', { coleccion, mazo, mail })
+                    onPress: () => {
+                        axios.post(`http://192.168.1.29:8080/coleccionistas/crearColeccion?mail=${mail}&idMazo=${mazo.id}&idColeccion=${coleccion.id}`)
+                            .then(response => navigation.navigate('CartasSet', { coleccion, mazo, mail }))
+                            .catch(error => Alert.alert("Error", `${error.response.data}`))
+                    }
                 }
             ],
             { cancelable: false }

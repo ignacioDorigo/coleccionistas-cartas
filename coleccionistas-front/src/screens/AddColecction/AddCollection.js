@@ -5,6 +5,7 @@ import axios from 'axios';
 export default function AddCollection({ route, navigation }) {
     // Mail de prueba que despues hay que ver como lo pasamos, ya sea por params o por el context
     const { mail } = route.params;
+    // console.log(mail);
 
     // Estos son las colecciones que puede elegir el user, Fer y Lukitas
     const [colecciones, setColecciones] = useState([]);

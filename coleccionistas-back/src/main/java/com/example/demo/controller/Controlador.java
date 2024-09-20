@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.modelo.Coleccion;
 import com.example.demo.service.ColeccionService;
+import com.example.demo.service.UsuarioCardService;
 import com.example.demo.service.UsuarioService;
+import com.example.demo.service.UsuarioSetService;
 
 @RestController
 @RequestMapping("/coleccionistas")
@@ -23,6 +25,12 @@ public class Controlador {
 
 	@Autowired
 	ColeccionService coleccionService;
+
+	@Autowired
+	UsuarioSetService usuarioSetService;
+
+	@Autowired
+	UsuarioCardService usuarioCardService;
 
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestParam String mail, @RequestParam String password,
@@ -60,6 +68,31 @@ public class Controlador {
 		return coleccionService.coleccionesDisponibles();
 	}
 
-//	public 
+	@GetMapping("/misColecciones")
+	public List<Coleccion> misColecciones(@RequestParam String mail) {
+		return coleccionService.misColecciones(mail);
+	}
+
+	@PostMapping("/crearColeccion")
+	public ResponseEntity<String> crearColeccion(@RequestParam String mail, @RequestParam String idMazo,
+			@RequestParam Integer idColeccion) {
+		String resultado = usuarioSetService.crearSet(mail, idMazo, idColeccion);
+		if (resultado.contains("Set creado correctamente")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+
+	@PostMapping("/agregarCarta")
+	public ResponseEntity<String> agregarCarta(@RequestParam String mail, @RequestParam String idSet,
+			@RequestParam String idCard) {
+		String resultado = usuarioCardService.agregarCarta(mail, idSet, idCard);
+		if (resultado.contains("Carta agregada con exito")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
 
 }

@@ -1,7 +1,7 @@
-import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Icon } from '@rneui/themed';
+
 
 export default function CartasSet({ route, navigation }) {
     // Mail de prueba que despues hay que ver como lo pasamos, ya sea por params o por el context
@@ -28,8 +28,29 @@ export default function CartasSet({ route, navigation }) {
         fetchCards();
     }, [mazo.id]);
 
-    const AgregarCartaAColeccion = () => {
-        // Aca va el endpoint
+    const AgregarCartaAColeccion = (idCard) => {
+
+        Alert.alert(
+            "Confirmación",
+            "¿Está seguro que quiere agregar esta carta a tu mazo?",
+            [
+                {
+                    text: "CANCELAR",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "ACEPTO",
+                    onPress: () => {
+                        axios.post(`http://localhost:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`)
+                            .then((response) => (Alert.alert("Exito", response.data)))
+                            .catch((error) => (Alert.alert("Error", `${error.response.data}`)))
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
+
 
     }
 
@@ -45,7 +66,7 @@ export default function CartasSet({ route, navigation }) {
                         </TouchableOpacity>
                         <View style={styles.card__botones}>
 
-                            <TouchableOpacity onPress={() => AgregarCartaAColeccion()}>
+                            <TouchableOpacity onPress={() => AgregarCartaAColeccion(card.id)}>
                                 <Text style={styles.card__svg}>Agregar</Text>
                             </TouchableOpacity>
                         </View>

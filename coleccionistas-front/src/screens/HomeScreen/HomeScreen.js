@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, TouchableOpacity } from 'react-native';
+import { View, Text, Button, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useTheme } from 'context/ThemeContext';
 import { lightTheme, darkTheme } from 'constants/themes';
 import createStyles from 'screens/HomeScreen/HomeScreen.styles';
 
 import { Icon } from '@rneui/themed';
+import axios from 'axios';
 
 export default function HomeScreen({ navigation }) {
     // Mail de prueba que despues hay que ver como lo pasamos, ya sea por params o por el context
     const mail = 'nacho@gmail.com';
+
     const { isDarkTheme } = useTheme();
     const theme = isDarkTheme ? darkTheme : lightTheme;
     const styles = createStyles(theme);
@@ -17,9 +19,14 @@ export default function HomeScreen({ navigation }) {
     // Esto tambien es nuevo...
     const [misColecciones, setMisColecciones] = useState([]);
 
+    useEffect(() => {
+        axios.get(`http://192.168.1.29:8080/coleccionistas/misColecciones?mail=${mail}`)
+            .then(respuestaBack => setMisColecciones(respuestaBack.data))
+            .catch(error => console.log(error))
+    }, [misColecciones])
+
     return (
         <>
-
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.header__text}>Mis Colecciones</Text>
@@ -30,7 +37,15 @@ export default function HomeScreen({ navigation }) {
 
                 {misColecciones.length === 0 ?
                     <Text>No tenes colecciones todavia</Text> :
-                    <Text>Aca tenes tu colecciones crack</Text>
+                    <View>
+                        <Text>Aca tenes tu colecciones crack</Text>
+                        {misColecciones.map((coleccion, index) => (
+                            <TouchableOpacity key={index} >
+                                <Image style={style.imagen} source={{ uri: `${coleccion.imagen}` }}></Image>
+                            </TouchableOpacity>
+                        ))
+                        }
+                    </View>
                 }
 
                 {/* <TouchableOpacity
@@ -49,3 +64,15 @@ export default function HomeScreen({ navigation }) {
         </>
     );
 }
+const style = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 20,
+    },
+    imagen: {
+        width: '100%',
+        height: 120,
+        marginBottom: 10,
+    }
+    ,
+})
