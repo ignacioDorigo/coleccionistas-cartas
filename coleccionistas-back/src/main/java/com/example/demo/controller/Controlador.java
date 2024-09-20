@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.modelo.Coleccion;
+import com.example.demo.service.ColeccionService;
 import com.example.demo.service.UsuarioService;
 
 @RestController
@@ -16,6 +20,9 @@ public class Controlador {
 
 	@Autowired
 	UsuarioService usuarioService;
+
+	@Autowired
+	ColeccionService coleccionService;
 
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestParam String mail, @RequestParam String password,
@@ -46,6 +53,11 @@ public class Controlador {
 		} else {
 			return ResponseEntity.status(400).body(resultado);
 		}
+	}
+
+	@GetMapping("/coleccionesDisponibles")
+	public List<Coleccion> coleccionesDisponibles() {
+		return coleccionService.coleccionesDisponibles();
 	}
 
 //	public 
