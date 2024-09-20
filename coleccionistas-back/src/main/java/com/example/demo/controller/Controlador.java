@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.modelo.Coleccion;
+import com.example.demo.modelo.UsuarioCard;
+import com.example.demo.modelo.UsuarioSet;
 import com.example.demo.service.ColeccionService;
 import com.example.demo.service.UsuarioCardService;
 import com.example.demo.service.UsuarioService;
@@ -93,6 +95,17 @@ public class Controlador {
 		} else {
 			return ResponseEntity.status(400).body(resultado);
 		}
+	}
+
+	@GetMapping("/misSets")
+	public List<UsuarioSet> misSets(@RequestParam String mail) {
+		return usuarioSetService.misSets(mail);
+	}
+
+	@GetMapping("/misCartasSet")
+	public List<UsuarioCard> misCartasSet(@RequestParam String mail, @RequestParam String idSet) {
+		return usuarioCardService.misCartasSet(mail, idSet);
+
 	}
 
 }

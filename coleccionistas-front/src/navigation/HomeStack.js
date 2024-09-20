@@ -6,6 +6,8 @@ import ItemDetailScreen from 'screens/ItemDetailScreen/ItemDetailScreen';
 import AddCollection from '../screens/AddColecction/AddCollection';
 import ElegirSetPokemon from '../screens/ElegirSetPokemon/ElegirSetPokemon';
 import CartasSet from '../screens/CartasSet/CartasSet';
+import MisSetsPokemon from '../screens/MisSetsPokemon/MisSetsPokemon';
+import MisCartasSet  from '../screens/MisCartasSet/MisCartasSet';
 
 const HomeStackNavigator = createNativeStackNavigator();
 
@@ -16,6 +18,8 @@ export default function HomeStack() {
             <HomeStackNavigator.Screen name='CrearColeccion' component={AddCollection} />
             <HomeStackNavigator.Screen name='ElegirSetPokemon' component={ElegirSetPokemon}></HomeStackNavigator.Screen>
             <HomeStackNavigator.Screen name='CartasSet' component={CartasSet}></HomeStackNavigator.Screen>
+            <HomeStackNavigator.Screen name='MisSetsPokemon' component={MisSetsPokemon}></HomeStackNavigator.Screen>
+            <HomeStackNavigator.Screen name='MisCartasSet' component={MisCartasSet}></HomeStackNavigator.Screen>
             <HomeStackNavigator.Screen name="Pokemon">
                 {(props) => (
                     <ListScreen

@@ -23,7 +23,16 @@ export default function HomeScreen({ navigation }) {
         axios.get(`http://192.168.1.29:8080/coleccionistas/misColecciones?mail=${mail}`)
             .then(respuestaBack => setMisColecciones(respuestaBack.data))
             .catch(error => console.log(error))
-    }, [misColecciones])
+    }, [misColecciones]);
+
+    const irAScreenColeccion = (nombre) => {
+        let nombreScreen;
+        console.log("El valor de nombre es: ", nombre);
+        if (nombre === 'Pokemon') {
+            nombreScreen = 'MisSetsPokemon';
+        }
+        navigation.navigate(nombreScreen, { mail: mail });
+    }
 
     return (
         <>
@@ -40,7 +49,7 @@ export default function HomeScreen({ navigation }) {
                     <View>
                         <Text>Aca tenes tu colecciones crack</Text>
                         {misColecciones.map((coleccion, index) => (
-                            <TouchableOpacity key={index} >
+                            <TouchableOpacity key={index} onPress={() => irAScreenColeccion(coleccion.nombre)}>
                                 <Image style={style.imagen} source={{ uri: `${coleccion.imagen}` }}></Image>
                             </TouchableOpacity>
                         ))

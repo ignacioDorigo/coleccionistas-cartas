@@ -5,7 +5,7 @@ import axios from 'axios';
 
 export default function CartasSet({ route, navigation }) {
     // Mail de prueba que despues hay que ver como lo pasamos, ya sea por params o por el context
-    const { coleccion, mazo, mail } = route.params;
+    const { mazo, mail } = route.params;
     console.log("mail del user: " + mail);
 
 
@@ -42,7 +42,7 @@ export default function CartasSet({ route, navigation }) {
                 {
                     text: "ACEPTO",
                     onPress: () => {
-                        axios.post(`http://localhost:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`)
+                        axios.post(`http://192.168.1.29:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`)
                             .then((response) => (Alert.alert("Exito", response.data)))
                             .catch((error) => (Alert.alert("Error", `${error.response.data}`)))
                     }

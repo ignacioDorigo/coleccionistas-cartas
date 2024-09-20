@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.modelo.Coleccion;
+import com.example.demo.modelo.UsuarioCard;
 import com.example.demo.modelo.UsuarioSet;
 import com.example.demo.modelo.UsuariosColecciones;
 import com.example.demo.repository.UsuarioSetRepository;
@@ -53,6 +54,10 @@ public class UsuarioSetService {
 			usuarioSetRepository.save(nuevo);
 			return "Set creado correctamente";
 		}
+	}
+
+	public List<UsuarioSet> misSets(String mail) {
+		return usuarioSetRepository.findByMail(mail);
 	}
 
 }

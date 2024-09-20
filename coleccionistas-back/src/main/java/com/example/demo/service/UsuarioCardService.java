@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,17 @@ public class UsuarioCardService {
 		} else {
 			return "Ya tenes esa carta";
 		}
+	}
 
+	public List<UsuarioCard> misCartasSet(String mail, String idSet) {
+		List<UsuarioCard> misCartas = usuarioCardRepository.findByMail(mail);
+		List<UsuarioCard> misCartasDeUnSet = new ArrayList<>();
+		for (UsuarioCard carta : misCartas) {
+			if (carta.getId_set().equals(idSet)) {
+				misCartasDeUnSet.add(carta);
+			}
+		}
+		return misCartasDeUnSet;
 	}
 
 }
