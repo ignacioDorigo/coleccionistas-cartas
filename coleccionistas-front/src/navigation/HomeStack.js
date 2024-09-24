@@ -24,7 +24,7 @@ export default function HomeStack() {
                 {(props) => (
                     <ListScreen
                         {...props}
-                        apiUrl={(page) => `https://api.pokemontcg.io/v2/cards?page=${page}&pageSize=50`}
+                        apiUrl={(page) => `https://api.pokemontcg.io/v2/cards?page=${page}&pageSize=51`}
                         extractData={(data) => data.data}
                         extractImageUrl={(item) => item.images.small}
                         title="Cartas de Pokémon"

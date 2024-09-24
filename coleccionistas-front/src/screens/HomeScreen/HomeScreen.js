@@ -9,7 +9,7 @@ import axios from 'axios';
 
 export default function HomeScreen({ navigation }) {
     // Mail de prueba que despues hay que ver como lo pasamos, ya sea por params o por el context
-    const mail = 'nacho@gmail.com';
+    const mail = 'a';
 
     const { isDarkTheme } = useTheme();
     const theme = isDarkTheme ? darkTheme : lightTheme;
@@ -20,7 +20,7 @@ export default function HomeScreen({ navigation }) {
     const [misColecciones, setMisColecciones] = useState([]);
 
     useEffect(() => {
-        axios.get(`http://192.168.1.29:8080/coleccionistas/misColecciones?mail=${mail}`)
+        axios.get(`http://192.168.0.108:8080/coleccionistas/misColecciones?mail=${mail}`)
             .then(respuestaBack => setMisColecciones(respuestaBack.data))
             .catch(error => console.log(error))
     }, [misColecciones]);
@@ -82,6 +82,7 @@ const style = StyleSheet.create({
         width: '100%',
         height: 120,
         marginBottom: 10,
+        resizeMode: 'contain',
     }
     ,
 })

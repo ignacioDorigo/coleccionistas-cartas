@@ -20,9 +20,34 @@ const PokemonCard = ({ card }) => {
                 <Text>Imagen no disponible</Text>
             )}
             <Text style={styles.title}>{card.name}</Text>
-            <Text>Primer Ataque: {card.attacks[0]?.name}</Text>
-            <Text>Segundo Ataque: {card.attacks[1]?.name}</Text>
-            <Text>Rareza: {card.rarity}</Text>
+            {card.attacks?.length > 0 ? (
+                <>
+                    {card.attacks.length === 1 ? (
+                        <Text>Primer Ataque: {card.attacks[0]?.name}</Text>
+                    ) : (
+                        <>
+                            <Text>Primer Ataque: {card.attacks[0]?.name}</Text>
+                            <Text>Segundo Ataque: {card.attacks[1]?.name}</Text>
+                        </>
+                    )}
+                </>
+            ) : card.abilities?.length > 0 ? (
+                <>
+                    {card.abilities.length === 1 ? (
+                        <Text>Habilidad: {card.abilities[0]?.name}</Text>
+                    ) : (
+                        <>
+                            <Text>Primera Habilidad: {card.abilities[0]?.name}</Text>
+                            <Text>Segunda Habilidad: {card.abilities[1]?.name}</Text>
+                        </>
+                    )}
+                </>
+            ) : null}
+
+            {card.rarity != null && (
+                <Text>Rareza: {card.rarity}</Text>
+            )}
+
             <Text>Tipo: {card.set?.name}</Text> 
             <Text>Numero de carta: {card.number}</Text>
             <Text>Serie: {card.set?.series}</Text>

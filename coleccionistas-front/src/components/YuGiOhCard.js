@@ -19,7 +19,7 @@ const YuGiOhCard = ({ card }) => {
             <Text>Tipo: {card.type}</Text>
             <Text>Rareza: {card.card_sets?.[0]?.set_rarity} {card.card_sets?.[0]?.set_rarity_code}</Text>
             <Text>Serie: {card.archetype}</Text>
-            <Text>Set: {card.card_sets?.[0]?.set_name}</Text>
+            <Text>Coleccion: {card.card_sets?.[0]?.set_name}</Text>
             <Text>Código de carta: {card.card_sets?.[0]?.set_code}</Text>
         </View>
     );

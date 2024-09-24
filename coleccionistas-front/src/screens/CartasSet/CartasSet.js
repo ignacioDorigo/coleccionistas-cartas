@@ -42,7 +42,7 @@ export default function CartasSet({ route, navigation }) {
                 {
                     text: "ACEPTO",
                     onPress: () => {
-                        axios.post(`http://192.168.1.29:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`)
+                        axios.post(`http://192.168.0.108:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`)
                             .then((response) => (Alert.alert("Exito", response.data)))
                             .catch((error) => (Alert.alert("Error", `${error.response.data}`)))
                     }
@@ -50,8 +50,6 @@ export default function CartasSet({ route, navigation }) {
             ],
             { cancelable: false }
         );
-
-
     }
 
     return (
