@@ -36,3 +36,12 @@ CREATE TABLE usuarios_cards(
 	PRIMARY KEY(id),
 	FOREIGN KEY (mail) REFERENCES usuarios(mail)
 );
+
+/*Nueva tabla para favoritos pokemon*/
+CREATE TABLE favoritos_pokemon( 
+	id INTEGER AUTO_INCREMENT NOT NULL,
+    mail VARCHAR(50) NOT NULL,
+	id_card VARCHAR (20) NOT NULL,
+    primary key (id), 
+    foreign key (mail) references usuarios(mail)
+);

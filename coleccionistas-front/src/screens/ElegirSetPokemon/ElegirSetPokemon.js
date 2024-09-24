@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -16,7 +16,7 @@ export default function ElegirSetPokemon({ route, navigation }) {
     const handleMazoPress = (mazo) => {
         Alert.alert(
             "Confirmación",
-            "¿Está seguro que quiere crear una colección de este mazo?",
+            "¿Está seguro que quiere crear una colección de este mazo?",   
             [
                 {
                     text: "CANCELAR",
@@ -26,7 +26,7 @@ export default function ElegirSetPokemon({ route, navigation }) {
                 {
                     text: "ACEPTO",
                     onPress: () => {
-                        axios.post(`http://192.168.1.29:8080/coleccionistas/crearColeccion?mail=${mail}&idMazo=${mazo.id}&idColeccion=${coleccion.id}`)
+                        axios.post(`http://192.168.0.108:8080/coleccionistas/crearColeccion?mail=${mail}&idMazo=${mazo.id}&idColeccion=${coleccion.id}`)
                             .then(response => navigation.navigate('CartasSet', { coleccion, mazo, mail }))
                             .catch(error => Alert.alert("Error", `${error.response.data}`))
                     }
@@ -34,6 +34,7 @@ export default function ElegirSetPokemon({ route, navigation }) {
             ],
             { cancelable: false }
         );
+        console.log("mazo: ", mazo);
     };
 
     return (
@@ -41,9 +42,9 @@ export default function ElegirSetPokemon({ route, navigation }) {
             <Text>Elegi que Set de Pokemon queres coleccionar</Text>
             {mazosDisponibles.map((mazo, index) => (
                 <TouchableOpacity key={index} style={styles.mazo} onPress={() => handleMazoPress(mazo)}>
-                    <Text style={styles.mazo__texto}>ID: {mazo.id}</Text>
-                    <Text style={styles.mazo__texto}>{mazo.name}</Text>
-                    <Text style={styles.mazo__texto}>{mazo.printedTotal}</Text>
+                    
+                    <Image style={styles.images} source={{uri: mazo.images.logo}}></Image>
+
                 </TouchableOpacity>
             ))}
         </ScrollView>
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 20,
-        backgroundColor: '#240046',
+        backgroundColor: 'lightgray',
         marginTop: 10,
         marginBottom: 10,
     },
@@ -68,5 +69,10 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontWeight: 'bold',
         fontSize: 15,
-    }
+    },
+    images: {
+        width: '100%',
+        height: 50,
+        resizeMode: 'contain',
+    },
 });

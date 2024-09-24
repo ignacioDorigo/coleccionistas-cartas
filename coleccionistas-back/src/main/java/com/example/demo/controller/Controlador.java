@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.modelo.Coleccion;
+import com.example.demo.modelo.FavoritosPokemon;
 import com.example.demo.modelo.UsuarioCard;
 import com.example.demo.modelo.UsuarioSet;
 import com.example.demo.service.ColeccionService;
+import com.example.demo.service.FavoritosPokemonService;
 import com.example.demo.service.UsuarioCardService;
 import com.example.demo.service.UsuarioService;
 import com.example.demo.service.UsuarioSetService;
@@ -33,7 +36,10 @@ public class Controlador {
 
 	@Autowired
 	UsuarioCardService usuarioCardService;
-
+	
+	@Autowired
+	FavoritosPokemonService favoritosPokemonService;
+	
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestParam String mail, @RequestParam String password,
 			@RequestParam Integer edad, @RequestParam String nombre, @RequestParam String apellido) {
@@ -107,5 +113,30 @@ public class Controlador {
 		return usuarioCardService.misCartasSet(mail, idSet);
 
 	}
-
+	
+	@PostMapping("/agregarFavoritoPokemon")
+	public ResponseEntity<String> agregarFavoritoPokemon(@RequestParam String idCard, @RequestParam String mail) {
+		String resultado = favoritosPokemonService.agregarFavorito(idCard, mail);
+		if (resultado.contains("Agregado a favoritos")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+	
+	@GetMapping("/misFavoritosPokemon")
+	public List<FavoritosPokemon> misFavoritosPokemons(@RequestParam String mail){
+		return favoritosPokemonService.misFavoritos(mail);
+	}
+	
+	@DeleteMapping("/eliminarFavoritoPokemon")
+	public ResponseEntity<String> eliminarFavoritoPokemon(@RequestParam String idCard, @RequestParam String mail){
+		String resultado = favoritosPokemonService.eliminarFavorito(idCard, mail);
+		if (resultado.contains("Eliminado de Favoritos")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+	
 }
