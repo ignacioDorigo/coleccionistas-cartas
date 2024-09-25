@@ -8,34 +8,42 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     Platform,
+    StyleSheet,
 } from "react-native";
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import { AuthContext } from "context/AuthContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import { useTheme } from "context/ThemeContext";
 import { lightTheme, darkTheme } from "constants/themes";
 import createStyles from "screens/LoginScreen/LoginScreen.styles";
 
-export default function LoginScreen({ navigation }) {
+export default function RecuperarPasswordScreen() {
     const { isDarkTheme } = useTheme();
     const theme = isDarkTheme ? darkTheme : lightTheme;
     const styles = createStyles(theme);
     const [mail, setMail] = useState("");
-    const [password, setPassword] = useState("");
     const navegador = useNavigation();
-    const { login } = useContext(AuthContext);
-
-    const onLoginPress = () => {
+    const onRecuperarPress = () => {
         axios
-            .post(
-                `http://192.168.0.108:8080/coleccionistas/login?mail=${mail}&password=${password}`
+            .get(
+                `http://192.168.0.108:8080/coleccionistas/recuperarPassword?mail=${mail}`
             )
             .then((response) => {
-                Alert.alert("Éxito", response.data);
-                login();
+                Alert.alert(
+                    "Éxito", 
+                    response.data, 
+                    [
+                        {
+                            text: "Aceptar", 
+                            onPress: () => {
+                                navegador.navigate("Login");
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                );
             })
             .catch((error) => {
                 Alert.alert("Error", error.response.data);
@@ -54,9 +62,11 @@ export default function LoginScreen({ navigation }) {
                         <Image source={require("assets/splash.png")} style={styles.image} />
                     </View>
                     <View style={styles.container}>
-                        <Text style={styles.title}>Bienvenido</Text>
                         <Text style={styles.text}>
-                            Completa los campos para ingresar
+                            Envio de contraseña temporal.
+                        </Text>
+                        <Text style={styles.text}>
+                            Recuerde cambiarla una vez que haya ingresado.
                         </Text>
                         <Text style={styles.label}>Email</Text>
                         <TextInput
@@ -66,46 +76,40 @@ export default function LoginScreen({ navigation }) {
                             value={mail}
                             placeholder="equipo5@gmail.com"
                         />
-                        <Text style={styles.label}>Password</Text>
-                        <TextInput
-                            style={styles.input}
-                            autoCapitalize="none"
-                            onChangeText={setPassword}
-                            value={password}
-                            placeholder="*******"
-                            secureTextEntry
-                        />
-                        <TouchableOpacity style={styles.ingresar} onPress={onLoginPress}>
+                        <TouchableOpacity style={styles.ingresar} onPress={onRecuperarPress}>
                             <LinearGradient
                                 {...styles.gradientColors}
                                 style={styles.gradient}
                             >
-                                <Text style={styles.textLight}>Ingresar</Text>
+                                <Text style={styles.textLight}>Recuperar</Text>
                             </LinearGradient>
                         </TouchableOpacity>
-                        <View style={styles.register}>
-                            <Text style={styles.text}>¿Te olvidaste la contraseña?</Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    navegador.navigate("Recuperar");
-                                }}
-                            >
-                                <Text style={styles.click}>Click aquí</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.register}>
-                            <Text style={styles.text}>¿Todavía no te has registrado?</Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    navegador.navigate("Register");
-                                }}
-                            >
-                                <Text style={styles.click}>Click aquí</Text>
-                            </TouchableOpacity>
-                        </View>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
         </>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+        backgroundColor: '#f0f0f0',
+    },
+    label: {
+        fontSize: 18,
+        marginBottom: 8,
+        color: '#333',
+    },
+    input: {
+        height: 50,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingLeft: 10,
+        marginBottom: 20,
+        backgroundColor: '#fff',
+    }
+});

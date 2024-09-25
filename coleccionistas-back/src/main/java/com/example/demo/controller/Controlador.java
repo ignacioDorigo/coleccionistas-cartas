@@ -64,7 +64,7 @@ public class Controlador {
 	@GetMapping("/recuperarPassword")
 	public ResponseEntity<String> recuperarPassword(@RequestParam String mail) {
 		String resultado = usuarioService.recuperarContrasenia(mail);
-		if (resultado.contains("Contrasenia enviada al correo")) {
+		if (resultado.equals("Nueva contrasenia temporal enviada al correo")) {
 			return ResponseEntity.ok(resultado);
 		} else {
 			return ResponseEntity.status(400).body(resultado);

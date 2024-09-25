@@ -13,14 +13,7 @@ const Register = () => {
     const navegador = useNavigation();
 
     const registrarse = () => {
-        const formData = new FormData();
-        formData.append("mail", mail);
-        formData.append("password", password);
-        formData.append("edad", edad);
-        formData.append("nombre", nombre);
-        formData.append("apellido", apellido);
-
-        axios.post("http://192.168.0.108:8080/coleccionistas/register", formData)
+        axios.post(`http://192.168.0.108:8080/coleccionistas/register?mail=${mail}&password=${password}&edad=${edad}&nombre=${nombre}&apellido=${apellido}`)
             .then(response => {
                 Alert.alert("Éxito", response.data);
                 navegador.navigate("Login");
