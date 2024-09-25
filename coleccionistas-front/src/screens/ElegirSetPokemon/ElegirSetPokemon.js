@@ -1,10 +1,15 @@
+
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { AuthContext } from '../../context/AuthContext'
 import axios from 'axios';
 
 export default function ElegirSetPokemon({ route, navigation }) {
-    const { coleccion, mail } = route.params;
-    console.log(mail);
+
+    const { isLoggedIn } = useContext(AuthContext);
+    const mail = isLoggedIn;
+    
+    const { coleccion } = route.params;
     const [mazosDisponibles, setMazosDisponibles] = useState([]);
 
     useEffect(() => {
@@ -16,7 +21,7 @@ export default function ElegirSetPokemon({ route, navigation }) {
     const handleMazoPress = (mazo) => {
         Alert.alert(
             "Confirmación",
-            "¿Está seguro que quiere crear una colección de este mazo?",   
+            "¿Está seguro que quiere crear una colección de este mazo?",
             [
                 {
                     text: "CANCELAR",
@@ -27,7 +32,7 @@ export default function ElegirSetPokemon({ route, navigation }) {
                     text: "ACEPTO",
                     onPress: () => {
                         axios.post(`http://192.168.1.71:8080/coleccionistas/crearColeccion?mail=${mail}&idMazo=${mazo.id}&idColeccion=${coleccion.id}`)
-                            .then(response => navigation.navigate('CartasSet', { coleccion, mazo, mail }))
+                            .then(response => navigation.navigate('CartasSet', { coleccion, mazo}))
                             .catch(error => Alert.alert("Error", `${error.response.data}`))
                     }
                 }
@@ -42,8 +47,8 @@ export default function ElegirSetPokemon({ route, navigation }) {
             <Text>Elegi que Set de Pokemon queres coleccionar</Text>
             {mazosDisponibles.map((mazo, index) => (
                 <TouchableOpacity key={index} style={styles.mazo} onPress={() => handleMazoPress(mazo)}>
-                    
-                    <Image style={styles.images} source={{uri: mazo.images.logo}}></Image>
+
+                    <Image style={styles.images} source={{ uri: mazo.images.logo }}></Image>
 
                 </TouchableOpacity>
             ))}

@@ -35,7 +35,7 @@ export default function LoginScreen({ navigation }) {
             )
             .then((response) => {
                 Alert.alert("Éxito", response.data);
-                login();
+                login(mail);
             })
             .catch((error) => {
                 Alert.alert("Error", error.response.data);

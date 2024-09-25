@@ -11,33 +11,30 @@ import { Icon } from '@rneui/themed';
 import axios from 'axios';
 
 export default function HomeScreen({ navigation }) {
-    // Mail de prueba que despues hay que ver como lo pasamos, ya sea por params o por el context
-    const mail = 'nacho@gmail.com';
 
+    // El context isLoggedIn me guarda el mail
     const { isLoggedIn } = useContext(AuthContext);
-    console.log(isLoggedIn);
+    const mail = isLoggedIn;
 
+    // Estilos
     const { isDarkTheme } = useTheme();
     const theme = isDarkTheme ? darkTheme : lightTheme;
     const styles = createStyles(theme);
 
-
-    // Esto tambien es nuevo...
     const [misColecciones, setMisColecciones] = useState([]);
 
     useEffect(() => {
         axios.get(`http://192.168.1.71:8080/coleccionistas/misColecciones?mail=${mail}`)
             .then(respuestaBack => setMisColecciones(respuestaBack.data))
             .catch(error => console.log(error))
-    }, [misColecciones]);
+    }, []);
 
     const irAScreenColeccion = (nombre) => {
         let nombreScreen;
-        console.log("El valor de nombre es: ", nombre);
         if (nombre === 'Pokemon') {
             nombreScreen = 'MisSetsPokemon';
         }
-        navigation.navigate(nombreScreen, { mail: mail });
+        navigation.navigate(nombreScreen);
     }
 
     return (

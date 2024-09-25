@@ -1,9 +1,12 @@
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, ScrollView, Image, StyleSheet } from 'react-native';
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
 
 export default function MisCartasSet({ route, navigation }) {
-    const { mail, set } = route.params;
+    const { isLoggedIn } = useContext(AuthContext);
+    const mail = isLoggedIn;
+    const { set } = route.params;
 
     const [mazoMio, setMazoMio] = useState([]);
     const [mazoCompleto, setMazoCompleto] = useState([]);

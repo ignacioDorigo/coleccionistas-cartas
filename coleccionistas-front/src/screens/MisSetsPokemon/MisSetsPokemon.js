@@ -1,9 +1,11 @@
+import React, { useEffect, useState, useContext } from 'react'
 import { View, Text, Touchable, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { AuthContext } from '../../context/AuthContext';
 import axios from 'axios'
 
-export default function MisSetsPokemon({ route, navigation }) {
-    const { mail } = route.params;
+export default function MisSetsPokemon({ navigation }) {
+    const { isLoggedIn } = useContext(AuthContext);
+    const mail = isLoggedIn;
 
     const [misSets, setMisSets] = useState([]);
 
@@ -18,7 +20,7 @@ export default function MisSetsPokemon({ route, navigation }) {
 
             {misSets.map((set, index) => (
                 <View key={index}>
-                    <TouchableOpacity onPress={() => { navigation.navigate("MisCartasSet", { mail: mail, set: set }) }}>
+                    <TouchableOpacity onPress={() => { navigation.navigate("MisCartasSet", { set: set }) }}>
                         <Text>{set.id_set}</Text>
                     </TouchableOpacity>
                 </View>

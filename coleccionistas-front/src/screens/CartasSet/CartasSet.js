@@ -1,13 +1,13 @@
 import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
 
 
 export default function CartasSet({ route, navigation }) {
-    // Mail de prueba que despues hay que ver como lo pasamos, ya sea por params o por el context
-    const { mazo, mail } = route.params;
-    console.log("mail del user: " + mail);
-
+    const { isLoggedIn } = useContext(AuthContext);
+    const mail = isLoggedIn;
+    const { mazo } = route.params;
 
     const [cards, setCards] = useState([]);
 
