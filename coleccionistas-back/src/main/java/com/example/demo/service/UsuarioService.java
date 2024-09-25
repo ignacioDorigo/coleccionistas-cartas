@@ -24,10 +24,22 @@ public class UsuarioService {
 	}
 
 	public String register(String mail, String password, Integer edad, String nombre, String apellido) {
-		Optional<Usuario> usuarioOptional = usuarioRepository.findById(mail);
-		if (usuarioOptional.isEmpty()) {
+		Usuario usuario = buscarUsuario(mail);
+		if (usuario == null) {
 			if (edad < 18) {
 				return "No podes registrarte siendo menor de edad";
+			}
+			if (nombre.length() == 0) {
+				return "Tu nombre no puede estar vacio";
+			}
+			if (apellido.length() == 0) {
+				return "Tu apellido no puede estar vacio";
+			}
+			if (mail.length() == 0) {
+				return "Tu mail no puede estar vacio";
+			}
+			if (password.length() == 0) {
+				return "Tu password no puede estar vacio";
 			}
 			Usuario nuevo = new Usuario(mail, password, edad, nombre, apellido);
 			usuarioRepository.save(nuevo);
@@ -41,9 +53,8 @@ public class UsuarioService {
 	}
 
 	public String login(String mail, String password) {
-		Optional<Usuario> usuarioOptional = usuarioRepository.findById(mail);
-		if (usuarioOptional.isPresent()) {
-			Usuario usuario = usuarioOptional.get();
+		Usuario usuario = buscarUsuario(mail);
+		if (usuario != null) {
 			if (usuario.getPassword().equals(password)) {
 				return "Login exitoso";
 			} else {
@@ -66,6 +77,15 @@ public class UsuarioService {
 
 		} else {
 			return "No estas registrado en la App";
+		}
+	}
+
+	public Usuario buscarUsuario(String mail) {
+		Optional<Usuario> usuarioOptional = usuarioRepository.findById(mail);
+		if (usuarioOptional.isPresent()) {
+			return usuarioOptional.get();
+		} else {
+			return null;
 		}
 	}
 }

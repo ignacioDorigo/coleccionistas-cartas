@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.modelo.Coleccion;
+import com.example.demo.modelo.Usuario;
 import com.example.demo.modelo.UsuarioCard;
 import com.example.demo.modelo.UsuarioSet;
 import com.example.demo.modelo.UsuariosColecciones;
@@ -24,7 +25,17 @@ public class UsuarioSetService {
 	@Autowired
 	ColeccionService coleccionService;
 
+	@Autowired
+	UsuarioService usuarioService;
+
 	public String crearSet(String mail, String idSet, Integer idColeccion) {
+
+//		Si es que no existe el usuario (aunque no deberia pasar, pero doble validacion por las dudas)
+		Usuario usuario = usuarioService.buscarUsuario(mail);
+		if (usuario == null) {
+			return "Usuario no encontrado";
+		}
+
 		List<Coleccion> colecciones = coleccionService.misColecciones(mail);
 		Boolean yaEsta = false;
 		for (Coleccion coleccion : colecciones) {

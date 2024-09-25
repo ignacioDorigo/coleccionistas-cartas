@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, Button, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useTheme } from 'context/ThemeContext';
 import { lightTheme, darkTheme } from 'constants/themes';
 import createStyles from 'screens/HomeScreen/HomeScreen.styles';
+
+// Contexto
+import { AuthContext } from '../../context/AuthContext'
 
 import { Icon } from '@rneui/themed';
 import axios from 'axios';
 
 export default function HomeScreen({ navigation }) {
     // Mail de prueba que despues hay que ver como lo pasamos, ya sea por params o por el context
-    const mail = 'a';
+    const mail = 'nacho@gmail.com';
+
+    const { isLoggedIn } = useContext(AuthContext);
+    console.log(isLoggedIn);
 
     const { isDarkTheme } = useTheme();
     const theme = isDarkTheme ? darkTheme : lightTheme;
@@ -20,7 +26,7 @@ export default function HomeScreen({ navigation }) {
     const [misColecciones, setMisColecciones] = useState([]);
 
     useEffect(() => {
-        axios.get(`http://192.168.0.108:8080/coleccionistas/misColecciones?mail=${mail}`)
+        axios.get(`http://192.168.1.71:8080/coleccionistas/misColecciones?mail=${mail}`)
             .then(respuestaBack => setMisColecciones(respuestaBack.data))
             .catch(error => console.log(error))
     }, [misColecciones]);
@@ -56,19 +62,6 @@ export default function HomeScreen({ navigation }) {
                         }
                     </View>
                 }
-
-                {/* <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => navigation.navigate('Pokemon')}
-                >
-                    <Text style={styles.pr}>Pokemon</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => navigation.navigate('YuGiOh')}
-                >
-                    <Text style={styles.buttonText}>Yu-Gi-Oh!</Text>
-                </TouchableOpacity> */}
             </View>
         </>
     );

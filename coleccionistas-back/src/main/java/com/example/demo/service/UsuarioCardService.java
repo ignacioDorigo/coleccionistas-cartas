@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.modelo.Usuario;
 import com.example.demo.modelo.UsuarioCard;
 import com.example.demo.repository.UsuarioCardRepository;
 
@@ -15,8 +16,17 @@ public class UsuarioCardService {
 	@Autowired
 	UsuarioCardRepository usuarioCardRepository;
 
+	@Autowired
+	UsuarioService usuarioService;
+
 //
 	public String agregarCarta(String mail, String idSet, String idCard) {
+
+//		Si es que no existe el usuario (aunque no deberia pasar, pero doble validacion por las dudas)
+		Usuario usuario = usuarioService.buscarUsuario(mail);
+		if (usuario == null) {
+			return "Usuario no encontrado";
+		}
 
 		List<UsuarioCard> misCartas = usuarioCardRepository.findByMail(mail);
 		boolean yaEsta = false;
