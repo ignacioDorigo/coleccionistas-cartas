@@ -36,17 +36,19 @@ public class Controlador {
 
 	@Autowired
 	UsuarioCardService usuarioCardService;
-	
+
 	@Autowired
 	FavoritosPokemonService favoritosPokemonService;
-	
+
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestParam String mail, @RequestParam String password,
 			@RequestParam Integer edad, @RequestParam String nombre, @RequestParam String apellido) {
 		String resultado = usuarioService.register(mail, password, edad, nombre, apellido);
 		if (resultado.contains("Registro exitoso")) {
+			System.out.println("ESTADO DEL REGISTER: EXITOSO");
 			return ResponseEntity.ok(resultado);
 		} else {
+			System.out.println("ESTADO DEL REGISTER: FALLIDO " + resultado);
 			return ResponseEntity.status(400).body(resultado);
 		}
 	}
@@ -55,8 +57,10 @@ public class Controlador {
 	public ResponseEntity<String> login(@RequestParam String mail, @RequestParam String password) {
 		String resultado = usuarioService.login(mail, password);
 		if (resultado.contains("Login exitoso")) {
+			System.out.println("ESTADO DEL REGISTER: EXITOSO ");
 			return ResponseEntity.ok(resultado);
 		} else {
+			System.out.println("ESTADO DEL REGISTER: LOGIN " + resultado);
 			return ResponseEntity.status(400).body(resultado);
 		}
 	}
@@ -113,7 +117,7 @@ public class Controlador {
 		return usuarioCardService.misCartasSet(mail, idSet);
 
 	}
-	
+
 	@PostMapping("/agregarFavoritoPokemon")
 	public ResponseEntity<String> agregarFavoritoPokemon(@RequestParam String idCard, @RequestParam String mail) {
 		String resultado = favoritosPokemonService.agregarFavorito(idCard, mail);
@@ -123,14 +127,14 @@ public class Controlador {
 			return ResponseEntity.status(400).body(resultado);
 		}
 	}
-	
+
 	@GetMapping("/misFavoritosPokemon")
-	public List<FavoritosPokemon> misFavoritosPokemons(@RequestParam String mail){
+	public List<FavoritosPokemon> misFavoritosPokemons(@RequestParam String mail) {
 		return favoritosPokemonService.misFavoritos(mail);
 	}
-	
+
 	@DeleteMapping("/eliminarFavoritoPokemon")
-	public ResponseEntity<String> eliminarFavoritoPokemon(@RequestParam String idCard, @RequestParam String mail){
+	public ResponseEntity<String> eliminarFavoritoPokemon(@RequestParam String idCard, @RequestParam String mail) {
 		String resultado = favoritosPokemonService.eliminarFavorito(idCard, mail);
 		if (resultado.contains("Eliminado de Favoritos")) {
 			return ResponseEntity.ok(resultado);
@@ -138,5 +142,5 @@ public class Controlador {
 			return ResponseEntity.status(400).body(resultado);
 		}
 	}
-	
+
 }
