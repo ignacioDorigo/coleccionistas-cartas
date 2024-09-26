@@ -3,23 +3,36 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        padding: 20,
-        backgroundColor: '#f0f0f0',
+        padding: 15,
+        backgroundColor: '#F5F7FA',
     },
-    label: {
-        fontSize: 18,
-        marginBottom: 8,
-        color: '#333',
+    header: {
+        marginVertical: 10,
     },
-    input: {
-        height: 50,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingLeft: 10,
-        marginBottom: 20,
-        backgroundColor: '#fff',
+    header__text: {
+        fontWeight: 'bold',
+        fontSize: 25,
+        textAlign: 'center',
+    },
+    image: {
+        resizeMode: 'contain',
+        width: "100%",
+        height: 100,
+    },
+    inputContainer: {
+        // backgroundColor:"red",  
+        padding: 5,
+    },
+    btn: {
+        marginTop: 10,
+        backgroundColor: "#240046"
+    },
+    btnTitle: {
+        fontWeight: "bold",
+        color: "#F5F7FA"
+    },
+    icon: {
+        color: "#240046",
     }
 });
 

@@ -18,6 +18,7 @@ import { StatusBar } from "expo-status-bar";
 import { useTheme } from "context/ThemeContext";
 import { lightTheme, darkTheme } from "constants/themes";
 import createStyles from "screens/LoginScreen/LoginScreen.styles";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function LoginScreen({ navigation }) {
     const { isDarkTheme } = useTheme();
@@ -45,11 +46,11 @@ export default function LoginScreen({ navigation }) {
     return (
         <>
             <StatusBar style="light" />
-            <KeyboardAvoidingView
+            <View
                 style={{ flex: 1 }}
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }}>
                     <View style={styles.fondoLogo}>
                         <Image source={require("assets/splash.png")} style={styles.image} />
                     </View>
@@ -104,8 +105,8 @@ export default function LoginScreen({ navigation }) {
                             </TouchableOpacity>
                         </View>
                     </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
+                </KeyboardAwareScrollView>
+            </View>
         </>
     );
 }
