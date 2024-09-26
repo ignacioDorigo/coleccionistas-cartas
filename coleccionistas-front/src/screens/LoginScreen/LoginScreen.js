@@ -20,7 +20,7 @@ import { lightTheme, darkTheme } from "constants/themes";
 import createStyles from "screens/LoginScreen/LoginScreen.styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-export default function LoginScreen({ navigation }) {
+export function LoginScreen({ navigation }) {
     const { isDarkTheme } = useTheme();
     const theme = isDarkTheme ? darkTheme : lightTheme;
     const styles = createStyles(theme);
@@ -76,6 +76,15 @@ export default function LoginScreen({ navigation }) {
                             placeholder="*******"
                             secureTextEntry
                         />
+                        <View style={styles.recuperar}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    navegador.navigate("Recuperar");
+                                }}
+                            >
+                                <Text style={styles.click}>¿Te has olvidado la contraseña?</Text>
+                            </TouchableOpacity>
+                        </View>
                         <TouchableOpacity style={styles.ingresar} onPress={onLoginPress}>
                             <LinearGradient
                                 {...styles.gradientColors}
@@ -84,16 +93,7 @@ export default function LoginScreen({ navigation }) {
                                 <Text style={styles.textLight}>Ingresar</Text>
                             </LinearGradient>
                         </TouchableOpacity>
-                        <View style={styles.register}>
-                            <Text style={styles.text}>¿Te olvidaste la contraseña?</Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    navegador.navigate("Recuperar");
-                                }}
-                            >
-                                <Text style={styles.click}>Click aquí</Text>
-                            </TouchableOpacity>
-                        </View>
+
                         <View style={styles.register}>
                             <Text style={styles.text}>¿Todavía no te has registrado?</Text>
                             <TouchableOpacity

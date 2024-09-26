@@ -19,7 +19,7 @@ import { useTheme } from "context/ThemeContext";
 import { lightTheme, darkTheme } from "constants/themes";
 import createStyles from "screens/LoginScreen/LoginScreen.styles";
 
-export default function RecuperarPasswordScreen() {
+export function RecuperarPasswordScreen() {
     const { isDarkTheme } = useTheme();
     const theme = isDarkTheme ? darkTheme : lightTheme;
     const styles = createStyles(theme);
@@ -32,11 +32,11 @@ export default function RecuperarPasswordScreen() {
             )
             .then((response) => {
                 Alert.alert(
-                    "Éxito", 
-                    response.data, 
+                    "Éxito",
+                    response.data,
                     [
                         {
-                            text: "Aceptar", 
+                            text: "Aceptar",
                             onPress: () => {
                                 navegador.navigate("Login");
                             }

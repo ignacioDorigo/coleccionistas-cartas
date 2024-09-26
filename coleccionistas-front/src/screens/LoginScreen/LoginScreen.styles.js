@@ -66,6 +66,10 @@ const createStyles = (theme) => StyleSheet.create({
         alignItems: 'center',
         marginTop: 30,
     },
+    recuperar: {
+        marginTop:-15,
+        marginBottom:30,
+    },
     click: {
         fontWeight: 'bold',
         color: theme.secundary

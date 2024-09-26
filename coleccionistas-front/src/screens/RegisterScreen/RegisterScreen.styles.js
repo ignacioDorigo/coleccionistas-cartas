@@ -3,8 +3,12 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 15,
+        padding: 20,
         backgroundColor: '#F5F7FA',
+        marginBottom:10,
+    },
+    contenidoScroll:{
+        paddingBottom:20,
     },
     header: {
         marginVertical: 10,
@@ -13,14 +17,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 25,
         textAlign: 'center',
+        marginBottom:30,
     },
     image: {
         resizeMode: 'contain',
         width: "100%",
-        height: 100,
+        height: 80,
     },
     inputContainer: {
-        // backgroundColor:"red",  
         padding: 5,
     },
     btn: {
