@@ -9,6 +9,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     StyleSheet,
+    ActivityIndicator,
 } from "react-native";
 import React, { useState, useContext } from "react";
 import axios from "axios";
@@ -25,7 +26,10 @@ export function RecuperarPasswordScreen() {
     const styles = createStyles(theme);
     const [mail, setMail] = useState("");
     const navegador = useNavigation();
+    const [isLoading, setIsLoading] = useState(false);
+
     const onRecuperarPress = () => {
+        setIsLoading(true);
         axios
             .get(
                 `http://192.168.0.108:8080/coleccionistas/recuperarPassword?mail=${mail}`
@@ -44,8 +48,10 @@ export function RecuperarPasswordScreen() {
                     ],
                     { cancelable: false }
                 );
+                setIsLoading(false);
             })
             .catch((error) => {
+                setIsLoading(false);
                 Alert.alert("Error", error.response.data);
             });
     };
@@ -76,12 +82,16 @@ export function RecuperarPasswordScreen() {
                             value={mail}
                             placeholder="equipo5@gmail.com"
                         />
-                        <TouchableOpacity style={styles.ingresar} onPress={onRecuperarPress}>
+                        <TouchableOpacity style={styles.ingresar} onPress={onRecuperarPress} disabled={isLoading}>
                             <LinearGradient
                                 {...styles.gradientColors}
                                 style={styles.gradient}
                             >
+                            {isLoading ? (
+                                <ActivityIndicator size="small" color="#fff" />
+                            ) : (
                                 <Text style={styles.textLight}>Recuperar</Text>
+                            )}
                             </LinearGradient>
                         </TouchableOpacity>
                     </View>
