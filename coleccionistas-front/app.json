@@ -22,6 +22,18 @@
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
-    }
+    },
+    "plugins": [
+    [
+      "expo-image-picker",
+      {
+        "photosPermission": "Findex necesita acceder a tu galería para seleccionar imágenes.",
+        "mediaTypes": ["Images"], 
+        "allowsEditing": true,
+        "aspect": [4, 3],
+        "quality": 1
+      }
+    ]
+  ]
   }
 }

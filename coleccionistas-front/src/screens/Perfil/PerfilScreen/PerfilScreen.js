@@ -1,16 +1,34 @@
+// Hooks de React
 import React, { useContext, useEffect, useState } from "react";
+
+// Componentes de React Native
 import { View, Text, TouchableOpacity } from "react-native";
+
+// Estilos del  componente
 import { styles } from "./PerfilScreen.styles";
+
+// Contexto de Autenticacion
 import { AuthContext } from "../../../context/AuthContext";
-import { Button, Icon, Avatar } from "@rneui/base";
-import { ListItem } from "@rneui/base";
+
+// Contexto de Tema oscuro/claro NO LO USE TODAVIA
+import { ThemeContext } from "../../../context/ThemeContext";
+
+// Componentes de React Native elements
+import { Button, Icon, Avatar, ListItem } from "@rneui/themed";
+
+// Dependencia para hacer peticiones HTTP
 import axios from "axios";
 
-// Formularios
-import { CambiarNombreForm } from "../../../components/Account/CambiarNombreForm";
-import { CambiarApellidoForm } from "../../../components/Account/CambiarApellidoForm";
-import { CambiarPasswordForm } from "../../../components/Account/CambiarPasswordForm";
+// Dependencia para notificar
 import Toast from "react-native-toast-message";
+
+// Dependencia para usar la galeria
+import * as ImagePicker from "expo-image-picker";
+
+// Formularios
+import { CambiarNombreForm } from "../../../components/Perfil";
+import { CambiarApellidoForm } from "../../../components/Perfil";
+import { CambiarPasswordForm } from "../../../components/Perfil";
 
 export function PerfilScreen() {
   const { isLoggedIn, logout } = useContext(AuthContext);
@@ -58,6 +76,16 @@ export function PerfilScreen() {
     logout();
   };
 
+  const cambiarAvatar = async () => {
+    const foto = await ImagePicker.launchImageLibraryAsync();
+    if (!foto.canceled) {
+      // FALTA GUARDARLA
+      console.log("FOTO ELEGIDA");
+    } else{
+      console.log("OPERACION CANCELADA");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.datos}>
@@ -67,7 +95,11 @@ export function PerfilScreen() {
           containerStyle={styles.avatarContainer}
           icon={{ type: "material", name: "person", color: "#FFF" }}
         >
-          <Avatar.Accessory size={24} color="#240046"></Avatar.Accessory>
+          <Avatar.Accessory
+            size={24}
+            color="#240046"
+            onPress={cambiarAvatar}
+          ></Avatar.Accessory>
         </Avatar>
 
         <View style={styles.descripcion}>
