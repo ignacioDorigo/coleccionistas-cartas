@@ -61,6 +61,7 @@ export function LoginScreen({ navigation }) {
             <TextInput
               style={styles.input}
               autoCapitalize="none"
+              autoCorrect={true}
               onChangeText={setMail}
               value={mail}
               placeholder="equipo5@gmail.com"

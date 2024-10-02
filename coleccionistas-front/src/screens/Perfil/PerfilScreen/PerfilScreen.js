@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from "react";
 
 // Componentes de React Native
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Linking, Alert } from "react-native";
 
 // Estilos del  componente
 import { styles } from "./PerfilScreen.styles";
@@ -76,12 +76,74 @@ export function PerfilScreen() {
     logout();
   };
 
+  // Esta usa una foto de la camara
+  const tomarFotoCamara = async () => {
+    // Verifica el estado actual de los permisos
+    const { status } = await ImagePicker.getCameraPermissionsAsync();
+
+    if (status === "granted") {
+      // Permiso ya concedido, abre la cámara
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        console.log("Imagen capturada:", result.uri);
+      }
+    } else if (status === "denied") {
+      // Permisos denegados permanentemente, mostrar alerta y redirigir a la configuración
+      Alert.alert(
+        "Permiso necesario",
+        "Has denegado el acceso a la cámara. Por favor, ve a la configuración de la aplicación y habilita los permisos de la cámara.",
+        [
+          { text: "Cancelar", style: "cancel" },
+          {
+            text: "Abrir configuración",
+            onPress: () => Linking.openSettings(),
+          },
+        ]
+      );
+    } else {
+      // Solicitar permisos si aún no se ha hecho
+      const { status: newStatus } =
+        await ImagePicker.requestCameraPermissionsAsync();
+      if (newStatus === "granted") {
+        let result = await ImagePicker.launchCameraAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+
+        if (!result.canceled) {
+          console.log("Imagen capturada:", result.uri);
+        }
+      } else {
+        Alert.alert(
+          "Permiso necesario",
+          "No se puede acceder a la cámara sin permisos."
+        );
+      }
+    }
+  };
+
+  // Esta usa una foto de la galeria
   const cambiarAvatar = async () => {
-    const foto = await ImagePicker.launchImageLibraryAsync();
+    // Usar foto de la galeria
+    const foto = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
     if (!foto.canceled) {
       // FALTA GUARDARLA
       console.log("FOTO ELEGIDA");
-    } else{
+    } else {
       console.log("OPERACION CANCELADA");
     }
   };
