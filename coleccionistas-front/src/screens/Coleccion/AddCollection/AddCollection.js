@@ -16,7 +16,7 @@ export function AddCollection({ navigation }) {
     }
 
     useEffect(() => {
-        axios.get(`http://192.168.1.71:8080/coleccionistas/coleccionesDisponibles`)
+        axios.get(`http://192.168.1.5:8080/coleccionistas/coleccionesDisponibles`)
             .then((respuestaBack) => { setColecciones(respuestaBack.data) })
             .catch((error) => { console.log(error) })
     }, []);

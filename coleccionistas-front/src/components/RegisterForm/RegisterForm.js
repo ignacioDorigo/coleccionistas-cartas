@@ -27,7 +27,7 @@ export function RegisterForm() {
         validationSchema: validationSchema(),
         onSubmit: async (formulario) => {
             const { mail, password, edad, nombre, apellido } = formulario;
-            await axios.post(`http://192.168.1.71:8080/coleccionistas/register?mail=${mail}&password=${password}&edad=${edad}&nombre=${nombre}&apellido=${apellido}`)
+            await axios.post(`http://192.168.1.5:8080/coleccionistas/register?mail=${mail}&password=${password}&edad=${edad}&nombre=${nombre}&apellido=${apellido}`)
                 .then((response) => {
                     Alert.alert("Exito", response.data, [
                         {

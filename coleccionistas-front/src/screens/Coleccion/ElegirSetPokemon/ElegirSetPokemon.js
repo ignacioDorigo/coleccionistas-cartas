@@ -37,7 +37,7 @@ export function ElegirSetPokemon({ route, navigation }) {
                 {
                     text: "ACEPTO",
                     onPress: () => {
-                        axios.post(`http://192.168.1.71:8080/coleccionistas/crearColeccion?mail=${mail}&idMazo=${mazo.id}&idColeccion=${coleccion.id}`)
+                        axios.post(`http://192.168.1.5:8080/coleccionistas/crearColeccion?mail=${mail}&idMazo=${mazo.id}&idColeccion=${coleccion.id}`)
                             .then(response => navigation.navigate(screen.coleccion.cartasSet, { coleccion, mazo }))
                             .catch(error => Alert.alert("Error", `${error.response.data}`))
                     }

@@ -12,7 +12,7 @@ export function MisSetsPokemon({ navigation }) {
     const [misSets, setMisSets] = useState([]);
 
     useEffect(() => {
-        axios.get(`http:/192.168.1.71:8080/coleccionistas/misSets?mail=${mail}`)
+        axios.get(`http:/192.168.1.5:8080/coleccionistas/misSets?mail=${mail}`)
             .then(response => setMisSets(response.data))
             .catch(error => console.log(error))
     }, [])

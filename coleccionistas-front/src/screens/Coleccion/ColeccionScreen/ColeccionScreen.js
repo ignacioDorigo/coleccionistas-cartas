@@ -27,7 +27,7 @@ export function ColeccionScreen({ navigation }) {
     const [misColecciones, setMisColecciones] = useState([]);
 
     useEffect(() => {
-        axios.get(`http://192.168.1.71:8080/coleccionistas/misColecciones?mail=${mail}`)
+        axios.get(`http://192.168.1.5:8080/coleccionistas/misColecciones?mail=${mail}`)
             .then(respuestaBack => setMisColecciones(respuestaBack.data))
             .catch(error => console.log(error))
     }, []);
