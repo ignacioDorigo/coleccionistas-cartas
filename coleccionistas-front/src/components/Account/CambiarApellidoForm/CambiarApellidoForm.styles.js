@@ -4,6 +4,7 @@ export const styles = StyleSheet.create({
   overlay: {
     width: "95%",
     height: "auto",
+    borderRadius:5,
   },
   titulo: {
     fontWeight: "bold",
@@ -17,7 +18,6 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {},
-  btnContainer: { width: "50%" },
-  btnCancelar: { backgroundColor: "red" },
-  btnConfirmar: { backgroundColor: "#4EA93B" },
+  btnContainer: { width: "100%" },
+  btnConfirmar: { backgroundColor: "#8D31D8" },
 });

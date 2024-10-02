@@ -10,6 +10,7 @@ import axios from "axios";
 import { CambiarNombreForm } from "../../../components/Account/CambiarNombreForm";
 import { CambiarApellidoForm } from "../../../components/Account/CambiarApellidoForm";
 import { CambiarPasswordForm } from "../../../components/Account/CambiarPasswordForm";
+import Toast from "react-native-toast-message";
 
 export function PerfilScreen() {
   const { isLoggedIn, logout } = useContext(AuthContext);
@@ -132,6 +133,7 @@ export function PerfilScreen() {
           repintarComponentes={repintarComponentes}
         />
       )}
+      <Toast />
     </View>
   );
 }

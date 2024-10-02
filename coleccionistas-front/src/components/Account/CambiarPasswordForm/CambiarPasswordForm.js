@@ -6,11 +6,12 @@ import { initialValues, validationSchema } from "./CambiarPasswordForm.data";
 import { useFormik } from "formik";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
+import Toast from "react-native-toast-message";
 
 export function CambiarPasswordForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
-  const { visible, ocultarModal, repintarComponentes } = props;
+  const { visible, ocultarModal } = props;
 
   // ESTO ES PARA LA ACTUAL
   const [mostrarActual, setMostrarActual] = useState(true);
@@ -34,17 +35,29 @@ export function CambiarPasswordForm(props) {
     initialValues: initialValues(),
     validateOnChange: false,
     validationSchema: validationSchema(),
-    onSubmit: async (formulario) => {
-      try {
-        const respuesta = await axios.put(
+    onSubmit: (formulario) => {
+      axios
+        .put(
           `http://192.168.1.5:8080/coleccionistas/actualizarContrasenia?mail=${mail}&actual=${formulario.actual}&nueva=${formulario.nueva}&repetirNueva=${formulario.repetirNueva}`
-        );
-        Alert.alert("Exito", respuesta.data);
-        ocultarModal();
-      } catch (error) {
-        Alert.alert("Error", error.response.data);
-        ocultarModal();
-      }
+        )
+        .then((response) => {
+          Toast.show({
+            type: "success",
+            position: "bottom",
+            text1: "Exito",
+            text2: response.data,
+          });
+          ocultarModal();
+        })
+        .catch((error) => {
+          Toast.show({
+            type: "error",
+            position: "bottom",
+            text1: "Error",
+            text2: error.response.data,
+          });
+        });
+      ocultarModal();
     },
   });
 
@@ -111,21 +124,13 @@ export function CambiarPasswordForm(props) {
         }
       />
 
-      <View>
-        {/* <Button
-          title="Cancelar"
-          onPress={ocultarModal}
-          buttonStyle={styles.btnCancelar}
-          containerStyle={styles.btnContainer}
-        /> */}
-        <Button
-          title="Confirmar"
-          onPress={formik.handleSubmit}
-          buttonStyle={styles.btnConfirmar}
-          containerStyle={styles.btnContainer}
-          loading={formik.isSubmitting}
-        />
-      </View>
+      <Button
+        title="Confirmar"
+        onPress={formik.handleSubmit}
+        buttonStyle={styles.btnConfirmar}
+        containerStyle={styles.btnContainer}
+        loading={formik.isSubmitting}
+      />
     </Overlay>
   );
 }

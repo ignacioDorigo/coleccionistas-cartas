@@ -6,6 +6,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { initialValues, validationSchema } from "./CambiarNombreForm.data";
 import axios from "axios";
 import { useFormik } from "formik";
+import Toast from "react-native-toast-message";
 
 export function CambiarNombreForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -22,11 +23,24 @@ export function CambiarNombreForm(props) {
           `http://192.168.1.5:8080/coleccionistas/actualizarNombre?mail=${mail}&nuevoNombre=${formulario.nombre}`
         )
         .then((response) => {
-          Alert.alert("Exito", response.data);
+          Toast.show({
+            type: "success",
+            position: "bottom",
+            text1: "Exito",
+            text2: response.data,
+          });
           ocultarModal();
           repintarComponentes();
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          Toast.show({
+            type: "error",
+            position: "bottom",
+            text1: "Error",
+            text2: error.response.data,
+          });
+          ocultarModal();
+        });
     },
   });
 
@@ -35,7 +49,11 @@ export function CambiarNombreForm(props) {
   };
 
   return (
-    <Overlay isVisible={visible} overlayStyle={styles.overlay} onBackdropPress={ocultarModal}>
+    <Overlay
+      isVisible={visible}
+      overlayStyle={styles.overlay}
+      onBackdropPress={ocultarModal}
+    >
       <Text style={styles.titulo}>Cambio de Nombre</Text>
       <Input
         placeholder="Ingrese su nombre"
@@ -49,20 +67,13 @@ export function CambiarNombreForm(props) {
           ></Icon>
         }
       />
-      <View style={styles.contenedorBotones}>
-        <Button
-          title="Cancelar"
-          onPress={cancelar}
-          containerStyle={styles.btnContainer}
-          buttonStyle={styles.btnCancelar}
-        />
-        <Button
-          title="Confirmar"
-          onPress={formik.handleSubmit}
-          containerStyle={styles.btnContainer}
-          buttonStyle={styles.btnConfirmar}
-        />
-      </View>
+
+      <Button
+        title="Confirmar"
+        onPress={formik.handleSubmit}
+        containerStyle={styles.btnContainer}
+        buttonStyle={styles.btnConfirmar}
+      />
     </Overlay>
   );
 }

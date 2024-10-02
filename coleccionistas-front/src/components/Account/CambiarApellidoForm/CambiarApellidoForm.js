@@ -6,6 +6,7 @@ import { initialValues, validationSchema } from "./CambiarApellidoForm.data";
 import { AuthContext } from "../../../context/AuthContext";
 import { useFormik } from "formik";
 import axios from "axios";
+import Toast from "react-native-toast-message";
 
 export function CambiarApellidoForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -22,11 +23,23 @@ export function CambiarApellidoForm(props) {
           `http://192.168.1.5:8080/coleccionistas/actualizarApellido?mail=${mail}&nuevoApellido=${formulario.apellido}`
         )
         .then((response) => {
-          Alert.alert("Exito", response.data);
+          Toast.show({
+            type: "success",
+            position: "bottom",
+            text1: "Exito",
+            text2: response.data,
+          });
           ocultarModal();
           repintarComponentes();
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          Toast.show({
+            type: "error",
+            position: "bottom",
+            text1: "Error",
+            text2: error.response.data,
+          });
+        });
     },
   });
 
@@ -53,20 +66,13 @@ export function CambiarApellidoForm(props) {
           ></Icon>
         }
       />
-      <View style={styles.contenedorBotones}>
-        <Button
-          title="Cancelar"
-          onPress={cancelar}
-          containerStyle={styles.btnContainer}
-          buttonStyle={styles.btnCancelar}
-        />
-        <Button
-          title="Confirmar"
-          onPress={formik.handleSubmit}
-          containerStyle={styles.btnContainer}
-          buttonStyle={styles.btnConfirmar}
-        />
-      </View>
+
+      <Button
+        title="Confirmar"
+        onPress={formik.handleSubmit}
+        containerStyle={styles.btnContainer}
+        buttonStyle={styles.btnConfirmar}
+      />
     </Overlay>
   );
 }
