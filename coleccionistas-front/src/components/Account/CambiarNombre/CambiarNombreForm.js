@@ -17,10 +17,9 @@ export function CambiarNombreForm(props) {
     validateOnChange: false,
     validationSchema: validationSchema(),
     onSubmit: (formulario) => {
-      console.log("Entre");
       axios
         .put(
-          `http://localhost:8080/coleccionistas/actualizarNombre?mail=${mail}&nuevoNombre=${formulario.nombre}`
+          `http://192.168.1.5:8080/coleccionistas/actualizarNombre?mail=${mail}&nuevoNombre=${formulario.nombre}`
         )
         .then((response) => {
           Alert.alert("Exito", response.data);

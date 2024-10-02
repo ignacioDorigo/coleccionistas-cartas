@@ -151,10 +151,21 @@ public class Controlador {
 	}
 
 	@PutMapping("/actualizarNombre")
-	public ResponseEntity<String> nombreActualizado(@RequestParam String mail, @RequestParam String nuevoNombre) {
+	public ResponseEntity<String> actualizarNombre(@RequestParam String mail, @RequestParam String nuevoNombre) {
 		String resultado = usuarioService.actualizarNombre(mail, nuevoNombre);
 		if (resultado.contains("Nombre modificado")) {
 			System.out.println("Nombre actualizado");
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+
+	@PutMapping("/actualizarApellido")
+	public ResponseEntity<String> actualizarApellido(@RequestParam String mail, @RequestParam String nuevoApellido) {
+		String resultado = usuarioService.actualizarApellido(mail, nuevoApellido);
+		if (resultado.contains("Apellido modificado")) {
+			System.out.println("Apellido modificado");
 			return ResponseEntity.ok(resultado);
 		} else {
 			return ResponseEntity.status(400).body(resultado);

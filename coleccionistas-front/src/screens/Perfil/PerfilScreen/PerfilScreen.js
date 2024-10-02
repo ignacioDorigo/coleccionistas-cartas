@@ -7,7 +7,9 @@ import { ListItem } from "@rneui/base";
 import axios from "axios";
 
 // Formularios
-import { CambiarNombreForm } from "../../../components/Account/CambiarNombre"; // Solo necesitas este componente por ahora
+import { CambiarNombreForm } from "../../../components/Account/CambiarNombre";
+import { CambiarApellidoForm } from "../../../components/Account/CambiarApellidoForm";
+import { CambiarPasswordForm } from "../../../components/Account/CambiarPasswordForm";
 
 export function PerfilScreen() {
   const { isLoggedIn, logout } = useContext(AuthContext);
@@ -16,7 +18,7 @@ export function PerfilScreen() {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [edad, setEdad] = useState("");
-  const [modalActivo, setModalActivo] = useState(""); // Estado para controlar cuál modal mostrar
+  const [modalActivo, setModalActivo] = useState("");
   const [reload, setReload] = useState(false);
 
   const repintarComponentes = () => {
@@ -25,7 +27,7 @@ export function PerfilScreen() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/coleccionistas/perfilUsuario?mail=${mail}`)
+      .get(`http://192.168.1.5:8080/coleccionistas/perfilUsuario?mail=${mail}`)
       .then((response) => {
         const perfil = response.data;
         setNombre(perfil.nombre);
@@ -38,10 +40,10 @@ export function PerfilScreen() {
   const cambiarOpcion = (texto) => {
     // Determina qué modal debe mostrarse
     if (texto === "Cambiar Nombre") {
-      setModalActivo("nombre"); // Activa el modal de cambiar nombre
+      setModalActivo("nombre");
     }
     if (texto === "Cambiar Apellido") {
-      setModalActivo("apellido"); // Podrías agregar más modales si lo deseas
+      setModalActivo("apellido");
     }
     if (texto === "Cambiar Contraseña") {
       setModalActivo("contraseña");
@@ -79,7 +81,7 @@ export function PerfilScreen() {
       {opcionesUsuario().map((opcion, index) => (
         <TouchableOpacity
           key={index}
-          onPress={() => cambiarOpcion(opcion.texto)} // Llama a la función para decidir qué modal mostrar
+          onPress={() => cambiarOpcion(opcion.texto)}
         >
           <ListItem>
             <Icon
@@ -110,12 +112,26 @@ export function PerfilScreen() {
       {modalActivo === "nombre" && (
         <CambiarNombreForm
           visible={true}
-          ocultarModal={() => setModalActivo("")} // Cierra el modal al establecer modalActivo como vacío
+          ocultarModal={() => setModalActivo("")}
           repintarComponentes={repintarComponentes}
         />
       )}
 
-      {/* Aquí puedes agregar más modales si necesitas otros, como cambiar apellido */}
+      {modalActivo === "apellido" && (
+        <CambiarApellidoForm
+          visible={true}
+          ocultarModal={() => setModalActivo("")}
+          repintarComponentes={repintarComponentes}
+        />
+      )}
+
+      {modalActivo === "contraseña" && (
+        <CambiarPasswordForm
+          visible={true}
+          ocultarModal={() => setModalActivo("")}
+          repintarComponentes={repintarComponentes}
+        />
+      )}
     </View>
   );
 }

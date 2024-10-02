@@ -134,4 +134,15 @@ public class UsuarioService {
 			return "Usuario no encontrado";
 		}
 	}
+	
+	public String actualizarApellido(String mail, String nuevoApellido) {
+		Usuario usuario = buscarUsuario(mail);
+		if (usuario != null) {
+			usuario.setApellido(nuevoApellido);
+			usuarioRepository.save(usuario);
+			return "Apellido modificado";
+		} else {
+			return "Usuario no encontrado";
+		}
+	}
 }
