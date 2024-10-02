@@ -35,7 +35,11 @@ export function CambiarApellidoForm(props) {
   };
 
   return (
-    <Overlay isVisible={visible} overlayStyle={styles.overlay}>
+    <Overlay
+      isVisible={visible}
+      overlayStyle={styles.overlay}
+      onBackdropPress={ocultarModal}
+    >
       <Text style={styles.titulo}>Cambio de Apellido</Text>
       <Input
         placeholder="Ingrese su apellido"

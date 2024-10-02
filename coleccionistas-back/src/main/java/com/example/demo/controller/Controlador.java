@@ -172,4 +172,15 @@ public class Controlador {
 		}
 	}
 
+	@PutMapping("/actualizarContrasenia")
+	public ResponseEntity<String> actualizarContrasenia(@RequestParam String mail, @RequestParam String actual,
+			@RequestParam String nueva, @RequestParam String repetirNueva) {
+		String resultado = usuarioService.actualizarContrasenia(mail, actual, nueva, repetirNueva);
+		if (resultado.contains("Contrasena actualizada")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+
 }

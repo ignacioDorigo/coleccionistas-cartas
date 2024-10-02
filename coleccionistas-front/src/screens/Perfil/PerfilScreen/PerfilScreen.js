@@ -7,7 +7,7 @@ import { ListItem } from "@rneui/base";
 import axios from "axios";
 
 // Formularios
-import { CambiarNombreForm } from "../../../components/Account/CambiarNombre";
+import { CambiarNombreForm } from "../../../components/Account/CambiarNombreForm";
 import { CambiarApellidoForm } from "../../../components/Account/CambiarApellidoForm";
 import { CambiarPasswordForm } from "../../../components/Account/CambiarPasswordForm";
 

@@ -35,7 +35,7 @@ export function CambiarNombreForm(props) {
   };
 
   return (
-    <Overlay isVisible={visible} overlayStyle={styles.overlay}>
+    <Overlay isVisible={visible} overlayStyle={styles.overlay} onBackdropPress={ocultarModal}>
       <Text style={styles.titulo}>Cambio de Nombre</Text>
       <Input
         placeholder="Ingrese su nombre"

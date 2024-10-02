@@ -134,7 +134,7 @@ public class UsuarioService {
 			return "Usuario no encontrado";
 		}
 	}
-	
+
 	public String actualizarApellido(String mail, String nuevoApellido) {
 		Usuario usuario = buscarUsuario(mail);
 		if (usuario != null) {
@@ -144,5 +144,29 @@ public class UsuarioService {
 		} else {
 			return "Usuario no encontrado";
 		}
+	}
+
+	public String actualizarContrasenia(String mail, String actual, String nueva, String repetirNueva) {
+		Usuario usuario = buscarUsuario(mail);
+		if (usuario != null) {
+			System.out.println(usuario);
+//			Primero chequeamos que coincida la actual
+			if (BCrypt.checkpw(actual, usuario.getPassword())) {
+//				Validamos que las contrasenias nuevas coincidan
+				if (nueva.equals(repetirNueva)) {
+//					Creamos password nuevo hasheado, despues los seteamos y por ultimo guardamos
+					String nuevaContrasenia = BCrypt.hashpw(nueva, BCrypt.gensalt(12));
+					usuario.setPassword(nuevaContrasenia);
+					usuarioRepository.save(usuario);
+
+					return "Contrasena actualizada";
+				}
+				return "Las contrasenias nuevas no coinciden";
+			}
+			return "Contrasena actual incorrecta";
+		} else {
+			return "Usuario no encontrado";
+		}
+
 	}
 }

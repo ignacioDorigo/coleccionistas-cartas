@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign:'center',
     marginBottom:30,
-    fontSize:25,
+    fontSize:20,
   },
   contenedorBotones: {
     flexDirection: "row",
