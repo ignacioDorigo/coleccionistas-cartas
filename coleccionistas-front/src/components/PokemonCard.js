@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
-const PokemonCard = ({ card }) => {
+const PokemonCard = ({ card }) => {    
     const formatDate = (dateString) => {
         const [year, month, day] = dateString.split('/');
         return `${day}/${month}/${year}`;
@@ -56,12 +56,11 @@ const PokemonCard = ({ card }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
+    container: {    
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
-        backgroundColor: 'red',
     },
     image: {
         width: 250,
