@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    // alignItems: "center",
     backgroundColor: "#fff",
   },
   search: {
@@ -30,6 +30,12 @@ const styles = StyleSheet.create({
     color: "#FFF",
     borderRadius: 5,
   },
+  scroll:{
+    // flex:2,
+    backgroundColor:"blue",
+    justifyContent:'center',
+    alignContent:'center',
+  }
 });
 
 export default styles;

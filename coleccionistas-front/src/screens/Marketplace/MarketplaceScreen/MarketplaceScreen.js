@@ -1,14 +1,30 @@
 import React, { useState } from "react";
-import { View, TextInput, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+} from "react-native";
 import styles from "./MarketPlaceScreen.styles";
 import { Icon } from "@rneui/themed";
+import axios from "axios";
+import PokemonCard from "../PokemonCard";
 
 export function MarketPlaceScreen() {
   const [buscador, setBuscador] = useState("");
+  const [cartas, setCartas] = useState([]);
+
+  const renderItem = ({ item }) => <PokemonCard card={item} />;
 
   const buscarCartas = () => {
-    console.log("BUSCANDO LA CARTA ", buscador);
-    // Aca ejecutamos el endpoint
+    axios
+      .get(`https://api.pokemontcg.io/v2/cards?q=name:${buscador}`)
+      .then((response) => {
+        console.log(response.data.data[0]);
+        setCartas(response.data.data);
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -29,7 +45,11 @@ export function MarketPlaceScreen() {
           />
         </TouchableOpacity>
       </View>
-      <Text>Estas buscando: {buscador}</Text>
+      <ScrollView  contentContainerStyle={styles.scroll}>
+      {cartas.map((carta, index) => (
+        <PokemonCard card={carta} key={index} />
+      ))}
+      </ScrollView >
     </View>
   );
 }
