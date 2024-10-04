@@ -5,13 +5,14 @@ import { AuthContext } from "../../../context/AuthContext";
 import PokemonCard from "../../../components/PokemonCard";
 import axios from "axios";
 import styles from "./FavoritosScreen.styles";
+  
 
 export function FavoritosScreen() {
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
   const [ids, setIds] = useState([]);
   const [pokemones, setPokemones] = useState([]);
-  const [loading, setLoading] = useState(false); // Estado de carga
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     buscarIds();

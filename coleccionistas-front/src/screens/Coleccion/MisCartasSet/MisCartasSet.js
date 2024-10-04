@@ -9,6 +9,9 @@ import { AuthContext } from "../../../context/AuthContext";
 // Fichero Screen
 import { screen } from "../../../utils";
 
+// Modal de Carga
+import { ModalCarga } from "../../../components/ModalCarga";
+
 export function MisCartasSet({ route, navigation }) {
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
@@ -54,29 +57,36 @@ export function MisCartasSet({ route, navigation }) {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Mis Cartas</Text>
-      <ScrollView style={styles.scrollView}>
-        {mazoCompleto.map((card, index) => (
-          <View key={index} style={styles.cardContainer}>
-            <Image
-              resizeMode="contain"
-              style={styles.cardImage}
-              source={{ uri: card.images.small }}
-            />
-            {mazoMio.includes(card.id) ? (
-              <Text style={styles.highlightedText}>La tenes</Text>
-            ) : (
-              <Text style={styles.noTenes}>No la tenes</Text>
-            )}
-            <Button
-              title="Agregar a favoritos"
-              onPress={() => agregarCardFavoritos(card.id)}
-            />
-          </View>
-        ))}
-      </ScrollView>
-    </View>
+    <>
+      {mazoCompleto.length === 0 ? (
+        <ModalCarga texto={"BUSCANDO LAS CARTAS DEL SET"} />
+      ) : (
+        <View style={styles.container}>
+          <Text style={styles.title}>Mis Cartas</Text>
+          <ScrollView style={styles.scrollView}>
+            {mazoCompleto.map((card, index) => (
+              <View key={index} style={styles.cardContainer}>
+                <Image
+                  resizeMode="contain"
+                  style={styles.cardImage}
+                  source={{ uri: card.images.small }}
+                />
+                {mazoMio.includes(card.id) ? (
+                  <Text style={styles.highlightedText}>La tenes</Text>
+                ) : (
+                  <Text style={styles.noTenes}>No la tenes</Text>
+                )}
+                <Button
+                  title="Agregar a favoritos"
+                  onPress={() => agregarCardFavoritos(card.id)}
+                />
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      )}
+      {/* <ModalCarga /> */}
+    </>
   );
 }
 
