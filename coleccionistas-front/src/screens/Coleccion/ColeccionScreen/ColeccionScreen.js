@@ -3,21 +3,25 @@ import { View, Text, Button, TouchableOpacity, Image, StyleSheet } from 'react-n
 import { useTheme } from 'context/ThemeContext';
 import { lightTheme, darkTheme } from 'constants/themes';
 import createStyles from './ColeccionScreen.styles';
+import { Icon } from '@rneui/themed';
+import axios from 'axios';
 
 // Fichero Screen
 import { screen } from '../../../utils'
 
+
 // Contexto
 import { AuthContext } from '../../../context/AuthContext'
-
-import { Icon } from '@rneui/themed';
-import axios from 'axios';
+import { RecargarContext } from "../../../context/RecargarContext";
 
 export function ColeccionScreen({ navigation }) {
 
     // El context isLoggedIn me guarda el mail
     const { isLoggedIn } = useContext(AuthContext);
     const mail = isLoggedIn;
+
+    // context para recargar la screen
+    const { colecciones } = useContext(RecargarContext);
 
     // Estilos
     const { isDarkTheme } = useTheme();
@@ -30,7 +34,7 @@ export function ColeccionScreen({ navigation }) {
         axios.get(`http://192.168.1.14:8080/coleccionistas/misColecciones?mail=${mail}`)
             .then(respuestaBack => setMisColecciones(respuestaBack.data))
             .catch(error => console.log(error))
-    }, []);
+    }, [colecciones]);
 
     const irAScreenColeccion = (nombre) => {
         let nombreScreen;

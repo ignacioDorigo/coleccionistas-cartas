@@ -5,6 +5,7 @@ import { Button } from "@rneui/themed";
 
 // Contexto
 import { AuthContext } from "../../../context/AuthContext";
+import { RecargarContext } from "../../../context/RecargarContext";
 
 // Fichero Screen
 import { screen } from "../../../utils";
@@ -12,25 +13,25 @@ import { screen } from "../../../utils";
 // Modal de Carga
 import { ModalCarga } from "../../../components/ModalCarga";
 
-export function MisCartasSet({ route, navigation }) {
+export function MisCartasSet({ route }) {
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
+  const { recargarFavoritos } = useContext(RecargarContext);
+
   const { set } = route.params;
 
   const [mazoMio, setMazoMio] = useState([]);
   const [mazoCompleto, setMazoCompleto] = useState([]);
 
-  const agregarCardFavoritos = (idCard) => {
-    axios
-      .post(
-        `http://192.168.1.14:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
-      )
-      .then((response) => {
-        Alert.alert("Exito", response.data);
-      })
-      .catch((error) => {
-        Alert.alert("Error", error.response.data);
-      });
+  const agregarCardFavoritos = async(idCard) => {
+    try {
+      const response = await axios.post(`http://192.168.1.14:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`);
+      Alert.alert("Exito", response.data);
+      recargarFavoritos();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+      recargarFavoritos();
+    }
   };
 
   useEffect(() => {
