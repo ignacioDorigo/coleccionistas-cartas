@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { View, Text, ScrollView, ActivityIndicator, Alert } from "react-native";
-import { Button, Icon } from "@rneui/themed";
+import { Button } from "@rneui/themed";
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
 import PokemonCard from "../../../components/PokemonCard";
@@ -13,71 +13,71 @@ export function FavoritosScreen() {
 
   const { favoritos } = useContext(RecargarContext);
 
-  const [ids, setIds] = useState([]);
   const [pokemones, setPokemones] = useState([]);
-  
   const [loading, setLoading] = useState(false);
   const [eliminarFav, setEliminarFav] = useState(false);
 
   const eliminar = () => {
-    return setEliminarFav((prevState) => !prevState);
+    setEliminarFav((prevState) => !prevState);
   };
 
   useEffect(() => {
-    buscarMisFavoritos();
+    buscarPokemones();
   }, [favoritos, eliminarFav]);
 
-  const buscarMisFavoritos = async () => {
-    setLoading(true); // Iniciar el indicador de carga
-    console.log("BUSCANDO MIS FAVORITOS");
-    buscarIds();
-    // IDS DE MIS FAVORITOS
-    console.log(ids);
-    await buscarPokemones();
-    setLoading(false);
-  };
-
-  const buscarIds = async () => {
-    const response = await axios.get(`http://192.168.1.14:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`);
-    setIds(response.data);
-  };
-
   const buscarPokemones = async () => {
-    const objetos = [];
-    for (let index = 0; index < ids.length; index++) {
-      const element = ids[index];
-      const { id_card } = element;
-      const respuesta = await axios.get(`https://api.pokemontcg.io/v2/cards?q=id:${id_card}`);
-      const objeto = respuesta.data.data[0];
-      objetos.push(objeto);
+    setLoading(true);
+    try {
+      // Primero buscamos los IDS DE LOS FAVORITOS
+      const response = await axios.get(
+        `http://192.168.1.14:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`
+      );
+      const ids = response.data;
+
+      // Despues buscamos cada detalle de cada carta favorita
+      const objetos = await Promise.all(
+        ids.map(async (element) => {
+          const { id_card } = element;
+          const respuesta = await axios.get(
+            `https://api.pokemontcg.io/v2/cards?q=id:${id_card}`
+          );
+          return respuesta.data.data[0];
+        })
+      );
+
+      setPokemones(objetos);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error", "Hubo un problema al buscar los pokemones favoritos.");
+    } finally {
+      setLoading(false); // Asegúrate de que el loading se apague en caso de error también
     }
-    setPokemones(objetos);
-};
+  };
 
   const eliminarCardFavorito = async (id) => {
     try {
       const response = await axios.delete(
         `http://192.168.1.14:8080/coleccionistas/eliminarFavoritoPokemon?idCard=${id}&mail=${mail}`
       );
-      Alert.alert("Exito", response.data);
+      Alert.alert("Éxito", response.data);
       eliminar();
     } catch (error) {
-      Alert.alert("Error", error.response.data);
+      console.log(error);
+      Alert.alert("Error", error.response?.data || "Hubo un problema al eliminar el favorito.");
     }
   };
 
   return (
     <View>
       <Text>Tus favoritos</Text>
-      {/* <Button title="Buscar mis favoritos" onPress={buscarPokemones} /> */}
 
-      {loading ? ( // Mostrar ActivityIndicator mientras se cargan los datos
+      {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <ScrollView>
           {pokemones.map((pokemon, index) => (
             <View key={index} style={styles.contenedor}>
-              <PokemonCard card={pokemon}></PokemonCard>
+              <PokemonCard card={pokemon} />
               <Button
                 title="Eliminar de Favoritos"
                 onPress={() => eliminarCardFavorito(pokemon.id)}
