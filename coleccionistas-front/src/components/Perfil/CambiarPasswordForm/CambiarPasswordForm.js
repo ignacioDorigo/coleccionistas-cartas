@@ -38,7 +38,7 @@ export function CambiarPasswordForm(props) {
     onSubmit: (formulario) => {
       axios
         .put(
-          `http://192.168.1.5:8080/coleccionistas/actualizarContrasenia?mail=${mail}&actual=${formulario.actual}&nueva=${formulario.nueva}&repetirNueva=${formulario.repetirNueva}`
+          `http://192.168.1.14:8080/coleccionistas/actualizarContrasenia?mail=${mail}&actual=${formulario.actual}&nueva=${formulario.nueva}&repetirNueva=${formulario.repetirNueva}`
         )
         .then((response) => {
           Toast.show({

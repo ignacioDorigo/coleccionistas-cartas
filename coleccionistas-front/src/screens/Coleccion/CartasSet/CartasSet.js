@@ -48,7 +48,7 @@ export function CartasSet({ route, navigation }) {
                 {
                     text: "ACEPTO",
                     onPress: () => {
-                        axios.post(`http://192.168.1.5:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`)
+                        axios.post(`http://192.168.1.14:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`)
                             .then((response) => (Alert.alert("Exito", response.data)))
                             .catch((error) => (Alert.alert("Error", `${error.response.data}`)))
                     }

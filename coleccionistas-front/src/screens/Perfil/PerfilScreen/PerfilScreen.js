@@ -46,7 +46,7 @@ export function PerfilScreen() {
 
   useEffect(() => {
     axios
-      .get(`http://192.168.1.5:8080/coleccionistas/perfilUsuario?mail=${mail}`)
+      .get(`http://192.168.1.14:8080/coleccionistas/perfilUsuario?mail=${mail}`)
       .then((response) => {
         const perfil = response.data;
         setNombre(perfil.nombre);

@@ -1,14 +1,14 @@
 import {
-    View,
-    Text,
-    TextInput,
-    Alert,
-    TouchableOpacity,
-    Image,
-    ScrollView,
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Alert,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
 } from "react-native";
 import React, { useState, useContext } from "react";
 import axios from "axios";
@@ -18,98 +18,104 @@ import { StatusBar } from "expo-status-bar";
 import { useTheme } from "context/ThemeContext";
 import { lightTheme, darkTheme } from "constants/themes";
 import createStyles from "screens/LoginScreen/LoginScreen.styles";
+import { ModalCarga } from "../../components/ModalCarga";
 
 export function RecuperarPasswordScreen() {
-    const { isDarkTheme } = useTheme();
-    const theme = isDarkTheme ? darkTheme : lightTheme;
-    const styles = createStyles(theme);
-    const [mail, setMail] = useState("");
-    const navegador = useNavigation();
-    const onRecuperarPress = () => {
-        axios
-            .get(
-                `http://192.168.0.108:8080/coleccionistas/recuperarPassword?mail=${mail}`
-            )
-            .then((response) => {
-                Alert.alert(
-                    "Éxito",
-                    response.data,
-                    [
-                        {
-                            text: "Aceptar",
-                            onPress: () => {
-                                navegador.navigate("Login");
-                            }
-                        }
-                    ],
-                    { cancelable: false }
-                );
-            })
-            .catch((error) => {
-                Alert.alert("Error", error.response.data);
-            });
-    };
+  const { isDarkTheme } = useTheme();
+  const theme = isDarkTheme ? darkTheme : lightTheme;
+  const styles = createStyles(theme);
+  const [mail, setMail] = useState("");
+  const navegador = useNavigation();
 
-    return (
-        <>
-            <StatusBar style="light" />
-            <KeyboardAvoidingView
-                style={{ flex: 1 }}
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
+  const [visibleModal, setVisibleModal] = useState(false);
+
+  const onRecuperarPress = async () => {
+    try {
+      setVisibleModal(true);
+      const response = await axios.get(
+        `http://192.168.1.14:8080/coleccionistas/recuperarPassword?mail=${mail}`
+      );
+      setVisibleModal(false);
+      Alert.alert(
+        "Exito",
+        response.data,
+        [
+          {
+            text: "Aceptar",
+            onPress: () => {
+              navegador.navigate("Login");
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    }
+  };
+
+  return (
+    <>
+      <StatusBar style="light" />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={styles.fondoLogo}>
+            <Image source={require("assets/splash.png")} style={styles.image} />
+          </View>
+          <View style={styles.container}>
+            <Text style={styles.text}>Envio de contraseña temporal.</Text>
+            <Text style={styles.text}>
+              Recuerde cambiarla una vez que haya ingresado.
+            </Text>
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              autoCapitalize="none"
+              onChangeText={setMail}
+              value={mail}
+              placeholder="equipo5@gmail.com"
+            />
+            <TouchableOpacity
+              style={styles.ingresar}
+              onPress={onRecuperarPress}
             >
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                    <View style={styles.fondoLogo}>
-                        <Image source={require("assets/splash.png")} style={styles.image} />
-                    </View>
-                    <View style={styles.container}>
-                        <Text style={styles.text}>
-                            Envio de contraseña temporal.
-                        </Text>
-                        <Text style={styles.text}>
-                            Recuerde cambiarla una vez que haya ingresado.
-                        </Text>
-                        <Text style={styles.label}>Email</Text>
-                        <TextInput
-                            style={styles.input}
-                            autoCapitalize="none"
-                            onChangeText={setMail}
-                            value={mail}
-                            placeholder="equipo5@gmail.com"
-                        />
-                        <TouchableOpacity style={styles.ingresar} onPress={onRecuperarPress}>
-                            <LinearGradient
-                                {...styles.gradientColors}
-                                style={styles.gradient}
-                            >
-                                <Text style={styles.textLight}>Recuperar</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-                    </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
-        </>
-    );
+              <LinearGradient
+                {...styles.gradientColors}
+                style={styles.gradient}
+              >
+                <Text style={styles.textLight}>Recuperar</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+        {/* <ModalCarga visible={visibleModal} texto={"Recuperando Password"} /> */}
+      </KeyboardAvoidingView>
+    </>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 20,
-        backgroundColor: '#f0f0f0',
-    },
-    label: {
-        fontSize: 18,
-        marginBottom: 8,
-        color: '#333',
-    },
-    input: {
-        height: 50,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingLeft: 10,
-        marginBottom: 20,
-        backgroundColor: '#fff',
-    }
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 20,
+    backgroundColor: "#f0f0f0",
+  },
+  label: {
+    fontSize: 18,
+    marginBottom: 8,
+    color: "#333",
+  },
+  input: {
+    height: 50,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 10,
+    marginBottom: 20,
+    backgroundColor: "#fff",
+  },
 });

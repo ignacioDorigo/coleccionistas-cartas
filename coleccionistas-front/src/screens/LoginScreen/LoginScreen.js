@@ -30,7 +30,7 @@ export function LoginScreen({ navigation }) {
   const onLoginPress = () => {
     axios
       .post(
-        `http://192.168.1.5:8080/coleccionistas/login?mail=${mail}&password=${password}`
+        `http://192.168.1.14:8080/coleccionistas/login?mail=${mail}&password=${password}`
       )
       .then((response) => {
         Alert.alert("Éxito", response.data);

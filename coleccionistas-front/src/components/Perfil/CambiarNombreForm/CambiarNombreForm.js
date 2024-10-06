@@ -20,7 +20,7 @@ export function CambiarNombreForm(props) {
     onSubmit: (formulario) => {
       axios
         .put(
-          `http://192.168.1.5:8080/coleccionistas/actualizarNombre?mail=${mail}&nuevoNombre=${formulario.nombre}`
+          `http://192.168.1.14:8080/coleccionistas/actualizarNombre?mail=${mail}&nuevoNombre=${formulario.nombre}`
         )
         .then((response) => {
           Toast.show({

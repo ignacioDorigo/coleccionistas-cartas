@@ -23,7 +23,7 @@ export function MisCartasSet({ route, navigation }) {
   const agregarCardFavoritos = (idCard) => {
     axios
       .post(
-        `http://192.168.1.5:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
+        `http://192.168.1.14:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
       )
       .then((response) => {
         Alert.alert("Exito", response.data);
@@ -50,7 +50,7 @@ export function MisCartasSet({ route, navigation }) {
   useEffect(() => {
     axios
       .get(
-        `http://192.168.1.5:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id_set}`
+        `http://192.168.1.14:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id_set}`
       )
       .then((response) => setMazoMio(response.data.map((card) => card.id_card)))
       .catch((error) => console.log(error));

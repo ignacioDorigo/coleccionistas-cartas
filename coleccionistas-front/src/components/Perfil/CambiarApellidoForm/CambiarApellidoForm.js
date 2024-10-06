@@ -20,7 +20,7 @@ export function CambiarApellidoForm(props) {
     onSubmit: (formulario) => {
       axios
         .put(
-          `http://192.168.1.5:8080/coleccionistas/actualizarApellido?mail=${mail}&nuevoApellido=${formulario.apellido}`
+          `http://192.168.1.14:8080/coleccionistas/actualizarApellido?mail=${mail}&nuevoApellido=${formulario.apellido}`
         )
         .then((response) => {
           Toast.show({

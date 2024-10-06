@@ -20,7 +20,7 @@ export function FavoritosScreen() {
 
   const buscarIds = async () => {
     const response = await axios.get(
-      `http://192.168.1.5:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`
+      `http://192.168.1.14:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`
     );
     setIds(response.data);
   };
@@ -45,7 +45,7 @@ export function FavoritosScreen() {
     setLoading(true);
     axios
       .delete(
-        `http://localhost:8080/coleccionistas/eliminarFavoritoPokemon?idCard=${id}&mail=${mail}`
+        `http://192.168.1.14:8080/coleccionistas/eliminarFavoritoPokemon?idCard=${id}&mail=${mail}`
       )
       .then((response) => {
         Alert.alert("Exito", response.data);
