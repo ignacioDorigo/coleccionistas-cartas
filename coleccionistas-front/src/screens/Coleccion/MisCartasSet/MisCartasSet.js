@@ -23,18 +23,26 @@ export function MisCartasSet({ route }) {
   const [mazoMio, setMazoMio] = useState([]);
   const [mazoCompleto, setMazoCompleto] = useState([]);
 
-  const agregarCardFavoritos = async(idCard) => {
-    try {
-      const response = await axios.post(`http://192.168.1.14:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`);
-      Alert.alert("Exito", response.data);
-      recargarFavoritos();
-    } catch (error) {
-      Alert.alert("Error", error.response.data);
-      recargarFavoritos();
-    }
+  const [reload, setReload] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  const recargarScreen = () => {
+    setReload((prevState) => !prevState);
   };
 
   useEffect(() => {
+    setVisible(true);
+    axios
+      .get(
+        `http://192.168.1.14:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id_set}`
+      )
+      .then((response) => setMazoMio(response.data.map((card) => card.id_card)))
+      .catch((error) => console.log(error));
+    setVisible(false);
+  }, [reload]);
+
+  useEffect(() => {
+    setVisible(true);
     axios
       .get(
         `https://api.pokemontcg.io/v2/cards/?q=id:${set.id_set}&select=id,name,images`,
@@ -46,16 +54,42 @@ export function MisCartasSet({ route }) {
       )
       .then((response) => setMazoCompleto(response.data.data))
       .catch((error) => console.log(error));
+      setVisible(false);
   }, []);
 
-  useEffect(() => {
-    axios
-      .get(
-        `http://192.168.1.14:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id_set}`
-      )
-      .then((response) => setMazoMio(response.data.map((card) => card.id_card)))
-      .catch((error) => console.log(error));
-  }, []);
+  const agregarCardFavoritos = async (idCard) => {
+    try {
+      const response = await axios.post(
+        `http://192.168.1.14:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarFavoritos();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+      recargarFavoritos();
+    }
+  };
+
+  const agregarAinventario = async (idCard) => {
+    try {
+      const response = await axios.post(
+        `http://192.168.1.14:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${set.id_set}&idCard=${idCard}`
+      );
+      Alert.alert(
+        "Éxito",
+        response.data,
+        [
+          {
+            text: "OK",
+            onPress: () => recargarScreen(), // Aquí es donde se ejecuta console.log
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    }
+  };
 
   return (
     <>
@@ -81,12 +115,16 @@ export function MisCartasSet({ route }) {
                   title="Agregar a favoritos"
                   onPress={() => agregarCardFavoritos(card.id)}
                 />
+                <Button
+                  title="Agregar a mi inventario"
+                  onPress={() => agregarAinventario(card.id)}
+                />
               </View>
             ))}
           </ScrollView>
         </View>
       )}
-      {/* <ModalCarga /> */}
+      <ModalCarga isVisible={visible} />
     </>
   );
 }
