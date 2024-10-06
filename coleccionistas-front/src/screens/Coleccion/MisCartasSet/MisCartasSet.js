@@ -121,7 +121,7 @@ export function MisCartasSet({ route }) {
 
           <View style={styles.container}>
 
-            <Text style={styles.title}>Mis Cartas</Text>
+            <Text style={styles.title}>Tus Cartas Del Set {set.id_set}</Text>
 
             <ScrollView style={styles.scrollView}>
 
@@ -133,18 +133,18 @@ export function MisCartasSet({ route }) {
                     
                   </Image>
                   
-                  {mazoMio.includes(card.id) ? ( <Text style={styles.highlightedText}>La tenes</Text>) : (<Text style={styles.noTenes}>No la tenes</Text>)}
+                  {mazoMio.includes(card.id) ? ( <Icon type="material-community" name="trophy" color={"#FFD700"} raised  containerStyle={styles.iconoTrophy}/>) : (<Text style={styles.noTenes}>No la tenes</Text>)}
 
-                  <Icon containerStyle={styles.iconoFavoritos} raised reverse name='heart' type='material-community' color='#240046' onPress={() =>  agregarCardFavoritos(card.id)} />
+                  <Icon containerStyle={styles.iconoFavoritos} raised reverse name='heart-plus' type='material-community' color='#240046' onPress={() =>  agregarCardFavoritos(card.id)} />
               
 
                   {/* <Button title="Agregar a favoritos" onPress={() => agregarCardFavoritos(card.id)}/> */}
 
                   <View style={styles.botonesInventario}>
 
-                    <Button buttonStyle={styles.btnAgregar} title="Agregar alll inventario" onPress={() => agregarCardInventario(card.id)}/>
+                    <Button buttonStyle={styles.btnAgregar} containerStyle={styles.btnContainer} title="Agregar al inventario" onPress={() => agregarCardInventario(card.id)}/>
 
-                    <Button buttonStyle={styles.btnEliminar} title="Eliminar del inventario" onPress={() => eliminarCardInventario(card.id)}/>
+                    <Button buttonStyle={styles.btnEliminar} containerStyle={styles.btnContainer} title="Eliminar del inventario" onPress={() => eliminarCardInventario(card.id)}/>
 
                   </View>
 

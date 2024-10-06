@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
   },
   
   scrollView: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
 
   cardContainer: {
@@ -68,33 +68,35 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around", // Space buttons evenly
     marginTop: 10,
-    gap:10,
+    width:"100%",
+    gap:0,
+  },
+
+  btnContainer:{
+    width:"50%",
   },
 
   btnAgregar: {
-    flex: 1,
     marginRight: 5, // Spacing between buttons
     backgroundColor: "#4caf50",
     borderRadius: 5,
   },
   
   btnEliminar: {
-    flex: 1,
     marginLeft: 5, // Spacing between buttons
     backgroundColor: "#f44336",
     borderRadius: 5,
   },
 
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
 
   iconoFavoritos:{
     position:'absolute',
     right:0,
     top:0,
+  },
+  iconoTrophy:{
+    position:'absolute',
+    right:0,
+    top:60,
   }
 });
