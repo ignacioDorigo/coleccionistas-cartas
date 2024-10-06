@@ -23,7 +23,10 @@ export function MisCartasSet({ route }) {
   const [mazoMio, setMazoMio] = useState([]);
   const [mazoCompleto, setMazoCompleto] = useState([]);
 
+  // Para recargar la screen
   const [reload, setReload] = useState(false);
+
+  // Para la visibilidad del modal
   const [visible, setVisible] = useState(false);
 
   const recargarScreen = () => {
@@ -59,6 +62,7 @@ export function MisCartasSet({ route }) {
 
   const agregarCardFavoritos = async (idCard) => {
     try {
+      setVisible(true);
       const response = await axios.post(
         `http://192.168.1.14:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
       );
@@ -67,11 +71,14 @@ export function MisCartasSet({ route }) {
     } catch (error) {
       Alert.alert("Error", error.response.data);
       recargarFavoritos();
+    } finally {
+      setVisible(false);
     }
   };
 
   const agregarCardInventario = async (idCard) => {
     try {
+      setVisible(true);
       const response = await axios.post(
         `http://192.168.1.14:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${set.id_set}&idCard=${idCard}`
       );
@@ -88,55 +95,79 @@ export function MisCartasSet({ route }) {
       );
     } catch (error) {
       Alert.alert("Error", error.response.data);
+    } finally {
+      setVisible(false);
     }
   };
 
   const eliminarCardInventario = async (idCard) => {
     try {
-      console.log("carta eliminada");
+      setVisible(true);
+      const response = await axios.delete(
+        `http://192.168.1.14:8080/coleccionistas/eliminarCartaInventario?mail=${mail}&idSet=${set.id_set}&idCard=${idCard}`
+      );
+      Alert.alert(
+        "Exito",
+        response.data,
+        [
+          {
+            text: "OK",
+            onPress: () => recargarScreen(), // Aquí es donde se ejecuta console.log
+          },
+        ],
+        { cancelable: false }
+      );
     } catch (error) {
       Alert.alert("Error", error.response.data);
+    } finally {
+      setVisible(false);
     }
   };
 
   return (
     <>
       {mazoCompleto.length === 0 ? (
-        <ModalCarga texto={"BUSCANDO LAS CARTAS DEL SET"} />
+        <ModalCarga />
       ) : (
-        <View style={styles.container}>
-          <Text style={styles.title}>Mis Cartas</Text>
-          <ScrollView style={styles.scrollView}>
-            {mazoCompleto.map((card, index) => (
-              <View key={index} style={styles.cardContainer}>
-                <Image
-                  resizeMode="contain"
-                  style={styles.cardImage}
-                  source={{ uri: card.images.small }}
-                />
-                {mazoMio.includes(card.id) ? (
-                  <Text style={styles.highlightedText}>La tenes</Text>
-                ) : (
-                  <Text style={styles.noTenes}>No la tenes</Text>
-                )}
-                <Button
-                  title="Agregar a favoritos"
-                  onPress={() => agregarCardFavoritos(card.id)}
-                />
-                <Button
-                  title="Agregar a mi inventario"
-                  onPress={() => agregarCardInventario(card.id)}
-                />
-                <Button
-                  title="Eliminar de a mi inventario"
-                  onPress={() => eliminarCardInventario(card.id)}
-                />
-              </View>
-            ))}
-          </ScrollView>
-        </View>
+        <>
+          <ModalCarga isVisible={visible} />
+
+          <View style={styles.container}>
+            <Text style={styles.title}>Mis Cartas</Text>
+            <ScrollView style={styles.scrollView}>
+              {mazoCompleto.map((card, index) => (
+                <View key={index} style={styles.cardContainer}>
+                  <Image
+                    resizeMode="contain"
+                    style={styles.cardImage}
+                    source={{ uri: card.images.small }}
+                  />
+                  {mazoMio.includes(card.id) ? (
+                    <Text style={styles.highlightedText}>La tenes</Text>
+                  ) : (
+                    <Text style={styles.noTenes}>No la tenes</Text>
+                  )}
+                  <Button
+                    title="Agregar a favoritos"
+                    onPress={() => agregarCardFavoritos(card.id)}
+                  />
+                  <View style={styles.botonesInventario}>
+
+                    <Button buttonStyle={styles.btnAgregar} cont
+                      title="Agregar alll inventario"
+                      onPress={() => agregarCardInventario(card.id)}
+                    />
+                    <Button buttonStyle={styles.btnEliminar}
+                      title="Eliminar del inventario"
+                      onPress={() => eliminarCardInventario(card.id)}
+                    />
+                  </View>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        </>
       )}
-      <ModalCarga isVisible={visible} />
     </>
   );
 }
@@ -144,7 +175,7 @@ export function MisCartasSet({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 5,
   },
   title: {
     fontWeight: "bold",
@@ -161,8 +192,8 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: "100%",
-    height: 350, // Cambia la altura si es necesario
-    marginBottom: 5, // Espaciado entre la imagen y el texto
+    height: 350,
+    marginBottom: 5,
   },
   highlightedText: {
     padding: 4,
@@ -182,4 +213,20 @@ const styles = StyleSheet.create({
     width: "70%",
     textAlign: "center",
   },
+  botonesInventario:{
+    flexDirection:'row',
+    width:"50%",
+    
+    justifyContent:'center',
+  },
+
+  btnAgregar:{
+    flex:1,
+    backgroundColor:'green',
+  },
+  btnEliminar:{
+    backgroundColor:'red',
+    flex:1,
+  }
+  
 });
