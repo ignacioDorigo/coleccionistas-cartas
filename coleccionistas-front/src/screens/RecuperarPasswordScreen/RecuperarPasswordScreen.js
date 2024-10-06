@@ -51,6 +51,7 @@ export function RecuperarPasswordScreen() {
       );
     } catch (error) {
       Alert.alert("Error", error.response.data);
+      setVisibleModal(false);
     }
   };
 
@@ -91,7 +92,7 @@ export function RecuperarPasswordScreen() {
             </TouchableOpacity>
           </View>
         </ScrollView>
-        {/* <ModalCarga visible={visibleModal} texto={"Recuperando Password"} /> */}
+        <ModalCarga isVisible={visibleModal} texto={""} />
       </KeyboardAvoidingView>
     </>
   );

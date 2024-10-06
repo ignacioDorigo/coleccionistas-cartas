@@ -10,7 +10,7 @@ export function ModalCarga(props) {
     <Overlay isVisible={isVisible}>
       <View style={styles.container}>
         <ActivityIndicator style={styles.containerActivity} color={"#8D31D8"} size={"large"}></ActivityIndicator>
-        <Text style={styles.containerText}>{texto || "No me llegaron los datos"}</Text>
+        {/* <Text style={styles.containerText}>{texto || ""}</Text> */}
       </View>
     </Overlay>
   );
