@@ -108,6 +108,17 @@ public class Controlador {
 			return ResponseEntity.status(400).body(resultado);
 		}
 	}
+	
+	@DeleteMapping("/eliminarCartaInventario")
+	public ResponseEntity<String> eliminarCartaInventario(@RequestParam String mail, @RequestParam String idSet, @RequestParam String idCard){
+		String resultado = usuarioCardService.eliminarCartaInventario(mail, idSet, idCard);
+		if (resultado.contains("Carta eliminada del inventario")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+	
 
 	@GetMapping("/misSets")
 	public List<UsuarioSet> misSets(@RequestParam String mail) {
