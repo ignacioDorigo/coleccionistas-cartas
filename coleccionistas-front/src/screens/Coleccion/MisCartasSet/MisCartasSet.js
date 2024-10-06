@@ -54,7 +54,7 @@ export function MisCartasSet({ route }) {
       )
       .then((response) => setMazoCompleto(response.data.data))
       .catch((error) => console.log(error));
-      setVisible(false);
+    setVisible(false);
   }, []);
 
   const agregarCardFavoritos = async (idCard) => {
@@ -70,7 +70,7 @@ export function MisCartasSet({ route }) {
     }
   };
 
-  const agregarAinventario = async (idCard) => {
+  const agregarCardInventario = async (idCard) => {
     try {
       const response = await axios.post(
         `http://192.168.1.14:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${set.id_set}&idCard=${idCard}`
@@ -86,6 +86,14 @@ export function MisCartasSet({ route }) {
         ],
         { cancelable: false }
       );
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    }
+  };
+
+  const eliminarCardInventario = async (idCard) => {
+    try {
+      console.log("carta eliminada");
     } catch (error) {
       Alert.alert("Error", error.response.data);
     }
@@ -117,7 +125,11 @@ export function MisCartasSet({ route }) {
                 />
                 <Button
                   title="Agregar a mi inventario"
-                  onPress={() => agregarAinventario(card.id)}
+                  onPress={() => agregarCardInventario(card.id)}
+                />
+                <Button
+                  title="Eliminar de a mi inventario"
+                  onPress={() => eliminarCardInventario(card.id)}
                 />
               </View>
             ))}
