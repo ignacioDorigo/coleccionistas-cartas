@@ -1,18 +1,39 @@
 import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
-    flex: 1,
-
-    backgroundColor: "#fff",
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: "#f5f5f5",
+    alignItems: "center",
   },
-  title: {
-    fontSize: 24,
+  viewHeader: {
+    alignSelf: "flex-start",
+    width: "100%",
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderColor: "#C1C1C1",
+  },
+  header: {
     fontWeight: "bold",
+    fontSize: 30,
+    textAlign: "left",
   },
-  contenedor: {
-    position: "relative",
-    marginBottom: 10,
+  touchable: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    width: "100%",
+    shadowRadius: 4,
+    marginBottom: 15,
+    padding: 10,
+    elevation: 3,
+    alignItems: "center",
   },
   btnContainer: {
     width: "90%",

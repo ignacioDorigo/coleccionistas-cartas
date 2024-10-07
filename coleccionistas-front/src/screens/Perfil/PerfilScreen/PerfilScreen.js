@@ -203,6 +203,7 @@ export function PerfilScreen() {
         buttonStyle={styles.btn}
       />
 
+
       {/* Modal de cambiar nombre */}
       {modalActivo === "nombre" && (
         <CambiarNombreForm
@@ -234,14 +235,7 @@ export function PerfilScreen() {
 
 function opcionesUsuario() {
   return [
-    {
-      texto: "Cambiar Email",
-      type: "material-community",
-      iconNameLeft: "chevron-right",
-      iconColorLeft: "#CCCCCC",
-      iconNameRight: "email-outline",
-      iconColorRight: "#CCCCCC",
-    },
+    
     {
       texto: "Cambiar Contraseña",
       type: "material-community",

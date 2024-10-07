@@ -1,7 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, Alert, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  Alert,TouchableOpacity,} from "react-native";
 
-import { styles } from './MisCartaSet.styles'
+import { styles } from "./MisCartaSet.styles";
 
 import axios from "axios";
 import { Button, Icon } from "@rneui/themed";
@@ -12,8 +17,10 @@ import { RecargarContext } from "../../../context/RecargarContext";
 
 // Modal de Carga
 import { ModalCarga } from "../../../components/ModalCarga";
+import { useNavigation } from "@react-navigation/native";
 
 export function MisCartasSet({ route }) {
+  const navigation = useNavigation();
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
   const { recargarFavoritos } = useContext(RecargarContext);
@@ -35,18 +42,24 @@ export function MisCartasSet({ route }) {
 
   // Este useEffect es para traer los datos de las cartas que tengo yo (id, id_set, id_card, mail)
   useEffect(() => {
+    navigation.setOptions({ title: "Inventario " + set.id });
     setVisible(true);
-    axios.get(`http://192.168.1.14:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id_set}`)
+    axios
+      .get(
+        `http://192.168.1.14:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id}`
+      )
       .then((response) => setMazoMio(response.data.map((card) => card.id_card)))
       .catch((error) => console.log(error));
     setVisible(false);
   }, [reload]);
 
-
-  // Este useEffect es para traer todas las cartas de un set 
+  // Este useEffect es para traer todas las cartas de un set
   useEffect(() => {
     setVisible(true);
-    axios.get(`https://api.pokemontcg.io/v2/cards/?q=id:${set.id_set}&select=id,name,images`,{
+    axios
+      .get(
+        `https://api.pokemontcg.io/v2/cards/?q=id:${set.id}&select=id,name,images`,
+        {
           headers: {
             Authorization: `Bearer d9a5dcd2-e55a-4842-a1ec-278e15879a1d`, // Reemplaza con tu API key
           },
@@ -60,7 +73,9 @@ export function MisCartasSet({ route }) {
   const agregarCardFavoritos = async (idCard) => {
     try {
       setVisible(true);
-      const response = await axios.post(`http://192.168.1.14:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`);
+      const response = await axios.post(
+        `http://192.168.1.14:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
+      );
       Alert.alert("Exito", response.data);
       recargarFavoritos();
     } catch (error) {
@@ -74,8 +89,12 @@ export function MisCartasSet({ route }) {
   const agregarCardInventario = async (idCard) => {
     try {
       setVisible(true);
-      const response = await axios.post(`http://192.168.1.14:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${set.id_set}&idCard=${idCard}`);
-      Alert.alert("Éxito", response.data,
+      const response = await axios.post(
+        `http://192.168.1.14:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${set.id}&idCard=${idCard}`
+      );
+      Alert.alert(
+        "Éxito",
+        response.data,
         [
           {
             text: "OK",
@@ -94,8 +113,12 @@ export function MisCartasSet({ route }) {
   const eliminarCardInventario = async (idCard) => {
     try {
       setVisible(true);
-      const response = await axios.delete(`http://192.168.1.14:8080/coleccionistas/eliminarCartaInventario?mail=${mail}&idSet=${set.id_set}&idCard=${idCard}`);
-      Alert.alert("Exito",response.data,
+      const response = await axios.delete(
+        `http://192.168.1.14:8080/coleccionistas/eliminarCartaInventario?mail=${mail}&idSet=${set.id}&idCard=${idCard}`
+      );
+      Alert.alert(
+        "Exito",
+        response.data,
         [
           {
             text: "OK",
@@ -120,37 +143,57 @@ export function MisCartasSet({ route }) {
           <ModalCarga isVisible={visible} />
 
           <View style={styles.container}>
-
-            <Text style={styles.title}>Tus Cartas Del Set {set.id_set}</Text>
+            <Text style={styles.title}>Tus Cartas Del Set {set.id}</Text>
 
             <ScrollView style={styles.scrollView}>
-
               {mazoCompleto.map((card, index) => (
-
                 <View key={index} style={styles.cardContainer}>
+                  <Image
+                    style={styles.cardImage}
+                    source={{ uri: card.images.small }}
+                  ></Image>
 
-                  <Image  style={styles.cardImage} source={{ uri: card.images.small }}>
-                    
-                  </Image>
-                  
-                  {mazoMio.includes(card.id) ? ( <Icon type="material-community" name="trophy" color={"#FFD700"} raised  containerStyle={styles.iconoTrophy}/>) : (<Text style={styles.noTenes}>No la tenes</Text>)}
+                  {mazoMio.includes(card.id) ? (
+                    <Icon
+                      type="material-community"
+                      name="trophy"
+                      color={"#FFD700"}
+                      raised
+                      containerStyle={styles.iconoTrophy}
+                    />
+                  ) : (
+                    <Text style={styles.noTenes}>No la tenes</Text>
+                  )}
 
-                  <Icon containerStyle={styles.iconoFavoritos} raised reverse name='heart-plus' type='material-community' color='#240046' onPress={() =>  agregarCardFavoritos(card.id)} />
-              
+                  <Icon
+                    containerStyle={styles.iconoFavoritos}
+                    raised
+                    reverse
+                    name="heart-plus"
+                    type="material-community"
+                    color="#240046"
+                    onPress={() => agregarCardFavoritos(card.id)}
+                  />
 
                   {/* <Button title="Agregar a favoritos" onPress={() => agregarCardFavoritos(card.id)}/> */}
 
                   <View style={styles.botonesInventario}>
+                    <Button
+                      buttonStyle={styles.btnAgregar}
+                      containerStyle={styles.btnContainer}
+                      title="Agregar al inventario"
+                      onPress={() => agregarCardInventario(card.id)}
+                    />
 
-                    <Button buttonStyle={styles.btnAgregar} containerStyle={styles.btnContainer} title="Agregar al inventario" onPress={() => agregarCardInventario(card.id)}/>
-
-                    <Button buttonStyle={styles.btnEliminar} containerStyle={styles.btnContainer} title="Eliminar del inventario" onPress={() => eliminarCardInventario(card.id)}/>
-
+                    <Button
+                      buttonStyle={styles.btnEliminar}
+                      containerStyle={styles.btnContainer}
+                      title="Eliminar del inventario"
+                      onPress={() => eliminarCardInventario(card.id)}
+                    />
                   </View>
-
                 </View>
               ))}
-
             </ScrollView>
           </View>
         </>

@@ -4,7 +4,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  StyleSheet,
   Alert,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
@@ -14,37 +13,42 @@ import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
 
-// Fichero Screen
-import { screen } from "../../../utils";
+import { styles } from "./CartasSet.styles";
+
+import { ModalCarga } from "../../../components/ModalCarga";
+import { Button, Icon } from "@rneui/themed";
 
 export function CartasSet({ route, navigation }) {
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
 
-
   const { mazo } = route.params;
 
   const [cards, setCards] = useState([]);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        const response = await axios.get(
-          `https://api.pokemontcg.io/v2/cards/?q=id:${mazo.id}&select=id,name,images`,
-          {
-            headers: {
-              Authorization: `Bearer d9a5dcd2-e55a-4842-a1ec-278e15879a1d`, // ACA PONGAN SU API KEY AMIGOS ,DESDPUES DEL BEARER (DESPUES ME FIJO COMO PONERLO EN BACK)
-            },
-          }
-        );
-        setCards(response.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    buscarCartaSet();
+  }, []);
 
-    fetchCards();
-  }, [mazo.id]);
+  const buscarCartaSet = async () => {
+    try {
+      setVisible(true);
+      const response = await axios.get(
+        `https://api.pokemontcg.io/v2/cards/?q=id:${mazo.id}&select=id,name,images`,
+        {
+          headers: {
+            Authorization: `Bearer d9a5dcd2-e55a-4842-a1ec-278e15879a1d`, // ACA PONGAN SU API KEY AMIGOS ,DESDPUES DEL BEARER (DESPUES ME FIJO COMO PONERLO EN BACK)
+          },
+        }
+      );
+      setCards(response.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setVisible(false);
+    }
+  };
 
   const AgregarCartaAColeccion = (idCard) => {
     Alert.alert(
@@ -73,61 +77,23 @@ export function CartasSet({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.cartas}>
-        <Text style={styles.title}>Mazo {mazo.name}</Text>
+    <>
+      <ModalCarga isVisible={visible} />
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.viewHeader}>
+          <Text style={styles.header}>Mazo {mazo.name}</Text>
+        </View>
         {cards.map((card, index) => (
-          <View key={index} style={styles.card}>
-            <TouchableOpacity>
-              <Image
-                style={styles.card__imagen}
-                resizeMode="contain"
-                source={{ uri: `${card.images.small}` }}
-              />
-            </TouchableOpacity>
-            <View style={styles.card__botones}>
-              <TouchableOpacity onPress={() => AgregarCartaAColeccion(card.id)}>
-                <Text style={styles.card__svg}>Agregar</Text>
-              </TouchableOpacity>
-            </View>
+          <View key={index} style={styles.touchable}>
+            <Image
+              style={styles.image}
+              resizeMode="contain"
+              source={{ uri: `${card.images.large}` }}
+            />
+            <Button iconPosition="left" icon={<Icon type="material-community" name="account" color={"#FFFFFF"} ></Icon>} containerStyle={styles.btnContainer} buttonStyle={styles.btn} title={"   Agregar al inventario"} onPress={() => AgregarCartaAColeccion(card.id)} />
           </View>
         ))}
       </ScrollView>
-    </View>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 0,
-  },
-  title: {
-    fontWeight: "bold",
-    fontSize: 23,
-    marginVertical: 30,
-    textAlign: "center",
-  },
-  cartas: {},
-  card: {
-    maxWidth: "80%",
-    marginVertical: 10,
-    // borderWidth: 3,
-    marginHorizontal: 40,
-  },
-
-  card__imagen: {
-    width: "100%",
-    height: 300,
-  },
-  card__svg: {
-    fontWeight: "bold",
-    backgroundColor: "green",
-    padding: 10,
-    borderRadius: 3,
-    textAlign: "center",
-    color: "white",
-    width: "70%",
-    alignSelf: "center",
-  },
-});

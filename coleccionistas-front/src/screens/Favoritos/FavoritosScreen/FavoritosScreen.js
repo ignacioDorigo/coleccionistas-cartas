@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { View, Text, ScrollView, ActivityIndicator, Alert } from "react-native";
-import { Button } from "@rneui/themed";
+import { Button, Icon } from "@rneui/themed";
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
 import PokemonCard from "../../../components/PokemonCard";
 import axios from "axios";
-import styles from "./FavoritosScreen.styles";
+import { styles } from "./FavoritosScreen.styles";
 
 export function FavoritosScreen() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -48,7 +48,10 @@ export function FavoritosScreen() {
       setPokemones(objetos);
     } catch (error) {
       console.log(error);
-      Alert.alert("Error", "Hubo un problema al buscar los pokemones favoritos.");
+      Alert.alert(
+        "Error",
+        "Hubo un problema al buscar los pokemones favoritos."
+      );
     } finally {
       setLoading(false); // Asegúrate de que el loading se apague en caso de error también
     }
@@ -63,26 +66,33 @@ export function FavoritosScreen() {
       eliminar();
     } catch (error) {
       console.log(error);
-      Alert.alert("Error", error.response?.data || "Hubo un problema al eliminar el favorito.");
+      Alert.alert(
+        "Error",
+        error.response?.data || "Hubo un problema al eliminar el favorito."
+      );
     }
   };
 
   return (
     <View>
-      <Text>Tus favoritos</Text>
-
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        <ScrollView>
+        <ScrollView contentContainerStyle={styles.container}>
+
+          <View style={styles.viewHeader}>
+            <Text style={styles.header}>Tus Cartas Favoritas</Text>
+          </View>
+
           {pokemones.map((pokemon, index) => (
-            <View key={index} style={styles.contenedor}>
+            <View key={index} style={styles.touchable}>
               <PokemonCard card={pokemon} />
               <Button
                 title="Eliminar de Favoritos"
                 onPress={() => eliminarCardFavorito(pokemon.id)}
                 containerStyle={styles.btnContainer}
                 buttonStyle={styles.btn}
+                icon={<Icon type="material-community" name="delete" color={"#FFFFFF"}/>}
               />
             </View>
           ))}

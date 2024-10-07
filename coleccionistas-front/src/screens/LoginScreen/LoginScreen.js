@@ -62,7 +62,7 @@ export function LoginScreen({ navigation }) {
               style={styles.input}
               autoCapitalize="none"
               autoCorrect={true}
-              autoComplete={true}
+              // autoComplete={Platform.OS === "ios" ? true : false}
               onChangeText={setMail}
               value={mail}
               placeholder="equipo5@gmail.com"
@@ -72,8 +72,7 @@ export function LoginScreen({ navigation }) {
               style={styles.input}
               autoCapitalize="none"
               autoCorrect={true}
-              autoComplete={true}
-              
+              // autoComplete={Platform.OS === "ios" ? true : false}
               onChangeText={setPassword}
               value={password}
               placeholder="*******"
