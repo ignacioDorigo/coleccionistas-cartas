@@ -1,36 +1,29 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  Alert,
-  TouchableOpacity,
-} from "react-native";
-
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import { styles } from "./MisCartaSet.styles";
-
 import axios from "axios";
 import { Button, Icon, Switch } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
+import { ModalCarga } from "../../../components/ModalCarga";
 
-// Contexto
+// Contextos
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
 
-// Modal de Carga
-import { ModalCarga } from "../../../components/ModalCarga";
-import { useNavigation } from "@react-navigation/native";
-
 export function MisCartasSet({ route }) {
-  const navigation = useNavigation();
+  //De aca salgo el mail
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
-  const { recargarFavoritos } = useContext(RecargarContext);
-
+  // Recibo el set que eligio el user
   const { set } = route.params;
 
+  // De alguna manera tengo que recargar el screen de favoritos, entonces cree un context de eso
+  const { recargarFavoritos } = useContext(RecargarContext);
+
+  const navigation = useNavigation();
+
   const [mazoMio, setMazoMio] = useState([]);
-  const [mazoCompleto, setMazoCompleto] = useState([]);
+  const [mazoCompleto, setMazoCompleto] = useState([]); // incluye mis cartas y las que no tengo
 
   // Para recargar la screen
   const [reload, setReload] = useState(false);
@@ -155,7 +148,10 @@ export function MisCartasSet({ route }) {
 
             <ScrollView style={styles.scrollView}>
               <View style={styles.viewSwitch}>
-                <Switch value={checked} onValueChange={(value) => setChecked(value)} />
+                <Switch
+                  value={checked}
+                  onValueChange={(value) => setChecked(value)}
+                />
                 <Text> Ver solo las que me faltan</Text>
               </View>
 
