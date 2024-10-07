@@ -98,5 +98,10 @@ export const styles = StyleSheet.create({
     position:'absolute',
     right:0,
     top:60,
+  },
+  viewSwitch:{
+    flexDirection:'row',
+    alignItems:'center',
+    marginBottom:20,
   }
 });

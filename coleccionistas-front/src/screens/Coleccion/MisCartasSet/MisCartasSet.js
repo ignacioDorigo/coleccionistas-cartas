@@ -4,12 +4,14 @@ import {
   Text,
   ScrollView,
   Image,
-  Alert,TouchableOpacity,} from "react-native";
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 
 import { styles } from "./MisCartaSet.styles";
 
 import axios from "axios";
-import { Button, Icon } from "@rneui/themed";
+import { Button, Icon, Switch } from "@rneui/themed";
 
 // Contexto
 import { AuthContext } from "../../../context/AuthContext";
@@ -35,6 +37,12 @@ export function MisCartasSet({ route }) {
 
   // Para la visibilidad del modal
   const [visible, setVisible] = useState(false);
+
+  // Estado del switch
+  const [checked, setChecked] = useState(false);
+  const toggleSwitch = () => {
+    setChecked(!checked);
+  };
 
   const recargarScreen = () => {
     setReload((prevState) => !prevState);
@@ -146,54 +154,58 @@ export function MisCartasSet({ route }) {
             <Text style={styles.title}>Tus Cartas Del Set {set.id}</Text>
 
             <ScrollView style={styles.scrollView}>
-              {mazoCompleto.map((card, index) => (
-                <View key={index} style={styles.cardContainer}>
-                  <Image
-                    style={styles.cardImage}
-                    source={{ uri: card.images.small }}
-                  ></Image>
+              <View style={styles.viewSwitch}>
+                <Switch value={checked} onValueChange={(value) => setChecked(value)} />
+                <Text> Ver solo las que me faltan</Text>
+              </View>
 
-                  {mazoMio.includes(card.id) ? (
+              {mazoCompleto
+                .filter((card) => (checked ? !mazoMio.includes(card.id) : true)) // Filtrar cartas cuando el switch está activo
+                .map((card, index) => (
+                  <View key={index} style={styles.cardContainer}>
+                    <Image
+                      style={styles.cardImage}
+                      source={{ uri: card.images.small }}
+                    />
+
+                    {mazoMio.includes(card.id) ? (
+                      <Icon
+                        type="material-community"
+                        name="trophy"
+                        color={"#FFD700"}
+                        raised
+                        containerStyle={styles.iconoTrophy}
+                      />
+                    ) : (
+                      <Text style={styles.noTenes}>No la tienes</Text>
+                    )}
+
                     <Icon
-                      type="material-community"
-                      name="trophy"
-                      color={"#FFD700"}
+                      containerStyle={styles.iconoFavoritos}
                       raised
-                      containerStyle={styles.iconoTrophy}
-                    />
-                  ) : (
-                    <Text style={styles.noTenes}>No la tenes</Text>
-                  )}
-
-                  <Icon
-                    containerStyle={styles.iconoFavoritos}
-                    raised
-                    reverse
-                    name="heart-plus"
-                    type="material-community"
-                    color="#240046"
-                    onPress={() => agregarCardFavoritos(card.id)}
-                  />
-
-                  {/* <Button title="Agregar a favoritos" onPress={() => agregarCardFavoritos(card.id)}/> */}
-
-                  <View style={styles.botonesInventario}>
-                    <Button
-                      buttonStyle={styles.btnAgregar}
-                      containerStyle={styles.btnContainer}
-                      title="Agregar al inventario"
-                      onPress={() => agregarCardInventario(card.id)}
+                      reverse
+                      name="heart-plus"
+                      type="material-community"
+                      color="#240046"
+                      onPress={() => agregarCardFavoritos(card.id)}
                     />
 
-                    <Button
-                      buttonStyle={styles.btnEliminar}
-                      containerStyle={styles.btnContainer}
-                      title="Eliminar del inventario"
-                      onPress={() => eliminarCardInventario(card.id)}
-                    />
+                    <View style={styles.botonesInventario}>
+                      <Button
+                        buttonStyle={styles.btnAgregar}
+                        containerStyle={styles.btnContainer}
+                        title="Agregar al inventario"
+                        onPress={() => agregarCardInventario(card.id)}
+                      />
+                      <Button
+                        buttonStyle={styles.btnEliminar}
+                        containerStyle={styles.btnContainer}
+                        title="Eliminar del inventario"
+                        onPress={() => eliminarCardInventario(card.id)}
+                      />
+                    </View>
                   </View>
-                </View>
-              ))}
+                ))}
             </ScrollView>
           </View>
         </>
