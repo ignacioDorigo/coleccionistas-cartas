@@ -38,6 +38,7 @@ export function PerfilScreen() {
   const [apellido, setApellido] = useState("");
   const [edad, setEdad] = useState("");
   const [modalActivo, setModalActivo] = useState("");
+  const[avatar,setAvatar] = useState(null);
   const [reload, setReload] = useState(false);
 
   const repintarComponentes = () => {
@@ -45,6 +46,7 @@ export function PerfilScreen() {
   };
 
   useEffect(() => {
+    obtenerAvatar(mail);
     axios
       .get(`http://192.168.1.14:8080/coleccionistas/perfilUsuario?mail=${mail}`)
       .then((response) => {
@@ -76,61 +78,6 @@ export function PerfilScreen() {
     logout();
   };
 
-  // Esta usa una foto de la camara
-  const tomarFotoCamara = async () => {
-    // Verifica el estado actual de los permisos
-    const { status } = await ImagePicker.getCameraPermissionsAsync();
-
-    if (status === "granted") {
-      // Permiso ya concedido, abre la cámara
-      let result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        console.log("Imagen capturada:", result.uri);
-      }
-    } else if (status === "denied") {
-      // Permisos denegados permanentemente, mostrar alerta y redirigir a la configuración
-      Alert.alert(
-        "Permiso necesario",
-        "Has denegado el acceso a la cámara. Por favor, ve a la configuración de la aplicación y habilita los permisos de la cámara.",
-        [
-          { text: "Cancelar", style: "cancel" },
-          {
-            text: "Abrir configuración",
-            onPress: () => Linking.openSettings(),
-          },
-        ]
-      );
-    } else {
-      // Solicitar permisos si aún no se ha hecho
-      const { status: newStatus } =
-        await ImagePicker.requestCameraPermissionsAsync();
-      if (newStatus === "granted") {
-        let result = await ImagePicker.launchCameraAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-
-        if (!result.canceled) {
-          console.log("Imagen capturada:", result.uri);
-        }
-      } else {
-        Alert.alert(
-          "Permiso necesario",
-          "No se puede acceder a la cámara sin permisos."
-        );
-      }
-    }
-  };
-
-  // Esta usa una foto de la galeria
   const cambiarAvatar = async () => {
     // Usar foto de la galeria
     const foto = await ImagePicker.launchImageLibraryAsync({
@@ -141,10 +88,52 @@ export function PerfilScreen() {
     });
 
     if (!foto.canceled) {
-      // FALTA GUARDARLA
-      console.log("FOTO ELEGIDA");
+      const formData = new FormData();
+      formData.append("mail", mail);
+      formData.append("file", {
+        uri: foto.assets[0].uri,
+        name: "avatar.jpg",
+        type: "image/jpeg",
+      });
+
+      // Enviar la imagen al backend
+      try {
+        const response = await fetch(
+          "http://192.168.1.14:8080/coleccionistas/actualizarAvatar",
+          {
+            method: "POST",
+            body: formData,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        const result = await response.text();
+        repintarComponentes();
+  
+      } catch (error) {
+        console.error("Error al enviar la imagen:", error);
+      }
     } else {
       console.log("OPERACION CANCELADA");
+    }
+  };
+
+  const obtenerAvatar = async (mail) => {
+    try {
+      const response = await fetch(`http://192.168.1.14:8080/coleccionistas/avatar/${mail}`);
+
+      if (!response.ok) {
+        throw new Error("No se pudo obtener el avatar");
+      }
+
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob); 
+      setAvatar(imageUrl);
+      return imageUrl;
+    } catch (error) {
+      console.error("Error al obtener el avatar:", error);
+      return null; // Retorna null o maneja el error según lo necesites
     }
   };
 
@@ -152,6 +141,7 @@ export function PerfilScreen() {
     <View style={styles.container}>
       <View style={styles.datos}>
         <Avatar
+          source={{uri:`${avatar}`}}
           rounded
           size={"large"}
           containerStyle={styles.avatarContainer}
@@ -203,7 +193,6 @@ export function PerfilScreen() {
         buttonStyle={styles.btn}
       />
 
-
       {/* Modal de cambiar nombre */}
       {modalActivo === "nombre" && (
         <CambiarNombreForm
@@ -235,7 +224,6 @@ export function PerfilScreen() {
 
 function opcionesUsuario() {
   return [
-    
     {
       texto: "Cambiar Contraseña",
       type: "material-community",

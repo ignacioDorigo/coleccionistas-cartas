@@ -45,3 +45,10 @@ CREATE TABLE favoritos_pokemon(
     primary key (id), 
     foreign key (mail) references usuarios(mail)
 );
+
+CREATE TABLE avatares(
+	mail VARCHAR(50) NOT NULL,
+	foto LONGBLOB,
+	PRIMARY KEY (mail),
+	FOREIGN KEY (mail) REFERENCES usuarios(mail)
+);

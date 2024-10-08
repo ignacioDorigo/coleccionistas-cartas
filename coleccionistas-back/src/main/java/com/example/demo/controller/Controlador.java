@@ -1,22 +1,31 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.modelo.Avatar;
 import com.example.demo.modelo.Coleccion;
 import com.example.demo.modelo.FavoritosPokemon;
 import com.example.demo.modelo.PerfilUsuario;
 import com.example.demo.modelo.UsuarioCard;
 import com.example.demo.modelo.UsuarioSet;
+import com.example.demo.repository.AvatarRepository;
 import com.example.demo.service.ColeccionService;
 import com.example.demo.service.FavoritosPokemonService;
 import com.example.demo.service.UsuarioCardService;
@@ -41,6 +50,9 @@ public class Controlador {
 
 	@Autowired
 	FavoritosPokemonService favoritosPokemonService;
+
+	@Autowired
+	AvatarRepository avatarRepository;
 
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestParam String mail, @RequestParam String password,
@@ -108,9 +120,10 @@ public class Controlador {
 			return ResponseEntity.status(400).body(resultado);
 		}
 	}
-	
+
 	@DeleteMapping("/eliminarCartaInventario")
-	public ResponseEntity<String> eliminarCartaInventario(@RequestParam String mail, @RequestParam String idSet, @RequestParam String idCard){
+	public ResponseEntity<String> eliminarCartaInventario(@RequestParam String mail, @RequestParam String idSet,
+			@RequestParam String idCard) {
 		String resultado = usuarioCardService.eliminarCartaInventario(mail, idSet, idCard);
 		if (resultado.contains("Carta eliminada del inventario")) {
 			return ResponseEntity.ok(resultado);
@@ -118,7 +131,6 @@ public class Controlador {
 			return ResponseEntity.status(400).body(resultado);
 		}
 	}
-	
 
 	@GetMapping("/misSets")
 	public List<UsuarioSet> misSets(@RequestParam String mail) {
@@ -193,5 +205,36 @@ public class Controlador {
 			return ResponseEntity.status(400).body(resultado);
 		}
 	}
+
+	@PostMapping("/actualizarAvatar")
+	public ResponseEntity<String> uploadImagen(@RequestParam String mail, @RequestParam("file") MultipartFile file) {
+		try {
+			Avatar avatar = new Avatar();
+			avatar.setMail(mail);
+			avatar.setFoto(file.getBytes()); // convertir el archivo en array de bytes
+			avatarRepository.save(avatar);
+			return ResponseEntity.ok("Imagen guardada exitosamente");
+		} catch (IOException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar la imagen");
+		}
+	}
+	
+	@GetMapping("/avatar/{mail}")
+	public ResponseEntity<byte[]> getAvatar(@PathVariable String mail) {
+	    byte[] imageBytes = avatarRepository.findById(mail)
+	        .map(Avatar::getFoto)
+	        .orElse(null);
+
+	    if (imageBytes != null) {
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.IMAGE_JPEG); // Cambia esto si utilizas un tipo de imagen diferente
+	        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	    }
+	}
+
+	
+
 
 }
