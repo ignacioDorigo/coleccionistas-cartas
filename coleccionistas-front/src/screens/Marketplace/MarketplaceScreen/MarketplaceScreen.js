@@ -1,55 +1,53 @@
 import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from "react-native";
-import styles from "./MarketPlaceScreen.styles";
-import { Icon } from "@rneui/themed";
-import axios from "axios";
-import PokemonCard from "../PokemonCard";
+import { View, Text, Image } from "react-native";
+import { Button } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
+
+// Fichero screens
+import { screen } from "../../../utils";
+import { styles } from "./MarketPlaceScreen.styles";
 
 export function MarketPlaceScreen() {
-  const [buscador, setBuscador] = useState("");
-  const [cartas, setCartas] = useState([]);
+  const navigation = useNavigation();
 
-  const renderItem = ({ item }) => <PokemonCard card={item} />;
+  const goToComprarScreen = () => {
+    navigation.navigate(screen.marketplace.comprar);
+  };
 
-  const buscarCartas = () => {
-    axios
-      .get(`https://api.pokemontcg.io/v2/cards?q=name:${buscador}`)
-      .then((response) => {
-        console.log(response.data.data[0]);
-        setCartas(response.data.data);
-      })
-      .catch((error) => console.log(error));
+  const goToVenderScreen = () => {
+    navigation.navigate(screen.marketplace.vender);
+  };
+
+  const goToBuscarInformacion = () => {
+    navigation.navigate(screen.marketplace.buscarInformación);
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.search}>
-        <TextInput
-          placeholder="Buscar....."
-          style={styles.input}
-          autoCapitalize="none"
-          onChangeText={(dato) => setBuscador(dato)}
-        ></TextInput>
-        <TouchableOpacity>
-          <Icon
-            type="material-community"
-            name="magnify"
-            iconStyle={styles.icon}
-            onPress={buscarCartas}
-          />
-        </TouchableOpacity>
-      </View>
-      <ScrollView  contentContainerStyle={styles.scroll}>
-      {cartas.map((carta, index) => (
-        <PokemonCard card={carta} key={index} />
-      ))}
-      </ScrollView >
+      {/* Aca vo ya poner el logo */}
+      <Image source={require(`../../../assets/icon.png`)} style={styles.logo}/>
+
+      <Text style={styles.titulo}>Bienvenido al MarketPlace de Findex</Text>
+      <Text style={styles.subtitulo}>Selecciona el tipo de Operación para continuar</Text>
+
+      <Button
+        title={"Comprar Cartas"}
+        onPress={goToComprarScreen}
+        containerStyle={styles.btnContainer}
+        titleStyle={styles.title}
+      />
+      <Button
+        title={"Vender Cartas"}
+        onPress={goToVenderScreen}
+        containerStyle={styles.btnContainer}
+        titleStyle={styles.title}
+      />
+      <Button
+        title={"Buscar Información Carta"}
+        onPress={goToBuscarInformacion}
+        containerStyle={styles.btnContainer}
+        titleStyle={styles.title}
+      />
     </View>
   );
 }

@@ -1,41 +1,34 @@
 import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  search: {
-    width: "90%",
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     gap: 10,
     padding: 10,
-    borderRadius: 5,
-    marginVertical: 10,
   },
 
-  input: {
-    padding: 10,
-    borderWidth: 2,
-    borderColor: "#c1c1c1",
-    flex: 10,
-    borderRadius: 5,
+  titulo: {
+    fontSize: 25,
+    fontWeight: "bold",
+    alignSelf: "flex-start",
   },
-  icon: {
-    padding: 10,
-    backgroundColor: "#8D31D8",
-    color: "#FFF",
-    borderRadius: 5,
+  subtitulo: {
+    alignSelf: "flex-start",
   },
-  scroll:{
-    // flex:2,
-    backgroundColor:"blue",
-    justifyContent:'center',
-    alignContent:'center',
-  }
+  btnContainer: {
+    width: "100%",
+    height: 50,
+  },
+  title: {
+    fontSize: 20,
+  },
+
+  logo: {
+    resizeMode: "contain",
+    width: "100%",
+    height: 200,
+  },
 });
 
 export default styles;
