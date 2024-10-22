@@ -7,6 +7,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { useFormik } from "formik";
 import axios from "axios";
 import Toast from "react-native-toast-message";
+import { ipHost } from "../../../utils/ipHost";
 
 export function CambiarApellidoForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -20,7 +21,7 @@ export function CambiarApellidoForm(props) {
     onSubmit: (formulario) => {
       axios
         .put(
-          `http://192.168.1.14:8080/coleccionistas/actualizarApellido?mail=${mail}&nuevoApellido=${formulario.apellido}`
+          `http://${ipHost}:8080/coleccionistas/actualizarApellido?mail=${mail}&nuevoApellido=${formulario.apellido}`
         )
         .then((response) => {
           Toast.show({

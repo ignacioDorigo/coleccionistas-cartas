@@ -17,6 +17,7 @@ import { styles } from "./CartasSet.styles";
 
 import { ModalCarga } from "../../../components/ModalCarga";
 import { Button, Icon } from "@rneui/themed";
+import { ipHost } from "../../../utils/ipHost";
 
 export function CartasSet({ route, navigation }) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -65,7 +66,7 @@ export function CartasSet({ route, navigation }) {
           onPress: () => {
             axios
               .post(
-                `http://192.168.1.14:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`
+                `http://${ipHost}:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`
               )
               .then((response) => Alert.alert("Exito", response.data))
               .catch((error) => Alert.alert("Error", `${error.response.data}`));
@@ -90,7 +91,20 @@ export function CartasSet({ route, navigation }) {
               resizeMode="contain"
               source={{ uri: `${card.images.large}` }}
             />
-            <Button iconPosition="left" icon={<Icon type="material-community" name="account" color={"#FFFFFF"} ></Icon>} containerStyle={styles.btnContainer} buttonStyle={styles.btn} title={"   Agregar al inventario"} onPress={() => AgregarCartaAColeccion(card.id)} />
+            <Button
+              iconPosition="left"
+              icon={
+                <Icon
+                  type="material-community"
+                  name="account"
+                  color={"#FFFFFF"}
+                ></Icon>
+              }
+              containerStyle={styles.btnContainer}
+              buttonStyle={styles.btn}
+              title={"   Agregar al inventario"}
+              onPress={() => AgregarCartaAColeccion(card.id)}
+            />
           </View>
         ))}
       </ScrollView>

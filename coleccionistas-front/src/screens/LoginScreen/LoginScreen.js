@@ -17,6 +17,7 @@ import { useTheme } from "context/ThemeContext";
 import { lightTheme, darkTheme } from "constants/themes";
 import createStyles from "screens/LoginScreen/LoginScreen.styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { ipHost } from "../../utils/ipHost";
 
 export function LoginScreen({ navigation }) {
   const { isDarkTheme } = useTheme();
@@ -30,7 +31,7 @@ export function LoginScreen({ navigation }) {
   const onLoginPress = () => {
     axios
       .post(
-        `http://192.168.1.14:8080/coleccionistas/login?mail=${mail}&password=${password}`
+        `http://${ipHost}:8080/coleccionistas/login?mail=${mail}&password=${password}`
       )
       .then((response) => {
         Alert.alert("Éxito", response.data);

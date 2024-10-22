@@ -25,6 +25,8 @@ import Toast from "react-native-toast-message";
 // Dependencia para usar la galeria
 import * as ImagePicker from "expo-image-picker";
 
+import { ipHost } from "../../../utils/ipHost";
+
 // Formularios
 import { CambiarNombreForm } from "../../../components/Perfil";
 import { CambiarApellidoForm } from "../../../components/Perfil";
@@ -38,7 +40,7 @@ export function PerfilScreen() {
   const [apellido, setApellido] = useState("");
   const [edad, setEdad] = useState("");
   const [modalActivo, setModalActivo] = useState("");
-  const[avatar,setAvatar] = useState(null);
+  const [avatar, setAvatar] = useState(null);
   const [reload, setReload] = useState(false);
 
   const repintarComponentes = () => {
@@ -48,7 +50,7 @@ export function PerfilScreen() {
   useEffect(() => {
     obtenerAvatar(mail);
     axios
-      .get(`http://192.168.1.14:8080/coleccionistas/perfilUsuario?mail=${mail}`)
+      .get(`http://${ipHost}:8080/coleccionistas/perfilUsuario?mail=${mail}`)
       .then((response) => {
         const perfil = response.data;
         setNombre(perfil.nombre);
@@ -99,7 +101,7 @@ export function PerfilScreen() {
       // Enviar la imagen al backend
       try {
         const response = await fetch(
-          "http://192.168.1.14:8080/coleccionistas/actualizarAvatar",
+          `http://${ipHost}:8080/coleccionistas/actualizarAvatar`,
           {
             method: "POST",
             body: formData,
@@ -110,7 +112,6 @@ export function PerfilScreen() {
         );
         const result = await response.text();
         repintarComponentes();
-  
       } catch (error) {
         console.error("Error al enviar la imagen:", error);
       }
@@ -121,14 +122,16 @@ export function PerfilScreen() {
 
   const obtenerAvatar = async (mail) => {
     try {
-      const response = await fetch(`http://192.168.1.14:8080/coleccionistas/avatar/${mail}`);
+      const response = await fetch(
+        `http://${ipHost}:8080/coleccionistas/avatar/${mail}`
+      );
 
       if (!response.ok) {
         throw new Error("No se pudo obtener el avatar");
       }
 
       const blob = await response.blob();
-      const imageUrl = URL.createObjectURL(blob); 
+      const imageUrl = URL.createObjectURL(blob);
       setAvatar(imageUrl);
       return imageUrl;
     } catch (error) {
@@ -141,7 +144,7 @@ export function PerfilScreen() {
     <View style={styles.container}>
       <View style={styles.datos}>
         <Avatar
-          source={{uri:`${avatar}`}}
+          source={{ uri: `${avatar}` }}
           rounded
           size={"large"}
           containerStyle={styles.avatarContainer}

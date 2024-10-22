@@ -7,6 +7,7 @@ import { useFormik } from "formik";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
 import Toast from "react-native-toast-message";
+import { ipHost } from "../../../utils/ipHost";
 
 export function CambiarPasswordForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -38,7 +39,7 @@ export function CambiarPasswordForm(props) {
     onSubmit: (formulario) => {
       axios
         .put(
-          `http://192.168.1.14:8080/coleccionistas/actualizarContrasenia?mail=${mail}&actual=${formulario.actual}&nueva=${formulario.nueva}&repetirNueva=${formulario.repetirNueva}`
+          `http://${ipHost}:8080/coleccionistas/actualizarContrasenia?mail=${mail}&actual=${formulario.actual}&nueva=${formulario.nueva}&repetirNueva=${formulario.repetirNueva}`
         )
         .then((response) => {
           Toast.show({

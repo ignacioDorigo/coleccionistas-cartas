@@ -6,6 +6,8 @@ import { Button, Icon, Switch } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { ModalCarga } from "../../../components/ModalCarga";
 
+import { ipHost } from "../../../utils/ipHost";
+
 // Contextos
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
@@ -47,7 +49,7 @@ export function MisCartasSet({ route }) {
     setVisible(true);
     axios
       .get(
-        `http://192.168.1.14:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id}`
+        `http://${ipHost}:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id}`
       )
       .then((response) => setMazoMio(response.data.map((card) => card.id_card)))
       .catch((error) => console.log(error));
@@ -75,7 +77,7 @@ export function MisCartasSet({ route }) {
     try {
       setVisible(true);
       const response = await axios.post(
-        `http://192.168.1.14:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
+        `http://${ipHost}:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
       );
       Alert.alert("Exito", response.data);
       recargarFavoritos();
@@ -91,7 +93,7 @@ export function MisCartasSet({ route }) {
     try {
       setVisible(true);
       const response = await axios.post(
-        `http://192.168.1.14:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${set.id}&idCard=${idCard}`
+        `http://${ipHost}:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${set.id}&idCard=${idCard}`
       );
       Alert.alert(
         "Éxito",
@@ -115,7 +117,7 @@ export function MisCartasSet({ route }) {
     try {
       setVisible(true);
       const response = await axios.delete(
-        `http://192.168.1.14:8080/coleccionistas/eliminarCartaInventario?mail=${mail}&idSet=${set.id}&idCard=${idCard}`
+        `http://${ipHost}:8080/coleccionistas/eliminarCartaInventario?mail=${mail}&idSet=${set.id}&idCard=${idCard}`
       );
       Alert.alert(
         "Exito",

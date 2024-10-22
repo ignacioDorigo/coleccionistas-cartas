@@ -7,6 +7,7 @@ import { initialValues, validationSchema } from "./CambiarNombreForm.data";
 import axios from "axios";
 import { useFormik } from "formik";
 import Toast from "react-native-toast-message";
+import { ipHost } from "../../../utils/ipHost";
 
 export function CambiarNombreForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -20,7 +21,7 @@ export function CambiarNombreForm(props) {
     onSubmit: (formulario) => {
       axios
         .put(
-          `http://192.168.1.14:8080/coleccionistas/actualizarNombre?mail=${mail}&nuevoNombre=${formulario.nombre}`
+          `http://${ipHost}:8080/coleccionistas/actualizarNombre?mail=${mail}&nuevoNombre=${formulario.nombre}`
         )
         .then((response) => {
           Toast.show({

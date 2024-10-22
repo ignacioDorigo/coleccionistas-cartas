@@ -13,6 +13,7 @@ import axios from "axios";
 import { styles } from "./AddCollection.styles";
 // Fichero Screen
 import { screen } from "../../../utils";
+import { ipHost } from "../../../utils/ipHost";
 
 export function AddCollection({ navigation }) {
   const [colecciones, setColecciones] = useState([]);
@@ -24,13 +25,16 @@ export function AddCollection({ navigation }) {
       });
     }
     if (coleccion.nombre === "Yugioh") {
-        Alert.alert("Aviso","La colección de YuGiOh estara disponible en el proximo sprint");
+      Alert.alert(
+        "Aviso",
+        "La colección de YuGiOh estara disponible en el proximo sprint"
+      );
     }
   };
 
   useEffect(() => {
     axios
-      .get(`http://192.168.1.14:8080/coleccionistas/coleccionesDisponibles`)
+      .get(`http://${ipHost}:8080/coleccionistas/coleccionesDisponibles`)
       .then((respuestaBack) => {
         setColecciones(respuestaBack.data);
       })
@@ -43,7 +47,9 @@ export function AddCollection({ navigation }) {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.viewHeader}>
         <Text style={styles.header}>Colecciones Disponibles</Text>
-        <Text style={styles.subtitle}>Elegí el tema sobre el cual queres empezar a coleccionar</Text>
+        <Text style={styles.subtitle}>
+          Elegí el tema sobre el cual queres empezar a coleccionar
+        </Text>
       </View>
 
       {colecciones.map((coleccion, index) => (

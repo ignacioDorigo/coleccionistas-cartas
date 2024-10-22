@@ -6,6 +6,7 @@ import { RecargarContext } from "../../../context/RecargarContext";
 import PokemonCard from "../../../components/PokemonCard";
 import axios from "axios";
 import { styles } from "./FavoritosScreen.styles";
+import { ipHost } from "../../../utils/ipHost";
 
 export function FavoritosScreen() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -30,7 +31,7 @@ export function FavoritosScreen() {
     try {
       // Primero buscamos los IDS DE LOS FAVORITOS
       const response = await axios.get(
-        `http://192.168.1.14:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`
+        `http://${ipHost}:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`
       );
       const ids = response.data;
 
@@ -60,7 +61,7 @@ export function FavoritosScreen() {
   const eliminarCardFavorito = async (id) => {
     try {
       const response = await axios.delete(
-        `http://192.168.1.14:8080/coleccionistas/eliminarFavoritoPokemon?idCard=${id}&mail=${mail}`
+        `http://${ipHost}:8080/coleccionistas/eliminarFavoritoPokemon?idCard=${id}&mail=${mail}`
       );
       Alert.alert("Éxito", response.data);
       eliminar();
@@ -79,7 +80,6 @@ export function FavoritosScreen() {
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <ScrollView contentContainerStyle={styles.container}>
-
           <View style={styles.viewHeader}>
             <Text style={styles.header}>Tus Cartas Favoritas</Text>
           </View>
@@ -92,7 +92,13 @@ export function FavoritosScreen() {
                 onPress={() => eliminarCardFavorito(pokemon.id)}
                 containerStyle={styles.btnContainer}
                 buttonStyle={styles.btn}
-                icon={<Icon type="material-community" name="delete" color={"#FFFFFF"}/>}
+                icon={
+                  <Icon
+                    type="material-community"
+                    name="delete"
+                    color={"#FFFFFF"}
+                  />
+                }
               />
             </View>
           ))}

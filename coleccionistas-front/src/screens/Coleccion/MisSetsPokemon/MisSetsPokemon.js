@@ -7,6 +7,7 @@ import { ModalCarga } from "../../../components/ModalCarga";
 // Contexto
 import { AuthContext } from "../../../context/AuthContext";
 import { styles } from "./MisSetsPokemon.styles";
+import { ipHost } from "../../../utils/ipHost";
 
 export function MisSetsPokemon({ navigation }) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -24,7 +25,7 @@ export function MisSetsPokemon({ navigation }) {
     try {
       setVisible(true);
       const response = await axios.get(
-        `http:/192.168.1.14:8080/coleccionistas/misSets?mail=${mail}`
+        `http:/${ipHost}:8080/coleccionistas/misSets?mail=${mail}`
       );
       const idsSetsMios = response.data;
       const misSetsObjetos = [];

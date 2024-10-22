@@ -10,6 +10,8 @@ import {
 import axios from "axios";
 import { ModalCarga } from "../../../components/ModalCarga";
 
+import { ipHost } from "../../../utils";
+
 // Contexto
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
@@ -45,7 +47,6 @@ export function ElegirSetPokemon({ route, navigation }) {
       setMazosDisponibles(response.data.data);
       for (let index = 0; index < response.data.data.length; index++) {
         const element = response.data.data[index];
-        
       }
     } catch (error) {
       console.log(error);
@@ -69,7 +70,7 @@ export function ElegirSetPokemon({ route, navigation }) {
           onPress: () => {
             axios
               .post(
-                `http://192.168.1.14:8080/coleccionistas/crearColeccion?mail=${mail}&idMazo=${mazo.id}&idColeccion=${coleccion.id}`
+                `http://${ipHost}:8080/coleccionistas/crearColeccion?mail=${mail}&idMazo=${mazo.id}&idColeccion=${coleccion.id}`
               )
               .then((response) => {
                 recargarColecciones();
@@ -95,12 +96,15 @@ export function ElegirSetPokemon({ route, navigation }) {
           <Text style={styles.header}>Sets Disponibles</Text>
         </View>
         {mazosDisponibles.map((mazo, index) => (
-          <TouchableOpacity key={index} style={styles.touchable} onPress={() => handleMazoPress(mazo)}>
-            <Image style={styles.image} source={{ uri: mazo.images.logo }}/>
+          <TouchableOpacity
+            key={index}
+            style={styles.touchable}
+            onPress={() => handleMazoPress(mazo)}
+          >
+            <Image style={styles.image} source={{ uri: mazo.images.logo }} />
           </TouchableOpacity>
         ))}
       </ScrollView>
     </>
   );
 }
-

@@ -19,6 +19,7 @@ import { useTheme } from "context/ThemeContext";
 import { lightTheme, darkTheme } from "constants/themes";
 import createStyles from "screens/LoginScreen/LoginScreen.styles";
 import { ModalCarga } from "../../components/ModalCarga";
+import { ipHost } from "../../utils/ipHost";
 
 export function RecuperarPasswordScreen() {
   const { isDarkTheme } = useTheme();
@@ -33,7 +34,7 @@ export function RecuperarPasswordScreen() {
     try {
       setVisibleModal(true);
       const response = await axios.get(
-        `http://192.168.1.14:8080/coleccionistas/recuperarPassword?mail=${mail}`
+        `http://${ipHost}:8080/coleccionistas/recuperarPassword?mail=${mail}`
       );
       setVisibleModal(false);
       Alert.alert(
