@@ -57,4 +57,28 @@ public class UsuarioCardService {
 		return misCartasDeUnSet;
 	}
 
+	public String eliminarCartaInventario(String mail, String idSet, String idCard) {
+		Usuario usuario = usuarioService.buscarUsuario(mail);
+		if (usuario != null) {
+//			Vamos a buscar el objeto usuarioCard para saber su PRIMARY KEY
+			Integer idCardEliminar;
+			List<UsuarioCard> misCartas = misCartasSet(mail, idSet);
+			for (UsuarioCard carta : misCartas) {
+				if(carta.getId_set().equals(idSet) && carta.getId_card().equals(idCard)) {
+					idCardEliminar = carta.getId();
+					usuarioCardRepository.deleteById(idCardEliminar);
+//					Aca hacemos lo de borrar la carta
+					return "Carta eliminada del inventario";
+
+
+				}
+			}
+			return "Carta no encontrada";
+
+		} else {
+			return "Usuario no encontrado";
+		}
+
+	}
+
 }

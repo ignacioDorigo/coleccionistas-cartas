@@ -1,1 +1,2 @@
-export { screen } from './screenName'
+export { screen } from "./screenName";
+export { ipHost } from "./ipHost";

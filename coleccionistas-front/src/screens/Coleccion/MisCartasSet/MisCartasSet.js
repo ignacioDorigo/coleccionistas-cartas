@@ -1,98 +1,213 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, ScrollView, Image, StyleSheet } from 'react-native';
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from "react";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
+import { styles } from "./MisCartaSet.styles";
+import axios from "axios";
+import { Button, Icon, Switch } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
+import { ModalCarga } from "../../../components/ModalCarga";
 
-// Contexto
-import { AuthContext } from '../../../context/AuthContext'
+import { ipHost } from "../../../utils/ipHost";
 
-// Fichero Screen
-import { screen } from '../../../utils'
+// Contextos
+import { AuthContext } from "../../../context/AuthContext";
+import { RecargarContext } from "../../../context/RecargarContext";
 
+export function MisCartasSet({ route }) {
+  //De aca salgo el mail
+  const { isLoggedIn } = useContext(AuthContext);
+  const mail = isLoggedIn;
+  // Recibo el set que eligio el user
+  const { set } = route.params;
 
-export function MisCartasSet({ route, navigation }) {
-    const { isLoggedIn } = useContext(AuthContext);
-    const mail = isLoggedIn;
-    const { set } = route.params;
+  // De alguna manera tengo que recargar el screen de favoritos, entonces cree un context de eso
+  const { recargarFavoritos } = useContext(RecargarContext);
 
-    const [mazoMio, setMazoMio] = useState([]);
-    const [mazoCompleto, setMazoCompleto] = useState([]);
+  const navigation = useNavigation();
 
-    useEffect(() => {
-        axios.get(`https://api.pokemontcg.io/v2/cards/?q=id:${set.id_set}&select=id,name,images`, {
-            headers: {
-                'Authorization': `Bearer d9a5dcd2-e55a-4842-a1ec-278e15879a1d` // Reemplaza con tu API key
-            }
-        })
-            .then(response => setMazoCompleto(response.data.data))
-            .catch(error => console.log(error));
-    }, []);
+  const [mazoMio, setMazoMio] = useState([]);
+  const [mazoCompleto, setMazoCompleto] = useState([]); // incluye mis cartas y las que no tengo
 
-    useEffect(() => {
-        axios.get(`http://192.168.0.108:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id_set}`)
-            .then(response => setMazoMio(response.data.map(card => card.id_card)))
-            .catch(error => console.log(error));
-    }, []);
+  // Para recargar la screen
+  const [reload, setReload] = useState(false);
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Mis Cartas</Text>
+  // Para la visibilidad del modal
+  const [visible, setVisible] = useState(false);
+
+  // Estado del switch
+  const [checked, setChecked] = useState(false);
+  const toggleSwitch = () => {
+    setChecked(!checked);
+  };
+
+  const recargarScreen = () => {
+    setReload((prevState) => !prevState);
+  };
+
+  // Este useEffect es para traer los datos de las cartas que tengo yo (id, id_set, id_card, mail)
+  useEffect(() => {
+    navigation.setOptions({ title: "Inventario " + set.id });
+    setVisible(true);
+    axios
+      .get(
+        `http://${ipHost}:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id}`
+      )
+      .then((response) => setMazoMio(response.data.map((card) => card.id_card)))
+      .catch((error) => console.log(error));
+    setVisible(false);
+  }, [reload]);
+
+  // Este useEffect es para traer todas las cartas de un set
+  useEffect(() => {
+    setVisible(true);
+    axios
+      .get(
+        `https://api.pokemontcg.io/v2/cards/?q=id:${set.id}&select=id,name,images`,
+        {
+          headers: {
+            Authorization: `Bearer d9a5dcd2-e55a-4842-a1ec-278e15879a1d`, // Reemplaza con tu API key
+          },
+        }
+      )
+      .then((response) => setMazoCompleto(response.data.data))
+      .catch((error) => console.log(error));
+    setVisible(false);
+  }, []);
+
+  const agregarCardFavoritos = async (idCard) => {
+    try {
+      setVisible(true);
+      const response = await axios.post(
+        `http://${ipHost}:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarFavoritos();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+      recargarFavoritos();
+    } finally {
+      setVisible(false);
+    }
+  };
+
+  const agregarCardInventario = async (idCard) => {
+    try {
+      setVisible(true);
+      const response = await axios.post(
+        `http://${ipHost}:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${set.id}&idCard=${idCard}`
+      );
+      Alert.alert(
+        "Éxito",
+        response.data,
+        [
+          {
+            text: "OK",
+            onPress: () => recargarScreen(), // Aquí es donde se ejecuta console.log
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    } finally {
+      setVisible(false);
+    }
+  };
+
+  const eliminarCardInventario = async (idCard) => {
+    try {
+      setVisible(true);
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/eliminarCartaInventario?mail=${mail}&idSet=${set.id}&idCard=${idCard}`
+      );
+      Alert.alert(
+        "Exito",
+        response.data,
+        [
+          {
+            text: "OK",
+            onPress: () => recargarScreen(), // Aquí es donde se ejecuta console.log
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    } finally {
+      setVisible(false);
+    }
+  };
+
+  return (
+    <>
+      {mazoCompleto.length === 0 ? (
+        <ModalCarga />
+      ) : (
+        <>
+          <ModalCarga isVisible={visible} />
+
+          <View style={styles.container}>
+            <Text style={styles.title}>Tus Cartas Del Set {set.id}</Text>
+
             <ScrollView style={styles.scrollView}>
-                {mazoCompleto.map((card, index) => (
-                    <View key={index} style={styles.cardContainer}>
-                        <Image resizeMode='contain'
-                            style={styles.cardImage}
-                            source={{ uri: card.images.small }}
-                        />
-                        {mazoMio.includes(card.id) ?
-                            <Text style={styles.highlightedText}>La tenes</Text> :
-                            <Text style={styles.noTenes}>No la tenes</Text>
-                        }
+              <View style={styles.viewSwitch}>
+                <Switch
+                  value={checked}
+                  onValueChange={(value) => setChecked(value)}
+                />
+                <Text> Ver solo las que me faltan</Text>
+              </View>
+
+              {mazoCompleto
+                .filter((card) => (checked ? !mazoMio.includes(card.id) : true)) // Filtrar cartas cuando el switch está activo
+                .map((card, index) => (
+                  <View key={index} style={styles.cardContainer}>
+                    <Image
+                      style={styles.cardImage}
+                      source={{ uri: card.images.small }}
+                    />
+
+                    {mazoMio.includes(card.id) ? (
+                      <Icon
+                        type="material-community"
+                        name="trophy"
+                        color={"#FFD700"}
+                        raised
+                        containerStyle={styles.iconoTrophy}
+                      />
+                    ) : (
+                      <Text style={styles.noTenes}>No la tienes</Text>
+                    )}
+
+                    <Icon
+                      containerStyle={styles.iconoFavoritos}
+                      raised
+                      reverse
+                      name="heart-plus"
+                      type="material-community"
+                      color="#240046"
+                      onPress={() => agregarCardFavoritos(card.id)}
+                    />
+
+                    <View style={styles.botonesInventario}>
+                      <Button
+                        buttonStyle={styles.btnAgregar}
+                        containerStyle={styles.btnContainer}
+                        title="Agregar al inventario"
+                        onPress={() => agregarCardInventario(card.id)}
+                      />
+                      <Button
+                        buttonStyle={styles.btnEliminar}
+                        containerStyle={styles.btnContainer}
+                        title="Eliminar del inventario"
+                        onPress={() => eliminarCardInventario(card.id)}
+                      />
                     </View>
+                  </View>
                 ))}
             </ScrollView>
-        </View>
-    );
+          </View>
+        </>
+      )}
+    </>
+  );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
-    title: {
-        fontWeight: 'bold',
-        fontSize: 24,
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    scrollView: {
-        flex: 1,
-    },
-    cardContainer: {
-        alignItems: 'center',
-        marginBottom: 15,
-    },
-    cardImage: {
-        width: '100%',
-        height: 350, // Cambia la altura si es necesario
-        marginBottom: 5, // Espaciado entre la imagen y el texto
-    },
-    highlightedText: {
-        padding: 4,
-        color: 'white',
-        backgroundColor: 'green',
-        fontWeight: 'bold',
-        marginTop: 5,
-        width: '70%',
-        textAlign: 'center',
-    },
-    noTenes: {
-        padding: 4,
-        color: 'white',
-        backgroundColor: 'red',
-        fontWeight: 'bold',
-        marginTop: 5,
-        width: '70%',
-        textAlign: 'center',
-    }
-});

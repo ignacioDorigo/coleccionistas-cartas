@@ -1,89 +1,110 @@
+import React, { useEffect, useState, useContext } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Image,
+} from "react-native";
+import axios from "axios";
+import { ModalCarga } from "../../../components/ModalCarga";
 
-import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
-import axios from 'axios';
+import { ipHost } from "../../../utils";
 
 // Contexto
-import { AuthContext } from '../../../context/AuthContext'
+import { AuthContext } from "../../../context/AuthContext";
+import { RecargarContext } from "../../../context/RecargarContext";
 
 // Fichero Screen
-import { screen } from '../../../utils'
+import { screen } from "../../../utils";
 
+import { styles } from "./ElegirSetPokemon.styles";
 
 export function ElegirSetPokemon({ route, navigation }) {
+  //   Context para identificar al usuario con su mail
+  const { isLoggedIn } = useContext(AuthContext);
+  const mail = isLoggedIn;
 
-    const { isLoggedIn } = useContext(AuthContext);
-    const mail = isLoggedIn;
+  //   Para recargar las paginas
+  const { recargarColecciones } = useContext(RecargarContext);
 
-    const { coleccion } = route.params;
-    const [mazosDisponibles, setMazosDisponibles] = useState([]);
+  //   Cosas que vienen desde otra Screen
+  const { coleccion } = route.params;
+  const [mazosDisponibles, setMazosDisponibles] = useState([]);
 
-    useEffect(() => {
-        axios.get(`https://api.pokemontcg.io/v2/sets/`)
-            .then(response => setMazosDisponibles(response.data.data))
-            .catch(error => console.log(error));
-    }, []);
+  // Visiblidad del modal
+  const [visible, setVisible] = useState(false);
 
-    const handleMazoPress = (mazo) => {
-        Alert.alert(
-            "Confirmación",
-            "¿Está seguro que quiere crear una colección de este mazo?",
-            [
-                {
-                    text: "CANCELAR",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                {
-                    text: "ACEPTO",
-                    onPress: () => {
-                        axios.post(`http://192.168.0.108:8080/coleccionistas/crearColeccion?mail=${mail}&idMazo=${mazo.id}&idColeccion=${coleccion.id}`)
-                            .then(response => navigation.navigate(screen.coleccion.cartasSet, { coleccion, mazo }))
-                            .catch(error => Alert.alert("Error", `${error.response.data}`))
-                    }
-                }
-            ],
-            { cancelable: false }
-        );
-        console.log("mazo: ", mazo);
-    };
+  useEffect(() => {
+    buscarSetsDisponibles();
+  }, []);
 
-    return (
-        <ScrollView style={styles.container}>
-            <Text>Elegi que Set de Pokemon queres coleccionar</Text>
-            {mazosDisponibles.map((mazo, index) => (
-                <TouchableOpacity key={index} style={styles.mazo} onPress={() => handleMazoPress(mazo)}>
+  const buscarSetsDisponibles = async () => {
+    try {
+      setVisible(true);
+      const response = await axios.get(`https://api.pokemontcg.io/v2/sets`);
+      setMazosDisponibles(response.data.data);
+      for (let index = 0; index < response.data.data.length; index++) {
+        const element = response.data.data[index];
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setVisible(false);
+    }
+  };
 
-                    <Image style={styles.images} source={{ uri: mazo.images.logo }}></Image>
-
-                </TouchableOpacity>
-            ))}
-        </ScrollView>
+  const handleMazoPress = (mazo) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Está seguro que quiere crear una colección de este mazo?",
+      [
+        {
+          text: "CANCELAR",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "ACEPTO",
+          onPress: () => {
+            axios
+              .post(
+                `http://${ipHost}:8080/coleccionistas/crearColeccion?mail=${mail}&idMazo=${mazo.id}&idColeccion=${coleccion.id}`
+              )
+              .then((response) => {
+                recargarColecciones();
+                navigation.navigate(screen.coleccion.cartasSet, {
+                  coleccion,
+                  mazo,
+                });
+              })
+              .catch((error) => Alert.alert("Error", `${error.response.data}`));
+          },
+        },
+      ],
+      { cancelable: false }
     );
-}
+    console.log("mazo: ", mazo);
+  };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
-    mazo: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 20,
-        backgroundColor: 'lightgray',
-        marginTop: 10,
-        marginBottom: 10,
-    },
-    mazo__texto: {
-        color: '#FFFFFF',
-        fontWeight: 'bold',
-        fontSize: 15,
-    },
-    images: {
-        width: '100%',
-        height: 50,
-        resizeMode: 'contain',
-    },
-});
+  return (
+    <>
+      <ModalCarga isVisible={visible} />
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.viewHeader}>
+          <Text style={styles.header}>Sets Disponibles</Text>
+        </View>
+        {mazosDisponibles.map((mazo, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.touchable}
+            onPress={() => handleMazoPress(mazo)}
+          >
+            <Image style={styles.image} source={{ uri: mazo.images.logo }} />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </>
+  );
+}

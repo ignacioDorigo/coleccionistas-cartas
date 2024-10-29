@@ -1,3 +1,16 @@
+CREATE DATABASE coleccionistas;
+
+USE coleccionistas;
+
+CREATE TABLE usuarios(
+	mail VARCHAR(50) NOT NULL,
+	password VARCHAR(255) NOT NULL,
+	edad INT NOT NULL,
+	nombre VARCHAR(30) NOT NULL,
+	apellido VARCHAR(30) NOT NULL,
+	PRIMARY KEY (mail)
+);
+
 CREATE TABLE colecciones(
 	id INTEGER NOT NULL,
 	nombre VARCHAR(30) NOT NULL,
@@ -37,11 +50,17 @@ CREATE TABLE usuarios_cards(
 	FOREIGN KEY (mail) REFERENCES usuarios(mail)
 );
 
-/*Nueva tabla para favoritos pokemon*/
 CREATE TABLE favoritos_pokemon( 
 	id INTEGER AUTO_INCREMENT NOT NULL,
     mail VARCHAR(50) NOT NULL,
 	id_card VARCHAR (20) NOT NULL,
     primary key (id), 
     foreign key (mail) references usuarios(mail)
+);
+
+CREATE TABLE avatares(
+	mail VARCHAR(50) NOT NULL,
+	foto LONGBLOB,
+	PRIMARY KEY (mail),
+	FOREIGN KEY (mail) REFERENCES usuarios(mail)
 );

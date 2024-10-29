@@ -1,24 +1,23 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { useColorScheme } from "react-native";
 
-const ThemeContext = createContext();
+export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const systemColorScheme = useColorScheme();
-  const [isDarkTheme, setIsDarkTheme] = useState(systemColorScheme === 'dark');
+  const [isDarkTheme, setIsDarkTheme] = useState(systemColorScheme === "dark");
 
   useEffect(() => {
-  console.log('System color scheme: ', systemColorScheme);
-  setIsDarkTheme(systemColorScheme === 'dark');
-}, [systemColorScheme]);
-
+    console.log("System color scheme: ", systemColorScheme);
+    setIsDarkTheme(systemColorScheme === "dark");
+  }, [systemColorScheme]);
 
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme);
   };
 
   useEffect(() => {
-    setIsDarkTheme(systemColorScheme === 'dark');
+    setIsDarkTheme(systemColorScheme === "dark");
   }, [systemColorScheme]);
 
   return (

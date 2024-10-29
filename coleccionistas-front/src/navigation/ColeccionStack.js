@@ -24,7 +24,7 @@ export function ColeccionStack() {
       <Stack.Screen name={screen.coleccion.cartasSet} component={CartasSet} />
       <Stack.Screen name={screen.coleccion.elegirSetPokemon} component={ElegirSetPokemon} />
       <Stack.Screen name={screen.coleccion.misCartasSet} component={MisCartasSet} />
-      <Stack.Screen name={screen.coleccion.misSetsPokemon} component={MisSetsPokemon} />
+      <Stack.Screen name={screen.coleccion.misSetsPokemon} component={MisSetsPokemon} options={{title: "Sets Pokemon"}}/>
     </Stack.Navigator>
   )
 }

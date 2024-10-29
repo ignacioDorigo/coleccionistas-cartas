@@ -1,16 +1,34 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    gap: 10,
+    padding: 10,
+  },
+
+  titulo: {
+    fontSize: 25,
+    fontWeight: "bold",
+    alignSelf: "flex-start",
+  },
+  subtitulo: {
+    alignSelf: "flex-start",
+  },
+  btnContainer: {
+    width: "100%",
+    height: 50,
+  },
+  title: {
+    fontSize: 20,
+  },
+
+  logo: {
+    resizeMode: "contain",
+    width: "100%",
+    height: 200,
+  },
 });
 
 export default styles;
