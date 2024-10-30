@@ -7,27 +7,36 @@ export const styles = StyleSheet.create({
     gap: 10,
     padding: 10,
   },
-
-  titulo: {
-    fontSize: 25,
-    fontWeight: "bold",
-    alignSelf: "flex-start",
+  searchBar: {
+    marginTop: 20,
+    width: "95%",
+    height: 40,
+    display: "flex",
+    flexDirection: "row",
+    backgroundColor: "#FFF",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#DDD",
+    borderRadius: 10,
   },
-  subtitulo: {
-    alignSelf: "flex-start",
-  },
-  btnContainer: {
+  input: {
+    flex: 4,
+    margin: 0,
+    padding: 0,
     width: "100%",
-    height: 50,
+    borderBottomColor: "red",
+    fontSize: 16,
+    paddingHorizontal: 10,
   },
-  title: {
-    fontSize: 20,
-  },
-
-  logo: {
-    resizeMode: "contain",
-    width: "100%",
-    height: 200,
+  icon: {
+    backgroundColor: "#8D31D8",
+    flex: 1,
+    height: "100%",
+    justifyContent: "center",
+    borderEndEndRadius: 10,
+    borderTopRightRadius: 10,
+    
   },
 });
 
