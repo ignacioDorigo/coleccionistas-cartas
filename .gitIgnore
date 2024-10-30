@@ -3,3 +3,4 @@
 /node_modules/
 
 /coleccionistas-back/src/main/resources/application.properties
+coleccionistas-front/src/utils/ipHost.js
