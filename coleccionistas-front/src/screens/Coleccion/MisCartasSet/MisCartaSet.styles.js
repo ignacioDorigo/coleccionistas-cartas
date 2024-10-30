@@ -104,28 +104,38 @@ export const styles = StyleSheet.create({
     alignItems:'center',
     marginBottom:20,
   },
-  searchBar: {
-    marginBottom: 10,
-    backgroundColor: "#fff", // White background for search bar
-    borderRadius: 10,
-    height: 35,
-    borderColor: "#ddd", // Light gray border
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
+    backgroundColor: "#fff",
+    borderColor: "#ddd",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginBottom: 10,
+  },
+  iconSearch: {
+    paddingHorizontal: 5,
+  },
+  searchBar: {
+    flex: 1,
+    backgroundColor: "#fff",
+    height: 35,
     paddingHorizontal: 10,
     fontSize: 16,
   },
   suggestionsList: {
     backgroundColor: "#f0f0f0",
     borderRadius: 5,
-    maxHeight: 150, // Altura máxima para la lista de sugerencias
+    maxHeight: 150, // Limite de altura de la lista
     marginBottom: 10,
-    alignSelf: "flex-start", // Permite que la lista se ajuste automáticamente
-    overflow: "hidden",
     width: "100%",
+    overflow: "hidden",
   },
   suggestionItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    fontSize: 14,
+    color: "#555",
   },
 });

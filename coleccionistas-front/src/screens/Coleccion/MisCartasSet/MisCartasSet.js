@@ -172,14 +172,22 @@ export function MisCartasSet({ route }) {
 
           <View style={styles.container}>
             <Text style={styles.title}>Tus Cartas Del Set {set.id}</Text>
-
-            <TextInput
-              style={styles.searchBar}
-              placeholder="Buscar carta por nombre..."
-              value={searchText}
-              onChangeText={handleSearchChange}
-              onSubmitEditing={handleSubmitEditing}
-            />
+            <View style={styles.searchContainer}>
+              <Icon
+                type="material-community"
+                name="magnify"
+                size={20}
+                color="#000"
+                containerStyle={styles.iconSearch}
+              />
+              <TextInput
+                style={styles.searchBar}
+                placeholder="Buscar carta por nombre..."
+                value={searchText}
+                onChangeText={handleSearchChange}
+                onSubmitEditing={handleSubmitEditing}
+              />
+            </View>
 
             {showSuggestions && filteredSuggestions.length > 0 && (
               <FlatList
