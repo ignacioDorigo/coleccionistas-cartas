@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, Alert } from "react-native";
+import { View, Text, ScrollView, Image, Alert, TextInput, FlatList, TouchableOpacity } from "react-native";
 import { styles } from "./MisCartaSet.styles";
 import axios from "axios";
 import { Button, Icon, Switch } from "@rneui/themed";
@@ -35,6 +35,11 @@ export function MisCartasSet({ route }) {
 
   // Estado del switch
   const [checked, setChecked] = useState(false);
+
+  const [searchText, setSearchText] = useState("");
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
   const toggleSwitch = () => {
     setChecked(!checked);
   };
@@ -137,6 +142,26 @@ export function MisCartasSet({ route }) {
     }
   };
 
+  const handleSearchChange = (text) => {
+    setSearchText(text);
+    
+    // Filtrar solo cartas cuyos nombres empiezan con el texto de búsqueda
+    const suggestions = mazoCompleto.filter((card) =>
+      card.name.toLowerCase().startsWith(text.toLowerCase())
+    );
+    setFilteredSuggestions(suggestions);
+    setShowSuggestions(true);
+  };
+  
+  const handleSuggestionSelect = (name) => {
+    setSearchText(name);  // Coloca el nombre en la barra de busqueda
+    setFilteredSuggestions([]);  // Vacia las sugerencias para cerrar la lista
+  };
+
+  const handleSubmitEditing = () => {
+    setShowSuggestions(false); // Oculta la lista de sugerencias
+  };
+
   return (
     <>
       {mazoCompleto.length === 0 ? (
@@ -147,6 +172,27 @@ export function MisCartasSet({ route }) {
 
           <View style={styles.container}>
             <Text style={styles.title}>Tus Cartas Del Set {set.id}</Text>
+
+            <TextInput
+              style={styles.searchBar}
+              placeholder="Buscar carta por nombre..."
+              value={searchText}
+              onChangeText={handleSearchChange}
+              onSubmitEditing={handleSubmitEditing}
+            />
+
+            {showSuggestions && filteredSuggestions.length > 0 && (
+              <FlatList
+                style={styles.suggestionsList}
+                data={filteredSuggestions}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => handleSuggestionSelect(item.name)}>
+                    <Text style={styles.suggestionItem}>{item.name}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            )}
 
             <ScrollView style={styles.scrollView}>
               <View style={styles.viewSwitch}>
@@ -159,6 +205,8 @@ export function MisCartasSet({ route }) {
 
               {mazoCompleto
                 .filter((card) => (checked ? !mazoMio.includes(card.id) : true)) // Filtrar cartas cuando el switch está activo
+                .filter((card) => card.name.toLowerCase().startsWith(searchText.toLowerCase())) // Filtrar cartas por nombre
+
                 .map((card, index) => (
                   <View key={index} style={styles.cardContainer}>
                     <Image
@@ -189,18 +237,23 @@ export function MisCartasSet({ route }) {
                     />
 
                     <View style={styles.botonesInventario}>
-                      <Button
-                        buttonStyle={styles.btnAgregar}
-                        containerStyle={styles.btnContainer}
-                        title="Agregar al inventario"
-                        onPress={() => agregarCardInventario(card.id)}
-                      />
-                      <Button
-                        buttonStyle={styles.btnEliminar}
-                        containerStyle={styles.btnContainer}
-                        title="Eliminar del inventario"
-                        onPress={() => eliminarCardInventario(card.id)}
-                      />
+                      {mazoMio.includes(card.id) ? (
+                        // Mostrar solo el botón "Eliminar" si ya tienes la carta
+                        <Button
+                          buttonStyle={styles.btnEliminar}
+                          containerStyle={styles.btnContainer}
+                          title="Eliminar del inventario"
+                          onPress={() => eliminarCardInventario(card.id)}
+                        />
+                      ) : (
+                        // Mostrar solo el botón "Agregar" si no tienes la carta
+                        <Button
+                          buttonStyle={styles.btnAgregar}
+                          containerStyle={styles.btnContainer}
+                          title="Agregar al inventario"
+                          onPress={() => agregarCardInventario(card.id)}
+                        />
+                      )}
                     </View>
                   </View>
                 ))}

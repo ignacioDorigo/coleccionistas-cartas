@@ -73,7 +73,7 @@ export const styles = StyleSheet.create({
   },
 
   btnContainer:{
-    width:"50%",
+    width:"100%",
   },
 
   btnAgregar: {
@@ -103,5 +103,29 @@ export const styles = StyleSheet.create({
     flexDirection:'row',
     alignItems:'center',
     marginBottom:20,
-  }
+  },
+  searchBar: {
+    marginBottom: 10,
+    backgroundColor: "#fff", // White background for search bar
+    borderRadius: 10,
+    height: 35,
+    borderColor: "#ddd", // Light gray border
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    fontSize: 16,
+  },
+  suggestionsList: {
+    backgroundColor: "#f0f0f0",
+    borderRadius: 5,
+    maxHeight: 150, // Altura máxima para la lista de sugerencias
+    marginBottom: 10,
+    alignSelf: "flex-start", // Permite que la lista se ajuste automáticamente
+    overflow: "hidden",
+    width: "100%",
+  },
+  suggestionItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
 });
