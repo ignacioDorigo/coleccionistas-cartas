@@ -64,3 +64,22 @@ CREATE TABLE avatares(
 	PRIMARY KEY (mail),
 	FOREIGN KEY (mail) REFERENCES usuarios(mail)
 );
+
+CREATE TABLE publicaciones(
+    id INTEGER AUTO_INCREMENT NOT NULL,
+    titulo VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(200) NOT NULL,
+    precio DOUBLE NOT NULL,
+    estado VARCHAR(20) NOT NULL,
+    mail VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (mail) REFERENCES usuarios(mail)
+);
+
+CREATE TABLE fotos_publicaciones(
+    id INTEGER AUTO_INCREMENT NOT NULL,
+    imagen LONGBLOB NOT NULL,
+    idPublicacion INTEGER NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (idPublicacion) REFERENCES publicaciones(id)
+);
