@@ -116,7 +116,7 @@ export function VenderCartaForm(props) {
         data={imagenes}
         renderItem={renderImagen}
         keyExtractor={(item, index) => index.toString()}
-        numColumns={3} // Configura 3 imágenes por fila
+        numColumns={3}
         contentContainerStyle={{ alignItems: "center", margin: 20 }}
         columnWrapperStyle={styles.columnWrapper}
       />

@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +27,7 @@ import com.example.demo.modelo.UsuarioSet;
 import com.example.demo.repository.AvatarRepository;
 import com.example.demo.service.ColeccionService;
 import com.example.demo.service.FavoritosPokemonService;
+import com.example.demo.service.PublicacionService;
 import com.example.demo.service.UsuarioCardService;
 import com.example.demo.service.UsuarioService;
 import com.example.demo.service.UsuarioSetService;
@@ -53,6 +53,9 @@ public class Controlador {
 
 	@Autowired
 	AvatarRepository avatarRepository;
+
+	@Autowired
+	PublicacionService publicacionService;
 
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestParam String mail, @RequestParam String password,
@@ -218,23 +221,30 @@ public class Controlador {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar la imagen");
 		}
 	}
-	
+
 	@GetMapping("/avatar/{mail}")
 	public ResponseEntity<byte[]> getAvatar(@PathVariable String mail) {
-	    byte[] imageBytes = avatarRepository.findById(mail)
-	        .map(Avatar::getFoto)
-	        .orElse(null);
+		byte[] imageBytes = avatarRepository.findById(mail).map(Avatar::getFoto).orElse(null);
 
-	    if (imageBytes != null) {
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.setContentType(MediaType.IMAGE_JPEG); // Cambia esto si utilizas un tipo de imagen diferente
-	        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-	    }
+		if (imageBytes != null) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.IMAGE_JPEG); // Cambia esto si utilizas un tipo de imagen diferente
+			return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
 	}
 
-	
-
+	@PostMapping("/publicarCarta")
+	public ResponseEntity<String> publicarCarta(@RequestParam String mail, @RequestParam String titulo,
+			@RequestParam String descripcion, @RequestParam Double precio,
+			@RequestParam(value = "files", required = false) MultipartFile[] files) throws IOException {
+		String resultado = publicacionService.crearPublicacion(mail, titulo, descripcion, precio, files);
+		if (resultado.contains("Publicacion generada con exito")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
 
 }
