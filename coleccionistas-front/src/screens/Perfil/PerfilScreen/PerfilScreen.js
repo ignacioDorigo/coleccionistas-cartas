@@ -31,6 +31,7 @@ import { ipHost } from "../../../utils/ipHost";
 import { CambiarNombreForm } from "../../../components/Perfil";
 import { CambiarApellidoForm } from "../../../components/Perfil";
 import { CambiarPasswordForm } from "../../../components/Perfil";
+import { VenderCartaForm } from "../../../components/Perfil";
 
 export function PerfilScreen() {
   const { isLoggedIn, logout } = useContext(AuthContext);
@@ -73,6 +74,9 @@ export function PerfilScreen() {
     }
     if (texto === "Cambiar Email") {
       setModalActivo("email");
+    }
+    if (texto === "Vender Carta") {
+      setModalActivo("vendercarta");
     }
   };
 
@@ -220,6 +224,14 @@ export function PerfilScreen() {
           repintarComponentes={repintarComponentes}
         />
       )}
+
+      {modalActivo === "vendercarta" && (
+        <VenderCartaForm
+          visible={true}
+          ocultarModal={() => setModalActivo("")}
+          repintarComponentes={repintarComponentes}
+        />
+      )}
       <Toast />
     </View>
   );
@@ -249,6 +261,14 @@ function opcionesUsuario() {
       iconNameLeft: "chevron-right",
       iconColorLeft: "#CCCCCC",
       iconNameRight: "pencil",
+      iconColorRight: "#CCCCCC",
+    },
+    {
+      texto: "Vender Carta",
+      type: "material-community",
+      iconNameLeft: "chevron-right",
+      iconColorLeft: "#CCCCCC",
+      iconNameRight: "tag-plus-outline",
       iconColorRight: "#CCCCCC",
     },
   ];

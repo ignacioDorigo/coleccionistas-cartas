@@ -1,53 +1,38 @@
 import React, { useState } from "react";
-import { View, Text, Image } from "react-native";
-import { Button } from "@rneui/themed";
+import { View, TextInput, Image, Text, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 // Fichero screens
 import { screen } from "../../../utils";
 import { styles } from "./MarketPlaceScreen.styles";
+import { Icon, Input } from "@rneui/themed";
 
 export function MarketPlaceScreen() {
+  const [publicaciones, setPublicaciones] = useState([]);
   const navigation = useNavigation();
-
-  const goToComprarScreen = () => {
-    navigation.navigate(screen.marketplace.comprar);
-  };
-
-  const goToVenderScreen = () => {
-    navigation.navigate(screen.marketplace.vender);
-  };
-
-  const goToBuscarInformacion = () => {
-    navigation.navigate(screen.marketplace.buscarInformación);
-  };
 
   return (
     <View style={styles.container}>
-      {/* Aca vo ya poner el logo */}
-      <Image source={require(`../../../assets/icon.png`)} style={styles.logo}/>
+      {/* Barra de busqueda */}
+      <View style={styles.searchBar}>
+        <TextInput placeholder="Buscar ...." style={styles.input}></TextInput>
+        <Icon
+          size={30}
+          color={"#FFF"}
+          containerStyle={styles.icon}
+          type="material-community"
+          name="magnify"
+        />
+      </View>
 
-      <Text style={styles.titulo}>Bienvenido al MarketPlace de Findex</Text>
-      <Text style={styles.subtitulo}>Selecciona el tipo de Operación para continuar</Text>
-
-      <Button
-        title={"Comprar Cartas"}
-        onPress={goToComprarScreen}
-        containerStyle={styles.btnContainer}
-        titleStyle={styles.title}
-      />
-      <Button
-        title={"Vender Cartas"}
-        onPress={goToVenderScreen}
-        containerStyle={styles.btnContainer}
-        titleStyle={styles.title}
-      />
-      <Button
-        title={"Buscar Información Carta"}
-        onPress={goToBuscarInformacion}
-        containerStyle={styles.btnContainer}
-        titleStyle={styles.title}
-      />
+      {/* Aca van a ir las publicaciones */}
+      <ScrollView style={styles.publicaciones}>
+        {publicaciones.length === 0 ? (
+          <Text>No hay publicaciones</Text>
+        ) : (
+          <Text>Tus publicaciones aquiii</Text>
+        )}
+      </ScrollView>
     </View>
   );
 }
