@@ -1,17 +1,22 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, Image, FlatList } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { useFormik } from "formik";
 import { initialValues, validationSchema } from "./VenderCartaForm.data";
 import { styles } from "./VenderCartaForm.styles";
 import { Button, CheckBox, Icon, Input, Overlay } from "@rneui/themed";
+import * as ImagePicker from "expo-image-picker";
 
 export function VenderCartaForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
   const { visible, ocultarModal, repintarComponentes } = props;
   const [check1, setCheck1] = useState(false);
+  const [imagenes, setImagenes] = useState([]);
 
+  const renderImagen = ({ item }) => (
+    <Image source={{ uri: item }} style={styles.image} />
+  );
   const formik = useFormik({
     initialValues: initialValues(),
     validateOnChange: false,
@@ -35,6 +40,21 @@ export function VenderCartaForm(props) {
 
   const cancelar = () => {
     ocultarModal();
+  };
+
+  const subirFoto = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
+    if (!result.canceled) {
+      // Vemos donde guardo la imagen
+      const uriFoto = result.assets[0].uri;
+      console.log(result.assets[0]);
+      setImagenes((prevImagenes) => [...prevImagenes, uriFoto]);
+    } else {
+    }
   };
 
   return (
@@ -91,10 +111,24 @@ export function VenderCartaForm(props) {
         containerStyle={styles.checkbox}
         onPress={() => setCheck1(!check1)}
       />
+      <Text>Imagenes añadidas {imagenes.length}</Text>
+      <FlatList
+        data={imagenes}
+        renderItem={renderImagen}
+        keyExtractor={(item, index) => index.toString()}
+        numColumns={3} // Configura 3 imágenes por fila
+        contentContainerStyle={{ alignItems: "center", margin: 20 }}
+        columnWrapperStyle={styles.columnWrapper}
+      />
+
+      <Button onPress={subirFoto} radius={"sm"} type="solid">
+        Subir Imagen
+        <Icon name="upload" color="white" />
+      </Button>
 
       <Button
         title={"Publicar"}
-        buttonStyle={styles.btnConfirmar}
+        buttonStyle={styles.btnStyle}
         containerStyle={styles.btnConfirmar}
         onPress={formik.handleSubmit}
         loading={formik.isSubmitting}

@@ -15,10 +15,24 @@ export const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: -10,
   },
-  btnConfirmar: { backgroundColor: "#8D31D8" },
+  btnStyle: {
+    backgroundColor: "#8D31D8",
+  },
+  btnConfirmar: {
+    marginTop: 5,
+  },
 
   checkbox: {
-    // backgroundColor: "red",
     marginLeft: 0,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    resizeMode: "cover",
+  },
+  columnWrapper: {
+    justifyContent: "space-between", // Para espacio entre columnas
+    gap: 20,
+    marginBottom: 10, // Espacio entre filas
   },
 });
