@@ -6,6 +6,8 @@ import { initialValues, validationSchema } from "./VenderCartaForm.data";
 import { styles } from "./VenderCartaForm.styles";
 import { Button, CheckBox, Icon, Input, Overlay } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
+import { ipHost } from "../../../utils/ipHost";
 
 export function VenderCartaForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -17,15 +19,50 @@ export function VenderCartaForm(props) {
   const renderImagen = ({ item }) => (
     <Image source={{ uri: item }} style={styles.image} />
   );
+
   const formik = useFormik({
     initialValues: initialValues(),
     validateOnChange: false,
     validationSchema: validationSchema(),
     onSubmit: async (formulario) => {
       try {
-        if (check1 === true) {
-          Alert.alert("Exito", "Publicacion Generada");
-          console.log(formulario);
+        if (check1) {
+          const formData = new FormData();
+          formData.append("mail", mail);
+          formData.append("titulo", formulario.titulo);
+          formData.append("descripcion", formulario.descripcion);
+          formData.append("precio", formulario.precio.toString()); // Asegúrate de que el precio sea un string
+
+          // Agrega las imágenes al FormData solo si hay imágenes
+          if (imagenes.length > 0) {
+            imagenes.forEach((imagen, index) => {
+              formData.append("files", {
+                uri: imagen,
+                name: `imagen_${index}.jpg`,
+                type: "image/jpeg",
+              });
+            });
+          }
+
+          // Envía la solicitud POST al endpoint
+          const response = await axios.post(
+            `http://${ipHost}:8080/coleccionistas/publicarCarta`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          if (response.status === 200) {
+            Alert.alert("Éxito", "Publicación generada");
+            formik.resetForm();
+            setImagenes([]);
+            repintarComponentes(); // Llama a la función para repintar componentes si es necesario
+          } else {
+            Alert.alert("Error", "No se pudo generar la publicación");
+          }
         } else {
           Alert.alert(
             "Error",
@@ -33,7 +70,11 @@ export function VenderCartaForm(props) {
           );
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
+        Alert.alert(
+          "Error",
+          "Hubo un problema al enviar la publicación. Verifique su conexión y los datos ingresados."
+        );
       }
     },
   });
@@ -49,11 +90,8 @@ export function VenderCartaForm(props) {
       aspect: [4, 3],
     });
     if (!result.canceled) {
-      // Vemos donde guardo la imagen
       const uriFoto = result.assets[0].uri;
-      console.log(result.assets[0]);
       setImagenes((prevImagenes) => [...prevImagenes, uriFoto]);
-    } else {
     }
   };
 
@@ -74,7 +112,7 @@ export function VenderCartaForm(props) {
             type="material-community"
             name="pencil-circle-outline"
             color="#C1C1C1"
-          ></Icon>
+          />
         }
       />
 
@@ -87,7 +125,7 @@ export function VenderCartaForm(props) {
             type="material-community"
             name="tooltip-text-outline"
             color="#C1C1C1"
-          ></Icon>
+          />
         }
       />
 
@@ -96,12 +134,9 @@ export function VenderCartaForm(props) {
         errorMessage={formik.errors.precio}
         containerStyle={styles.inputContainer}
         onChangeText={(texto) => formik.setFieldValue("precio", texto)}
+        // keyboardType="numeric"
         rightIcon={
-          <Icon
-            type="material-community"
-            name="currency-usd"
-            color="#C1C1C1"
-          ></Icon>
+          <Icon type="material-community" name="currency-usd" color="#C1C1C1" />
         }
       />
 
@@ -111,7 +146,7 @@ export function VenderCartaForm(props) {
         containerStyle={styles.checkbox}
         onPress={() => setCheck1(!check1)}
       />
-      <Text>Imagenes añadidas {imagenes.length}</Text>
+      <Text>Imagenes añadidas: {imagenes.length}</Text>
       <FlatList
         data={imagenes}
         renderItem={renderImagen}
