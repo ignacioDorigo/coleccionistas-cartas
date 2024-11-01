@@ -12,6 +12,11 @@ export const styles = StyleSheet.create({
     marginBottom: 30,
     fontSize: 20,
   },
+  camposForm: {
+    fontSize: 18,
+    marginHorizontal: 10,
+    marginBottom: 5,
+  },
   inputContainer: {
     marginBottom: -10,
   },
@@ -34,5 +39,21 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between", // Para espacio entre columnas
     gap: 20,
     marginBottom: 10, // Espacio entre filas
+  },
+  textArea: {
+    padding: 10,
+    borderColor: '#C1C1C1',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginHorizontal: 10,
+    marginTop: 10,
+    fontSize: 18,
+  },
+  msjDescripcion: {
+    color: 'red', 
+    marginBottom: 10,
+    marginLeft: 16,
+    fontSize: 12,
+    marginTop: 5,
   },
 });
