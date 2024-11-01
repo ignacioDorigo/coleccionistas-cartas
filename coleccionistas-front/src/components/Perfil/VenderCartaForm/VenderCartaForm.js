@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Alert, Image, FlatList } from "react-native";
+import { View, Text, Alert, Image, FlatList, TextInput } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { useFormik } from "formik";
 import { initialValues, validationSchema } from "./VenderCartaForm.data";
@@ -60,6 +60,7 @@ export function VenderCartaForm(props) {
             formik.resetForm();
             setImagenes([]);
             repintarComponentes(); // Llama a la función para repintar componentes si es necesario
+            ocultarModal(); 
           } else {
             Alert.alert("Error", "No se pudo generar la publicación");
           }
@@ -103,6 +104,7 @@ export function VenderCartaForm(props) {
     >
       <Text style={styles.titulo}>Vender Carta</Text>
 
+      <Text style={styles.camposForm}>Titulo:</Text>
       <Input
         placeholder="Ingrese Titulo"
         errorMessage={formik.errors.titulo}
@@ -116,8 +118,13 @@ export function VenderCartaForm(props) {
         }
       />
 
-      <Input
+      <Text style={styles.camposForm}>Descripcion:</Text>
+      
+      <TextInput
         placeholder="Ingrese Descripcion"
+        style={styles.textArea}
+        multiline={true}
+        numberOfLines={4}
         errorMessage={formik.errors.descripcion}
         onChangeText={(texto) => formik.setFieldValue("descripcion", texto)}
         rightIcon={
@@ -129,6 +136,11 @@ export function VenderCartaForm(props) {
         }
       />
 
+      {formik.errors.descripcion && (
+        <Text style={ styles.msjDescripcion }>{formik.errors.descripcion}</Text>
+      )}
+
+      <Text style={styles.camposForm}>Precio:</Text>
       <Input
         placeholder="Ingrese Precio"
         errorMessage={formik.errors.precio}
