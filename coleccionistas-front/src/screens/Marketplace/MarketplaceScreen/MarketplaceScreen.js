@@ -1,18 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { View, TextInput, Image, Text, ScrollView, TouchableOpacity } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  View,
+  TextInput,
+  Image,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { Icon } from "@rneui/themed";
 import axios from "axios";
 import { ipHost } from "../../../utils";
 import { styles } from "./MarketPlaceScreen.styles";
+import { RecargarContext } from "../../../context/RecargarContext";
 
 export function MarketPlaceScreen() {
   const [publicaciones, setPublicaciones] = useState([]);
   const [imagenesPublicacion, setImagenesPublicacion] = useState({});
   const [indiceImagenActual, setIndiceImagenActual] = useState({});
+  const { marketplace } = useContext(RecargarContext);
 
   useEffect(() => {
     buscarPublicaciones();
-  }, []);
+  }, [marketplace]);
 
   const buscarPublicaciones = async () => {
     try {
@@ -42,14 +51,18 @@ export function MarketPlaceScreen() {
         [idPublicacion]: 0, // Índice inicial de la imagen actual para cada publicación
       }));
     } catch (error) {
-      console.log(`Error al obtener imágenes para la publicación ${idPublicacion}:`, error);
+      console.log(
+        `Error al obtener imágenes para la publicación ${idPublicacion}:`,
+        error
+      );
     }
   };
 
   const cambiarImagen = (idPublicacion, direccion) => {
     const indiceActual = indiceImagenActual[idPublicacion] || 0;
     const totalImagenes = imagenesPublicacion[idPublicacion]?.length || 0;
-    const nuevoIndice = (indiceActual + direccion + totalImagenes) % totalImagenes;
+    const nuevoIndice =
+      (indiceActual + direccion + totalImagenes) % totalImagenes;
 
     setIndiceImagenActual((prevIndices) => ({
       ...prevIndices,
@@ -86,18 +99,26 @@ export function MarketPlaceScreen() {
               {/* Carrusel de imágenes */}
               {imagenesPublicacion[publicacion.id]?.length ? (
                 <View style={styles.carouselContainer}>
-                  <TouchableOpacity onPress={() => cambiarImagen(publicacion.id, -1)}>
+                  <TouchableOpacity
+                    onPress={() => cambiarImagen(publicacion.id, -1)}
+                  >
                     <Text style={styles.arrow}>{"<"}</Text>
                   </TouchableOpacity>
 
                   <Image
                     source={{
-                      uri: `data:image/jpeg;base64,${imagenesPublicacion[publicacion.id][indiceImagenActual[publicacion.id]]}`,
+                      uri: `data:image/jpeg;base64,${
+                        imagenesPublicacion[publicacion.id][
+                          indiceImagenActual[publicacion.id]
+                        ]
+                      }`,
                     }}
                     style={styles.carouselImage}
                   />
 
-                  <TouchableOpacity onPress={() => cambiarImagen(publicacion.id, 1)}>
+                  <TouchableOpacity
+                    onPress={() => cambiarImagen(publicacion.id, 1)}
+                  >
                     <Text style={styles.arrow}>{">"}</Text>
                   </TouchableOpacity>
                 </View>

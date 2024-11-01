@@ -8,6 +8,7 @@ import { Button, CheckBox, Icon, Input, Overlay } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { ipHost } from "../../../utils/ipHost";
+import { RecargarContext } from "../../../context/RecargarContext";
 
 export function VenderCartaForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -15,6 +16,7 @@ export function VenderCartaForm(props) {
   const { visible, ocultarModal, repintarComponentes } = props;
   const [check1, setCheck1] = useState(false);
   const [imagenes, setImagenes] = useState([]);
+  const { recargarMarketplace } = useContext(RecargarContext);
 
   const renderImagen = ({ item }) => (
     <Image source={{ uri: item }} style={styles.image} />
@@ -60,6 +62,7 @@ export function VenderCartaForm(props) {
             formik.resetForm();
             setImagenes([]);
             repintarComponentes(); // Llama a la función para repintar componentes si es necesario
+            recargarMarketplace();
           } else {
             Alert.alert("Error", "No se pudo generar la publicación");
           }
