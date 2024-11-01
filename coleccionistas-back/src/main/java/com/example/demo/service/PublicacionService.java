@@ -41,8 +41,7 @@ public class PublicacionService {
 					FotoPublicacion fotoBytes = new FotoPublicacion(foto.getBytes(), ultimoId);
 					fotoPublicacionRepository.save(fotoBytes);
 					System.out.println("FOTO GUARDADA");
-	
-				}				
+				}
 			}
 			return "Publicacion generada con exito";
 		}
@@ -60,6 +59,11 @@ public class PublicacionService {
 			return ultimoId;
 		}
 
+	}
+
+	public List<Publicacion> publicacionesActivas() {
+		List<Publicacion> activas = publicacionRepository.findByEstado("Activa");
+		return activas;
 	}
 
 }

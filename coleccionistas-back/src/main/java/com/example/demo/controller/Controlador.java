@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -21,10 +22,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.modelo.Avatar;
 import com.example.demo.modelo.Coleccion;
 import com.example.demo.modelo.FavoritosPokemon;
+import com.example.demo.modelo.FotoPublicacion;
 import com.example.demo.modelo.PerfilUsuario;
+import com.example.demo.modelo.Publicacion;
 import com.example.demo.modelo.UsuarioCard;
 import com.example.demo.modelo.UsuarioSet;
 import com.example.demo.repository.AvatarRepository;
+import com.example.demo.repository.FotoPublicacionRepository;
 import com.example.demo.service.ColeccionService;
 import com.example.demo.service.FavoritosPokemonService;
 import com.example.demo.service.PublicacionService;
@@ -56,6 +60,11 @@ public class Controlador {
 
 	@Autowired
 	PublicacionService publicacionService;
+
+	@Autowired
+	FotoPublicacionRepository fotoPublicacionRepository;
+
+//	FotoPublicacion foto;
 
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestParam String mail, @RequestParam String password,
@@ -228,8 +237,26 @@ public class Controlador {
 
 		if (imageBytes != null) {
 			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.IMAGE_JPEG); // Cambia esto si utilizas un tipo de imagen diferente
+			headers.setContentType(MediaType.IMAGE_JPEG);
 			return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
+	}
+
+	@GetMapping("/publicaciones")
+	public List<Publicacion> publicacionesActivas() {
+		return publicacionService.publicacionesActivas();
+	}
+
+	@GetMapping("/imagenes/{idPublicacion}")
+	public ResponseEntity<List<byte[]>> imagenesPublicacion(@PathVariable Integer idPublicacion) {
+		List<byte[]> imagenes = fotoPublicacionRepository.findByPublicacion(idPublicacion).stream()
+				.map(FotoPublicacion::getImagen).collect(Collectors.toList());
+		if (!imagenes.isEmpty()) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON); // Configuración para enviar lista de imágenes
+			return new ResponseEntity<>(imagenes, headers, HttpStatus.OK);
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}

@@ -36,8 +36,35 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     borderEndEndRadius: 10,
     borderTopRightRadius: 10,
-    
   },
+  publicaciones: {
+    width: "100%",
+  },
+  publicacionContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: "#DDD",
+    width: "100%",
+  },
+  carouselContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  carouselImage: {
+    width: 200,
+    height: 200,
+    resizeMode: "cover",
+    marginHorizontal: 10,
+    borderRadius: 10,
+  },
+  arrow: {
+    fontSize: 30,
+    color: "#8D31D8",
+    paddingHorizontal: 10,
+  },
+  
 });
 
 export default styles;

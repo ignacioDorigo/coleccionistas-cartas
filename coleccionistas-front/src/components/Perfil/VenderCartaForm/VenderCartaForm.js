@@ -8,6 +8,7 @@ import { Button, CheckBox, Icon, Input, Overlay } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { ipHost } from "../../../utils/ipHost";
+import { RecargarContext } from "../../../context/RecargarContext";
 
 export function VenderCartaForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -15,6 +16,7 @@ export function VenderCartaForm(props) {
   const { visible, ocultarModal, repintarComponentes } = props;
   const [check1, setCheck1] = useState(false);
   const [imagenes, setImagenes] = useState([]);
+  const { recargarMarketplace } = useContext(RecargarContext);
 
   const renderImagen = ({ item }) => (
     <Image source={{ uri: item }} style={styles.image} />
@@ -60,7 +62,8 @@ export function VenderCartaForm(props) {
             formik.resetForm();
             setImagenes([]);
             repintarComponentes(); // Llama a la función para repintar componentes si es necesario
-            ocultarModal(); 
+            ocultarModal();
+            recargarMarketplace();
           } else {
             Alert.alert("Error", "No se pudo generar la publicación");
           }
@@ -119,7 +122,7 @@ export function VenderCartaForm(props) {
       />
 
       <Text style={styles.camposForm}>Descripcion:</Text>
-      
+
       <TextInput
         placeholder="Ingrese Descripcion"
         style={styles.textArea}
@@ -137,7 +140,7 @@ export function VenderCartaForm(props) {
       />
 
       {formik.errors.descripcion && (
-        <Text style={ styles.msjDescripcion }>{formik.errors.descripcion}</Text>
+        <Text style={styles.msjDescripcion}>{formik.errors.descripcion}</Text>
       )}
 
       <Text style={styles.camposForm}>Precio:</Text>
