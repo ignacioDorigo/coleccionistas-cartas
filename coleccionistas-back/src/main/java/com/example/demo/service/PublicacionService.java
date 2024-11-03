@@ -66,4 +66,9 @@ public class PublicacionService {
 		return activas;
 	}
 
+	public List<Publicacion> misPublicaciones(String mail) {
+		List<Publicacion> misPublicaciones = publicacionRepository.findByMail(mail);
+		return misPublicaciones;
+	}
+
 }

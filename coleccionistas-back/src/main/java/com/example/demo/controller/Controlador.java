@@ -274,4 +274,9 @@ public class Controlador {
 		}
 	}
 
+	@GetMapping("/misPublicaciones")
+	public List<Publicacion> misPublicaciones(@RequestParam String mail) {
+		return publicacionService.misPublicaciones(mail);
+	}
+
 }

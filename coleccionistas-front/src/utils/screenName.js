@@ -24,6 +24,8 @@ const marketplaceStack = {
 const perfilStack = {
   perfilTab: "PerfilTab",
   perfil: "Perfil",
+  misPublicaciones: "MisPublicaciones",
+  misCompras:"MisCompras"
 };
 
 export const screen = {

@@ -32,10 +32,14 @@ import { CambiarNombreForm } from "../../../components/Perfil";
 import { CambiarApellidoForm } from "../../../components/Perfil";
 import { CambiarPasswordForm } from "../../../components/Perfil";
 import { VenderCartaForm } from "../../../components/Perfil";
+import { useNavigation } from "@react-navigation/native";
+
+import { screen } from "../../../utils";
 
 export function PerfilScreen() {
   const { isLoggedIn, logout } = useContext(AuthContext);
   const mail = isLoggedIn;
+  const navigation = useNavigation();
 
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
@@ -193,6 +197,50 @@ export function PerfilScreen() {
         </TouchableOpacity>
       ))}
 
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate(screen.perfil.misPublicaciones);
+        }}
+      >
+        <ListItem>
+          <Icon
+            type="material-community"
+            name="chevron-right"
+            color="#CCCCCC"
+          />
+          <ListItem.Content>
+            <ListItem.Title>Mis Publicaciones</ListItem.Title>
+          </ListItem.Content>
+          <Icon
+            type="material-community"
+            name="tag-multiple-outline"
+            color="#CCCCCC"
+          />
+        </ListItem>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate(screen.perfil.misCompras);
+        }}
+      >
+        <ListItem>
+          <Icon
+            type="material-community"
+            name="chevron-right"
+            color="#CCCCCC"
+          />
+          <ListItem.Content>
+            <ListItem.Title>Mis Compras</ListItem.Title>
+          </ListItem.Content>
+          <Icon
+            type="material-community"
+            name="cart-outline"
+            color="#CCCCCC"
+          />
+        </ListItem>
+      </TouchableOpacity>
+
       <Button
         title="Cerrar Sesión"
         onPress={cerrarSesion}
@@ -232,6 +280,7 @@ export function PerfilScreen() {
           repintarComponentes={repintarComponentes}
         />
       )}
+
       <Toast />
     </View>
   );

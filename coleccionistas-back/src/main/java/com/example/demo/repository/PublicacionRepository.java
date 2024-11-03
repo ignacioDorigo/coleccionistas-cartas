@@ -10,5 +10,7 @@ import java.util.List;
 public interface PublicacionRepository extends JpaRepository<Publicacion, Integer> {
 
 	List<Publicacion> findByEstado(String estado);
+	
+	List<Publicacion> findByMail(String mail);
 
 }
