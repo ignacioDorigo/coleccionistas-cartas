@@ -1,14 +1,17 @@
+import { Button, Icon, Input, Overlay } from "@rneui/themed";
+import { useFormik } from "formik";
 import React, { useContext } from "react";
 import { View, Text, Alert } from "react-native";
-import { Overlay, Input, Icon, Button } from "@rneui/themed";
-import { styles } from "./ActualizarTituloForm.styles";
-import { useFormik } from "formik";
-import { initialValues, validationSchema } from "./ActualizarTituloForm.data";
+import {
+  initialValues,
+  validationSchema,
+} from "./ActualizarDescripcionForm.data";
+import { styles } from "./ActualizarDescripcionForm.styles";
 import axios from "axios";
 import { ipHost } from "../../../utils/ipHost";
 import { RecargarContext } from "../../../context/RecargarContext";
 
-export function ActualizarTituloForm(props) {
+export function ActualizarDescripcionForm(props) {
   const { recargarMarketplace } = useContext(RecargarContext);
   const { visible, ocultarModal, mail, publicacion, repintarMisPublicaciones } =
     props;
@@ -20,7 +23,7 @@ export function ActualizarTituloForm(props) {
     onSubmit: async (formulario) => {
       try {
         const response = await axios.put(
-          `http://${ipHost}:8080/coleccionistas/publicacion/actualizarTitulo?mail=${mail}&idPublicacion=${publicacion.id}&titulo=${formulario.titulo}`
+          `http://${ipHost}:8080/coleccionistas/publicacion/actualizarDescripcion?mail=${mail}&idPublicacion=${publicacion.id}&descripcion=${formulario.descripcion}`
         );
         Alert.alert("Exito", response.data);
         repintarMisPublicaciones();
@@ -39,11 +42,11 @@ export function ActualizarTituloForm(props) {
       onBackdropPress={ocultarModal}
       overlayStyle={styles.overlay}
     >
-      <Text style={styles.titulo}>Cambio de Titulo</Text>
+      <Text style={styles.titulo}>Cambio de Descripcion</Text>
       <Input
-        placeholder="Ingrese nuevo titulo"
-        errorMessage={formik.errors.titulo}
-        onChangeText={(texto) => formik.setFieldValue("titulo", texto)}
+        placeholder="Ingrese nueva descripcion"
+        errorMessage={formik.errors.descripcion}
+        onChangeText={(texto) => formik.setFieldValue("descripcion", texto)}
         rightIcon={
           <Icon
             type="material-community"

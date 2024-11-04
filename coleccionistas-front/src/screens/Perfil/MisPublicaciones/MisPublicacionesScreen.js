@@ -6,6 +6,9 @@ import axios from "axios";
 import { ipHost } from "../../../utils/ipHost";
 import { TouchableOpacity } from "react-native";
 import { Icon } from "@rneui/themed";
+import { ActualizarTituloForm } from "../../../components/Perfil/ActualizarTituloForm/ActualizarTituloForm";
+import { ActualizarDescripcionForm } from "../../../components/Perfil/ActualizarDescripcionForm/ActualizarDescripcionForm";
+import { ActualizarPrecioForm } from "../../../components/Perfil/ActualizarPrecioForm/ActualizarPrecioForm";
 
 export function MisPublicacionesScreen() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -15,6 +18,21 @@ export function MisPublicacionesScreen() {
   const [indiceImagenActual, setIndiceImagenActual] = useState({});
   const [recargar, setRecargar] = useState(false);
 
+  const [visibleTitulo, setVisibleTitulo] = useState(false);
+  const [visibleDescripcion, setVisibleDescripcion] = useState(false);
+  const [visiblePrecio, setVisiblePrecio] = useState(false);
+  const [publicacionClickeada, setPublicacionClickeada] = useState(null);
+
+  const ocultarModalTitulo = () => {
+    setVisibleTitulo((prevState) => !prevState);
+  };
+  const ocultarModalDescripcion = () => {
+    setVisibleDescripcion((prevState) => !prevState);
+  };
+
+  const ocultarModalPrecio = () => {
+    setVisiblePrecio((prevState) => !prevState);
+  };
   const repintarScreen = () => {
     setRecargar((prevState) => !prevState);
   };
@@ -81,13 +99,6 @@ export function MisPublicacionesScreen() {
     }
   };
 
-  const editarPublicacion = async (idPublicacion) => {
-    try {
-      console.log("PUBLICACION A EDITAR: " + idPublicacion);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {publicaciones.length === 0 ? (
@@ -105,7 +116,8 @@ export function MisPublicacionesScreen() {
                 color={"#000"}
                 size={20}
                 onPress={() => {
-                  console.log("Actualizar ...");
+                  setPublicacionClickeada(publicacion);
+                  ocultarModalTitulo();
                 }}
               ></Icon>
             </View>
@@ -120,7 +132,8 @@ export function MisPublicacionesScreen() {
                 color={"#C1C1C1"}
                 size={20}
                 onPress={() => {
-                  console.log("Actualizar ...");
+                  setPublicacionClickeada(publicacion);
+                  ocultarModalDescripcion();
                 }}
               ></Icon>
             </View>
@@ -135,7 +148,8 @@ export function MisPublicacionesScreen() {
                 color={"#4CAF50"}
                 size={20}
                 onPress={() => {
-                  console.log("Actualizar ...");
+                  setPublicacionClickeada(publicacion);
+                  ocultarModalPrecio();
                 }}
               ></Icon>
             </View>
@@ -182,6 +196,28 @@ export function MisPublicacionesScreen() {
           </View>
         ))
       )}
+      <ActualizarTituloForm
+        visible={visibleTitulo}
+        ocultarModal={ocultarModalTitulo}
+        mail={mail}
+        publicacion={publicacionClickeada}
+        repintarMisPublicaciones={repintarScreen}
+      />
+
+      <ActualizarDescripcionForm
+        visible={visibleDescripcion}
+        ocultarModal={ocultarModalDescripcion}
+        mail={mail}
+        publicacion={publicacionClickeada}
+        repintarMisPublicaciones={repintarScreen}
+      />
+      <ActualizarPrecioForm
+        visible={visiblePrecio}
+        ocultarModal={ocultarModalPrecio}
+        mail={mail}
+        publicacion={publicacionClickeada}
+        repintarMisPublicaciones={repintarScreen}
+      />
     </ScrollView>
   );
 }

@@ -1,15 +1,16 @@
+import { useFormik } from "formik";
 import React, { useContext } from "react";
 import { View, Text, Alert } from "react-native";
-import { Overlay, Input, Icon, Button } from "@rneui/themed";
-import { styles } from "./ActualizarTituloForm.styles";
-import { useFormik } from "formik";
-import { initialValues, validationSchema } from "./ActualizarTituloForm.data";
-import axios from "axios";
+import { initialValues, validationSchema } from "./ActualizarPrecioForm.data";
+import { styles } from "./ActualizarPrecioForm.styles";
+import { Button, Icon, Input, Overlay } from "@rneui/themed";
 import { ipHost } from "../../../utils/ipHost";
+import axios from "axios";
 import { RecargarContext } from "../../../context/RecargarContext";
 
-export function ActualizarTituloForm(props) {
+export function ActualizarPrecioForm(props) {
   const { recargarMarketplace } = useContext(RecargarContext);
+
   const { visible, ocultarModal, mail, publicacion, repintarMisPublicaciones } =
     props;
 
@@ -20,7 +21,7 @@ export function ActualizarTituloForm(props) {
     onSubmit: async (formulario) => {
       try {
         const response = await axios.put(
-          `http://${ipHost}:8080/coleccionistas/publicacion/actualizarTitulo?mail=${mail}&idPublicacion=${publicacion.id}&titulo=${formulario.titulo}`
+          `http://${ipHost}:8080/coleccionistas/publicacion/actualizarPrecio?mail=${mail}&idPublicacion=${publicacion.id}&precio=${formulario.precio}`
         );
         Alert.alert("Exito", response.data);
         repintarMisPublicaciones();
@@ -39,11 +40,12 @@ export function ActualizarTituloForm(props) {
       onBackdropPress={ocultarModal}
       overlayStyle={styles.overlay}
     >
-      <Text style={styles.titulo}>Cambio de Titulo</Text>
+      <Text style={styles.titulo}>Cambio de Precio</Text>
       <Input
-        placeholder="Ingrese nuevo titulo"
-        errorMessage={formik.errors.titulo}
-        onChangeText={(texto) => formik.setFieldValue("titulo", texto)}
+        placeholder="Ingrese el nuevo precio"
+        errorMessage={formik.errors.precio}
+        keyboardType="numeric"
+        onChangeText={(texto) => formik.setFieldValue("precio", texto)}
         rightIcon={
           <Icon
             type="material-community"

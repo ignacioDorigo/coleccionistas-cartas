@@ -4,13 +4,13 @@ export const styles = StyleSheet.create({
   overlay: {
     width: "95%",
     height: "auto",
-    borderRadius:5,
+    borderRadius: 5,
   },
   titulo: {
     fontWeight: "bold",
-    textAlign:'center',
-    marginBottom:30,
-    fontSize:25,
+    textAlign: "center",
+    marginBottom: 30,
+    fontSize: 25,
   },
   contenedorBotones: {
     flexDirection: "row",
