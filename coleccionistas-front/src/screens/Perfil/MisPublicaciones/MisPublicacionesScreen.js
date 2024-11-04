@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, Image, ScrollView } from "react-native";
+import { View, Text, Image, ScrollView, Alert } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { styles } from "./MisPublicacionesScreen.styles";
 import axios from "axios";
@@ -13,10 +13,15 @@ export function MisPublicacionesScreen() {
   const [publicaciones, setPublicaciones] = useState([]);
   const [imagenesPublicacion, setImagenesPublicacion] = useState({});
   const [indiceImagenActual, setIndiceImagenActual] = useState({});
+  const [recargar, setRecargar] = useState(false);
+
+  const repintarScreen = () => {
+    setRecargar((prevState) => !prevState);
+  };
 
   useEffect(() => {
     buscarPublicaciones();
-  }, []);
+  }, [recargar]);
 
   const buscarPublicaciones = async () => {
     try {
@@ -63,6 +68,18 @@ export function MisPublicacionesScreen() {
       [idPublicacion]: nuevoIndice,
     }));
   };
+
+  const eliminarPublicacion = async (idPublicacion) => {
+    try {
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/eliminarPublicacion?mail=${mail}&idPublicacion=${idPublicacion}`
+      );
+      Alert.alert("Exito", response.data);
+      repintarScreen();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    }
+  };
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {publicaciones.length === 0 ? (
@@ -70,11 +87,22 @@ export function MisPublicacionesScreen() {
       ) : (
         publicaciones.map((publicacion, index) => (
           <View key={index} style={styles.publicacionContainer}>
-            <Text style={styles.publicacionText}>Titulo: {publicacion.titulo}</Text>
-            <Text style={styles.publicacionDetail}>Descripcion: {publicacion.descripcion}</Text>
+            <Text style={styles.publicacionText}>
+              Titulo: {publicacion.titulo}
+            </Text>
+            <Text style={styles.publicacionDetail}>
+              Descripcion: {publicacion.descripcion}
+            </Text>
             <Text style={styles.priceText}>Precio: ${publicacion.precio}</Text>
             <Text style={styles.estadoText}>Estado: {publicacion.estado}</Text>
-            <Icon type="material-community" name="close-circle" color={"#FF0000"} containerStyle={styles.iconCancel} size={30}></Icon>
+            <Icon
+              type="material-community"
+              name="close-circle"
+              color={"#FF0000"}
+              containerStyle={styles.iconCancel}
+              size={30}
+              onPress={() => eliminarPublicacion(publicacion.id)}
+            ></Icon>
 
             {/* Par el carrousel de las imgssss */}
             {imagenesPublicacion[publicacion.id]?.length ? (
