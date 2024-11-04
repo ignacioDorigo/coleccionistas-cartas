@@ -17,6 +17,7 @@ export function MarketPlaceScreen() {
   const [publicaciones, setPublicaciones] = useState([]);
   const [imagenesPublicacion, setImagenesPublicacion] = useState({});
   const [indiceImagenActual, setIndiceImagenActual] = useState({});
+  const [searchText, setSearchText] = useState(""); // Estado para el texto de búsqueda
   const { marketplace } = useContext(RecargarContext);
 
   useEffect(() => {
@@ -48,7 +49,7 @@ export function MarketPlaceScreen() {
       }));
       setIndiceImagenActual((prevIndices) => ({
         ...prevIndices,
-        [idPublicacion]: 0, // Índice inicial de la imagen actual para cada publicación
+        [idPublicacion]: 0,
       }));
     } catch (error) {
       console.log(
@@ -70,11 +71,21 @@ export function MarketPlaceScreen() {
     }));
   };
 
+  // Filtra las publicaciones en función del texto de búsqueda
+  const publicacionesFiltradas = publicaciones.filter((publicacion) =>
+    publicacion.titulo.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
       {/* Barra de búsqueda */}
       <View style={styles.searchBar}>
-        <TextInput placeholder="Buscar ...." style={styles.input} />
+        <TextInput
+          placeholder="Buscar por título..."
+          style={styles.input}
+          value={searchText}
+          onChangeText={setSearchText} // Actualiza el texto de búsqueda
+        />
         <Icon
           size={30}
           color={"#FFF"}
@@ -86,10 +97,10 @@ export function MarketPlaceScreen() {
 
       {/* Publicaciones */}
       <ScrollView style={styles.publicaciones}>
-        {publicaciones.length === 0 ? (
+        {publicacionesFiltradas.length === 0 ? (
           <Text>No hay publicaciones</Text>
         ) : (
-          publicaciones.map((publicacion, index) => (
+          publicacionesFiltradas.map((publicacion, index) => (
             <View key={index} style={styles.publicacionContainer}>
               <Text style={styles.publicacionText}>
                 {publicacion.titulo}
