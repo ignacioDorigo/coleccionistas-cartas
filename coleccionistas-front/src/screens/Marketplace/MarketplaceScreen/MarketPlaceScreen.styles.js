@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     padding: 10,
+    backgroundColor: "#F3F4F6",
   },
   searchBar: {
     marginTop: 20,
@@ -22,12 +23,9 @@ export const styles = StyleSheet.create({
   },
   input: {
     flex: 4,
-    margin: 0,
-    padding: 0,
-    width: "100%",
-    borderBottomColor: "red",
     fontSize: 16,
     paddingHorizontal: 10,
+    borderBottomColor: "red",
   },
   icon: {
     backgroundColor: "#8D31D8",
@@ -41,9 +39,17 @@ export const styles = StyleSheet.create({
     width: "100%",
   },
   publicacionContainer: {
-    padding: 10,
-    borderBottomWidth: 1,
+    backgroundColor: "#FFF",
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
     borderColor: "#DDD",
+    borderWidth: 1,
     width: "100%",
   },
   publicacionText: {
@@ -70,6 +76,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
+    paddingVertical: 10,
   },
   carouselImage: {
     width: 200,
@@ -77,11 +84,29 @@ export const styles = StyleSheet.create({
     resizeMode: "cover",
     marginHorizontal: 10,
     borderRadius: 10,
+    borderColor: "#DDD",
+    borderWidth: 1,
   },
   arrow: {
     fontSize: 30,
     color: "#8D31D8",
     paddingHorizontal: 10,
+  },
+  noImagesText: {
+    fontStyle: "italic",
+    color: "#999",
+    marginTop: 10,
+    textAlign: "center",
+  },
+  iconCancel: {
+    position: "absolute",
+    right: 10,
+    top: 10,
+  },
+  iconEdit: {
+    position: "absolute",
+    right: 40,
+    top: 10,
   },
 });
 
