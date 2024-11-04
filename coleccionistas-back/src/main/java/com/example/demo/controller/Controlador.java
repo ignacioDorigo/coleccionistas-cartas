@@ -279,4 +279,14 @@ public class Controlador {
 		return publicacionService.misPublicaciones(mail);
 	}
 
+	@DeleteMapping("/eliminarPublicacion")
+	public ResponseEntity<String> eliminarPublicacion(@RequestParam String mail, @RequestParam Integer idPublicacion) {
+		String resultado = publicacionService.eliminarPublicacion(mail, idPublicacion);
+		if (resultado.contains("Publicacion eliminada")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
 }

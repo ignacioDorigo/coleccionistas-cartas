@@ -63,18 +63,18 @@ export function MisPublicacionesScreen() {
     }));
   };
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.container}>
       {publicaciones.length === 0 ? (
         <Text>No hay publicaciones</Text>
       ) : (
         publicaciones.map((publicacion, index) => (
           <View key={index} style={styles.publicacionContainer}>
-            <Text>Titulo: {publicacion.titulo}</Text>
-            <Text>Descripcion: {publicacion.descripcion}</Text>
-            <Text>Precio: ${publicacion.precio}</Text>
-            <Text>Estado: {publicacion.estado}</Text>
+            <Text style={styles.publicacionText}>Titulo: {publicacion.titulo}</Text>
+            <Text style={styles.publicacionDetail}>Descripcion: {publicacion.descripcion}</Text>
+            <Text style={styles.priceText}>Precio: ${publicacion.precio}</Text>
+            <Text style={styles.estadoText}>Estado: {publicacion.estado}</Text>
 
-            {/* Carrusel de imágenes */}
+            {/* Par el carrousel de las imgssss */}
             {imagenesPublicacion[publicacion.id]?.length ? (
               <View style={styles.carouselContainer}>
                 <TouchableOpacity
