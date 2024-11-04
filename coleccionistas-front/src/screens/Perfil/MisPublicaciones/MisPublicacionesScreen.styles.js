@@ -80,6 +80,10 @@ export const styles = StyleSheet.create({
     right: 10,
     top: 10,
   },
+  titleIcon: {
+    display: "flex",
+    flexDirection:'row'
+  },
 });
 
 export default styles;

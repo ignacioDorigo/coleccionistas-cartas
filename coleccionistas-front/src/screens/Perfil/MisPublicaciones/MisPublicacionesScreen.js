@@ -95,15 +95,54 @@ export function MisPublicacionesScreen() {
       ) : (
         publicaciones.map((publicacion, index) => (
           <View key={index} style={styles.publicacionContainer}>
-            <Text style={styles.publicacionText}>
-              Titulo: {publicacion.titulo}
-            </Text>
-            <Text style={styles.publicacionDetail}>
-              Descripcion: {publicacion.descripcion}
-            </Text>
-            <Text style={styles.priceText}>Precio: ${publicacion.precio}</Text>
-            <Text style={styles.estadoText}>Estado: {publicacion.estado}</Text>
+            <View style={styles.titleIcon}>
+              <Text style={styles.publicacionText}>
+                Titulo: {publicacion.titulo}
+              </Text>
+              <Icon
+                type="material-community"
+                name="pencil-outline"
+                color={"#000"}
+                // containerStyle={styles.iconCancel}
+                size={20}
+                onPress={() => {
+                  console.log("Actualizar ...");
+                }}
+              ></Icon>
+            </View>
 
+            <View style={styles.titleIcon}>
+              <Text style={styles.publicacionDetail}>
+                Descripcion: {publicacion.descripcion}
+              </Text>
+              <Icon
+                type="material-community"
+                name="pencil-outline"
+                color={"#C1C1C1"}
+                // containerStyle={styles.iconCancel}
+                size={20}
+                onPress={() => {
+                  console.log("Actualizar ...");
+                }}
+              ></Icon>
+            </View>
+
+            <View style={styles.titleIcon}>
+              <Text style={styles.priceText}>
+                Precio: ${publicacion.precio}
+              </Text>
+              <Icon
+                type="material-community"
+                name="pencil-outline"
+                color={"#4CAF50"}
+                // containerStyle={styles.iconCancel}
+                size={20}
+                onPress={() => {
+                  console.log("Actualizar ...");
+                }}
+              ></Icon>
+            </View>
+            <Text style={styles.estadoText}>Estado: {publicacion.estado}</Text>
 
             <Icon
               type="material-community"
