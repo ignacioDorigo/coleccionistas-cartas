@@ -80,6 +80,14 @@ export function MisPublicacionesScreen() {
       Alert.alert("Error", error.response.data);
     }
   };
+
+  const editarPublicacion = async (idPublicacion) => {
+    try {
+      console.log("PUBLICACION A EDITAR: " + idPublicacion);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {publicaciones.length === 0 ? (
@@ -95,6 +103,15 @@ export function MisPublicacionesScreen() {
             </Text>
             <Text style={styles.priceText}>Precio: ${publicacion.precio}</Text>
             <Text style={styles.estadoText}>Estado: {publicacion.estado}</Text>
+            <Icon
+              type="material-community"
+              name="pencil-circle"
+              color={"#4361EE"}
+              containerStyle={styles.iconEdit}
+              size={30}
+              onPress={() => editarPublicacion(publicacion.id)}
+            ></Icon>
+
             <Icon
               type="material-community"
               name="close-circle"

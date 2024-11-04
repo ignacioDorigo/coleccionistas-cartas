@@ -46,6 +46,25 @@ export const styles = StyleSheet.create({
     borderColor: "#DDD",
     width: "100%",
   },
+  publicacionText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 5,
+  },
+  publicacionDetail: {
+    fontSize: 15,
+    fontWeight: "400",
+    color: "#666",
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  priceText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#4CAF50",
+    marginBottom: 8,
+  },
   carouselContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -64,7 +83,6 @@ export const styles = StyleSheet.create({
     color: "#8D31D8",
     paddingHorizontal: 10,
   },
-  
 });
 
 export default styles;

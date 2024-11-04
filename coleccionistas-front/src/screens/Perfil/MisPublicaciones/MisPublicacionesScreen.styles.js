@@ -77,8 +77,13 @@ export const styles = StyleSheet.create({
   },
   iconCancel: {
     position: "absolute",
-    right:10,
-    top:10,
+    right: 10,
+    top: 10,
+  },
+  iconEdit: {
+    position: "absolute",
+    right: 40,
+    top: 10,
   },
 });
 
