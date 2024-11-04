@@ -103,7 +103,6 @@ export function MisPublicacionesScreen() {
                 type="material-community"
                 name="pencil-outline"
                 color={"#000"}
-                // containerStyle={styles.iconCancel}
                 size={20}
                 onPress={() => {
                   console.log("Actualizar ...");
@@ -119,7 +118,6 @@ export function MisPublicacionesScreen() {
                 type="material-community"
                 name="pencil-outline"
                 color={"#C1C1C1"}
-                // containerStyle={styles.iconCancel}
                 size={20}
                 onPress={() => {
                   console.log("Actualizar ...");
@@ -135,7 +133,6 @@ export function MisPublicacionesScreen() {
                 type="material-community"
                 name="pencil-outline"
                 color={"#4CAF50"}
-                // containerStyle={styles.iconCancel}
                 size={20}
                 onPress={() => {
                   console.log("Actualizar ...");
