@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Alert, Image, FlatList, TextInput } from "react-native";
+import { View, Text, Alert, Image, FlatList, TextInput, TouchableOpacity } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { useFormik } from "formik";
 import { initialValues, validationSchema } from "./VenderCartaForm.data";
@@ -18,9 +18,21 @@ export function VenderCartaForm(props) {
   const [imagenes, setImagenes] = useState([]);
   const { recargarMarketplace } = useContext(RecargarContext);
 
-  const renderImagen = ({ item }) => (
-    <Image source={{ uri: item }} style={styles.image} />
+  const renderImagen = ({ item, index }) => (
+    <View style={styles.imageContainer}>
+      <Image source={{ uri: item }} style={styles.image} />
+      <TouchableOpacity
+        style={styles.deleteIconContainer}
+        onPress={() => eliminarImagen(index)}
+      >
+        <Icon name="close" type="material" color="white" size={20} />
+      </TouchableOpacity>
+    </View>
   );
+
+  const eliminarImagen = (index) => {
+    setImagenes((prevImagenes) => prevImagenes.filter((_, i) => i !== index));
+  };
 
   const formik = useFormik({
     initialValues: initialValues(),
@@ -33,9 +45,8 @@ export function VenderCartaForm(props) {
           formData.append("mail", mail);
           formData.append("titulo", formulario.titulo);
           formData.append("descripcion", formulario.descripcion);
-          formData.append("precio", formulario.precio.toString()); // Asegúrate de que el precio sea un string
+          formData.append("precio", formulario.precio.toString());
 
-          // Agrega las imágenes al FormData solo si hay imágenes
           if (imagenes.length > 0) {
             imagenes.forEach((imagen, index) => {
               formData.append("files", {
@@ -46,7 +57,6 @@ export function VenderCartaForm(props) {
             });
           }
 
-          // Envía la solicitud POST al endpoint
           const response = await axios.post(
             `http://${ipHost}:8080/coleccionistas/publicarCarta`,
             formData,
@@ -61,24 +71,18 @@ export function VenderCartaForm(props) {
             Alert.alert("Éxito", "Publicación generada");
             formik.resetForm();
             setImagenes([]);
-            repintarComponentes(); // Llama a la función para repintar componentes si es necesario
+            repintarComponentes();
             ocultarModal();
             recargarMarketplace();
           } else {
             Alert.alert("Error", "No se pudo generar la publicación");
           }
         } else {
-          Alert.alert(
-            "Error",
-            "Para enviar el formulario debe aceptar la declaración jurada"
-          );
+          Alert.alert("Error", "Para enviar el formulario debe aceptar la declaración jurada");
         }
       } catch (error) {
         console.error(error);
-        Alert.alert(
-          "Error",
-          "Hubo un problema al enviar la publicación. Verifique su conexión y los datos ingresados."
-        );
+        Alert.alert("Error", "Hubo un problema al enviar la publicación. Verifique su conexión y los datos ingresados.");
       }
     },
   });
@@ -112,13 +116,7 @@ export function VenderCartaForm(props) {
         placeholder="Ingrese Titulo"
         errorMessage={formik.errors.titulo}
         onChangeText={(texto) => formik.setFieldValue("titulo", texto)}
-        rightIcon={
-          <Icon
-            type="material-community"
-            name="pencil-circle-outline"
-            color="#C1C1C1"
-          />
-        }
+        rightIcon={<Icon type="material-community" name="pencil-circle-outline" color="#C1C1C1" />}
       />
 
       <Text style={styles.camposForm}>Descripcion:</Text>
@@ -130,13 +128,6 @@ export function VenderCartaForm(props) {
         numberOfLines={4}
         errorMessage={formik.errors.descripcion}
         onChangeText={(texto) => formik.setFieldValue("descripcion", texto)}
-        rightIcon={
-          <Icon
-            type="material-community"
-            name="tooltip-text-outline"
-            color="#C1C1C1"
-          />
-        }
       />
 
       {formik.errors.descripcion && (
@@ -149,10 +140,7 @@ export function VenderCartaForm(props) {
         errorMessage={formik.errors.precio}
         containerStyle={styles.inputContainer}
         onChangeText={(texto) => formik.setFieldValue("precio", texto)}
-        // keyboardType="numeric"
-        rightIcon={
-          <Icon type="material-community" name="currency-usd" color="#C1C1C1" />
-        }
+        rightIcon={<Icon type="material-community" name="currency-usd" color="#C1C1C1" />}
       />
 
       <CheckBox

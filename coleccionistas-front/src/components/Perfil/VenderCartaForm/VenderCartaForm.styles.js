@@ -55,5 +55,13 @@ export const styles = StyleSheet.create({
     marginLeft: 16,
     fontSize: 12,
     marginTop: 5,
+  },deleteIconContainer: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    backgroundColor: "red",
+    borderRadius: 15,
+    padding: 2,
+    zIndex: 1,
   },
 });
