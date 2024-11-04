@@ -27,7 +27,7 @@ export function ActualizarPrecioForm(props) {
         repintarMisPublicaciones();
         recargarMarketplace();
       } catch (error) {
-        console.log(error);
+        Alert.alert("Error", error.response.data);
       } finally {
         ocultarModal();
       }
