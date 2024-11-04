@@ -75,6 +75,11 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: "center",
   },
+  iconCancel: {
+    position: "absolute",
+    right:10,
+    top:10,
+  },
 });
 
 export default styles;

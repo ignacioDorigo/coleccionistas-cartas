@@ -5,6 +5,7 @@ import { styles } from "./MisPublicacionesScreen.styles";
 import axios from "axios";
 import { ipHost } from "../../../utils/ipHost";
 import { TouchableOpacity } from "react-native";
+import { Icon } from "@rneui/themed";
 
 export function MisPublicacionesScreen() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -73,6 +74,7 @@ export function MisPublicacionesScreen() {
             <Text style={styles.publicacionDetail}>Descripcion: {publicacion.descripcion}</Text>
             <Text style={styles.priceText}>Precio: ${publicacion.precio}</Text>
             <Text style={styles.estadoText}>Estado: {publicacion.estado}</Text>
+            <Icon type="material-community" name="close-circle" color={"#FF0000"} containerStyle={styles.iconCancel} size={30}></Icon>
 
             {/* Par el carrousel de las imgssss */}
             {imagenesPublicacion[publicacion.id]?.length ? (
