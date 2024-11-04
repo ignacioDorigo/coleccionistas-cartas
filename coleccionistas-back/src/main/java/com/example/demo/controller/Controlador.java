@@ -296,6 +296,39 @@ public class Controlador {
 		}
 	}
 
+	@PutMapping("/publicacion/actualizarTitulo")
+	public ResponseEntity<String> actualizarTitulo(@RequestParam String mail, @RequestParam Integer idPublicacion,
+			@RequestParam String titulo) {
+		String resultado = publicacionService.actualizarTitulo(mail, idPublicacion, titulo);
+		if (resultado.contains("Titulo actualizado correctamente")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
+	@PutMapping("/publicacion/actualizarDescripcion")
+	public ResponseEntity<String> actualizarDescripcion(@RequestParam String mail, @RequestParam Integer idPublicacion,
+			@RequestParam String descripcion) {
+		String resultado = publicacionService.actualizarDescripcion(mail, idPublicacion, descripcion);
+		if (resultado.contains("Descripcion actualizada correctamente")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
+	@PutMapping("/publicacion/actualizarPrecio")
+	public ResponseEntity<String> actualizarPrecio(@RequestParam String mail, @RequestParam Integer idPublicacion,
+			@RequestParam Double precio) {
+		String resultado = publicacionService.actualizarPrecio(mail, idPublicacion, precio);
+		if (resultado.contains("Precio actualizado correctamente")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
 	@PutMapping("/editarPublicacion")
 	public ResponseEntity<String> editarPublicacion(@RequestParam String mail, @RequestParam Integer idPublicacion,
 			@RequestBody Publicacion nuevaPublicacion) {

@@ -80,11 +80,6 @@ export const styles = StyleSheet.create({
     right: 10,
     top: 10,
   },
-  iconEdit: {
-    position: "absolute",
-    right: 40,
-    top: 10,
-  },
 });
 
 export default styles;

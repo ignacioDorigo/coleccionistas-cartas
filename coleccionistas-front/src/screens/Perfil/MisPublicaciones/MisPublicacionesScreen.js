@@ -103,14 +103,7 @@ export function MisPublicacionesScreen() {
             </Text>
             <Text style={styles.priceText}>Precio: ${publicacion.precio}</Text>
             <Text style={styles.estadoText}>Estado: {publicacion.estado}</Text>
-            <Icon
-              type="material-community"
-              name="pencil-circle"
-              color={"#4361EE"}
-              containerStyle={styles.iconEdit}
-              size={30}
-              onPress={() => editarPublicacion(publicacion.id)}
-            ></Icon>
+
 
             <Icon
               type="material-community"

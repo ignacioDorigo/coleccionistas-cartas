@@ -106,4 +106,76 @@ public class PublicacionService {
 
 	}
 
+	public String actualizarTitulo(String mail, Integer idPublicacion, String titulo) {
+		Usuario usuario = usuarioService.buscarUsuario(mail);
+		if (usuario == null) {
+			return "El usuario no existe";
+		}
+		Optional<Publicacion> publicacionOptional = publicacionRepository.findById(idPublicacion);
+		if (publicacionOptional.isEmpty()) {
+			return "No existe ese ID publicacion";
+		}
+
+		Publicacion publicacion = publicacionOptional.get();
+		if (!publicacion.getMail().equals(mail)) {
+			return "No podes cambiar el titulo de una publicacion que no es tuya";
+		}
+		
+		if (!publicacion.getEstado().equals("Activa")) {
+			return "No podes editar una publicacion que no esta activa";
+		}
+
+		publicacion.setTitulo(titulo);
+		publicacionRepository.save(publicacion);
+		return "Titulo actualizado correctamente";
+	}
+
+	public String actualizarDescripcion(String mail, Integer idPublicacion, String descripcion) {
+		Usuario usuario = usuarioService.buscarUsuario(mail);
+		if (usuario == null) {
+			return "El usuario no existe";
+		}
+		Optional<Publicacion> publicacionOptional = publicacionRepository.findById(idPublicacion);
+		if (publicacionOptional.isEmpty()) {
+			return "No existe ese ID publicacion";
+		}
+
+		Publicacion publicacion = publicacionOptional.get();
+		if (!publicacion.getMail().equals(mail)) {
+			return "No podes cambiar la descripcion de una publicacion que no es tuya";
+		}
+
+		if (!publicacion.getEstado().equals("Activa")) {
+			return "No podes editar una publicacion que no esta activa";
+		}
+		
+		publicacion.setDescripcion(descripcion);
+		publicacionRepository.save(publicacion);
+		return "Descripcion actualizada correctamente";
+	}
+
+	public String actualizarPrecio(String mail, Integer idPublicacion, Double precio) {
+		Usuario usuario = usuarioService.buscarUsuario(mail);
+		if (usuario == null) {
+			return "El usuario no existe";
+		}
+		Optional<Publicacion> publicacionOptional = publicacionRepository.findById(idPublicacion);
+		if (publicacionOptional.isEmpty()) {
+			return "No existe ese ID publicacion";
+		}
+
+		Publicacion publicacion = publicacionOptional.get();
+		if (!publicacion.getMail().equals(mail)) {
+			return "No podes cambiar el precio de una publicacion que no es tuya";
+		}
+
+		if (!publicacion.getEstado().equals("Activa")) {
+			return "No podes editar una publicacion que no esta activa";
+		}
+
+		publicacion.setPrecio(precio);
+		publicacionRepository.save(publicacion);
+		return "Precio actualizado correctamente";
+	}
+
 }
