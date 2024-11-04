@@ -91,10 +91,11 @@ export function MarketPlaceScreen() {
         ) : (
           publicaciones.map((publicacion, index) => (
             <View key={index} style={styles.publicacionContainer}>
-              <Text>ID: {publicacion.id}</Text>
+              
               <Text>Titulo: {publicacion.titulo}</Text>
               <Text>Descripcion: {publicacion.descripcion}</Text>
               <Text>Precio: {publicacion.precio}</Text>
+              <Text>Estado: {publicacion.estado}</Text>
 
               {/* Carrusel de imágenes */}
               {imagenesPublicacion[publicacion.id]?.length ? (
