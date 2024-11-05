@@ -83,3 +83,22 @@ CREATE TABLE fotos_publicaciones(
     PRIMARY KEY (id),
     FOREIGN KEY (idPublicacion) REFERENCES publicaciones(id)
 );
+
+CREATE TABLE usuarios_sets_yugioh(
+	id INTEGER AUTO_INCREMENT NOT NULL,
+	mail VARCHAR (50) NOT NULL,
+	id_set VARCHAR(255) NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (mail) REFERENCES usuarios(mail)
+);
+
+CREATE TABLE usuarios_cards_yugioh(
+	id INTEGER AUTO_INCREMENT NOT NULL,
+	mail VARCHAR (50) NOT NULL,
+	id_set VARCHAR(255) NOT NULL,
+	id_card VARCHAR(255) NOT NULL,
+	PRIMARY KEY(id),
+	FOREIGN KEY (mail) REFERENCES usuarios(mail)
+);
+
+

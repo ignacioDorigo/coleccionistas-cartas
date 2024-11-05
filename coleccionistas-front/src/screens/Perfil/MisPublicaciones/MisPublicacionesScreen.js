@@ -9,9 +9,11 @@ import { Icon } from "@rneui/themed";
 import { ActualizarTituloForm } from "../../../components/Perfil/ActualizarTituloForm/ActualizarTituloForm";
 import { ActualizarDescripcionForm } from "../../../components/Perfil/ActualizarDescripcionForm/ActualizarDescripcionForm";
 import { ActualizarPrecioForm } from "../../../components/Perfil/ActualizarPrecioForm/ActualizarPrecioForm";
+import { RecargarContext } from "../../../context/RecargarContext";
 
 export function MisPublicacionesScreen() {
   const { isLoggedIn } = useContext(AuthContext);
+  const { recargarMarketplace } = useContext(RecargarContext);
   const mail = isLoggedIn;
   const [publicaciones, setPublicaciones] = useState([]);
   const [imagenesPublicacion, setImagenesPublicacion] = useState({});
@@ -94,6 +96,7 @@ export function MisPublicacionesScreen() {
       );
       Alert.alert("Exito", response.data);
       repintarScreen();
+      recargarMarketplace();
     } catch (error) {
       Alert.alert("Error", error.response.data);
     }

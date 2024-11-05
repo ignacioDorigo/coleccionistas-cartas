@@ -13,6 +13,8 @@ import { ElegirSetPokemon } from "../screens/Coleccion/ElegirSetPokemon";
 import { MisCartasSet } from "../screens/Coleccion/MisCartasSet";
 import { MisSetsPokemon } from "../screens/Coleccion/MisSetsPokemon";
 import { ElegirSetYugioh } from "../screens/Coleccion/ElegirSetYugioh/ElegirSetYugioh";
+import { CartasSetYugioh } from "../screens/Coleccion/CartasSetYugioh/CartasSetYugioh";
+import { MisSetsYugioh } from "../screens/Coleccion/MisSetsYugioh/MisSetsYugioh";
 
 export function ColeccionStack() {
   const Stack = createNativeStackNavigator();
@@ -44,9 +46,19 @@ export function ColeccionStack() {
         component={MisCartasSet}
       />
       <Stack.Screen
+        name={screen.coleccion.cartasSetYugioh}
+        component={CartasSetYugioh}
+      />
+      <Stack.Screen
         name={screen.coleccion.misSetsPokemon}
         component={MisSetsPokemon}
         options={{ title: "Sets Pokemon" }}
+      />
+
+      <Stack.Screen
+        name={screen.coleccion.misSetsYugioh}
+        component={MisSetsYugioh}
+        options={{ title: "Sets YuGiOh" }}
       />
     </Stack.Navigator>
   );
