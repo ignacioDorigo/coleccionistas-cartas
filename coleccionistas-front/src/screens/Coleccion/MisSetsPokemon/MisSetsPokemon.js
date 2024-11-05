@@ -12,6 +12,7 @@ import { ipHost } from "../../../utils/ipHost";
 export function MisSetsPokemon({ navigation }) {
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
+  // console.log(mail);
 
   const [misSets, setMisSets] = useState([]);
   const [visible, setVisible] = useState(false);

@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  StyleSheet,
   TouchableOpacity,
   Image,
   Alert,
@@ -25,10 +24,9 @@ export function AddCollection({ navigation }) {
       });
     }
     if (coleccion.nombre === "Yugioh") {
-      Alert.alert(
-        "Aviso",
-        "La colección de YuGiOh estara disponible en el proximo sprint"
-      );
+      navigation.navigate(screen.coleccion.elegirSetYugioh, {
+        coleccion: coleccion,
+      });
     }
   };
 
