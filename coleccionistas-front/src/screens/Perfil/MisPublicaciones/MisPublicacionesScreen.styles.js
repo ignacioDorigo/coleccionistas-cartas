@@ -2,41 +2,9 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
     gap: 10,
     padding: 10,
     backgroundColor: "#F3F4F6",
-  },
-  searchBar: {
-    marginTop: 20,
-    width: "95%",
-    height: 40,
-    display: "flex",
-    flexDirection: "row",
-    backgroundColor: "#FFF",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#DDD",
-    borderRadius: 10,
-  },
-  input: {
-    flex: 4,
-    fontSize: 16,
-    paddingHorizontal: 10,
-    borderBottomColor: "red",
-  },
-  icon: {
-    backgroundColor: "#8D31D8",
-    flex: 1,
-    height: "100%",
-    justifyContent: "center",
-    borderEndEndRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  publicaciones: {
-    width: "100%",
   },
   publicacionContainer: {
     backgroundColor: "#FFF",
@@ -50,7 +18,6 @@ export const styles = StyleSheet.create({
     elevation: 5,
     borderColor: "#DDD",
     borderWidth: 1,
-    width: "100%",
   },
   publicacionText: {
     fontSize: 18,
@@ -71,6 +38,17 @@ export const styles = StyleSheet.create({
     color: "#4CAF50",
     marginBottom: 8,
   },
+  estadoText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#FF7043",
+    marginBottom: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 5,
+    backgroundColor: "#FFE6E1",
+    alignSelf: "flex-start",
+  },
   carouselContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -79,10 +57,9 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   carouselImage: {
-    width: 200,
+    width: 250,
     height: 200,
     resizeMode: "cover",
-    marginHorizontal: 10,
     borderRadius: 10,
     borderColor: "#DDD",
     borderWidth: 1,
@@ -103,10 +80,9 @@ export const styles = StyleSheet.create({
     right: 10,
     top: 10,
   },
-  iconEdit: {
-    position: "absolute",
-    right: 40,
-    top: 10,
+  titleIcon: {
+    display: "flex",
+    flexDirection:'row'
   },
 });
 

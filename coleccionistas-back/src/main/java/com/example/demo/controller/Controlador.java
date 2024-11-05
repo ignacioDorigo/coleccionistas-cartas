@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,10 +27,12 @@ import com.example.demo.modelo.FavoritosPokemon;
 import com.example.demo.modelo.FotoPublicacion;
 import com.example.demo.modelo.PerfilUsuario;
 import com.example.demo.modelo.Publicacion;
+import com.example.demo.modelo.Usuario;
 import com.example.demo.modelo.UsuarioCard;
 import com.example.demo.modelo.UsuarioSet;
 import com.example.demo.repository.AvatarRepository;
 import com.example.demo.repository.FotoPublicacionRepository;
+import com.example.demo.repository.PublicacionRepository;
 import com.example.demo.service.ColeccionService;
 import com.example.demo.service.FavoritosPokemonService;
 import com.example.demo.service.PublicacionService;
@@ -54,6 +58,9 @@ public class Controlador {
 
 	@Autowired
 	FavoritosPokemonService favoritosPokemonService;
+
+	@Autowired
+	PublicacionRepository publicacionRepository;
 
 	@Autowired
 	AvatarRepository avatarRepository;
@@ -271,6 +278,80 @@ public class Controlador {
 			return ResponseEntity.ok(resultado);
 		} else {
 			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
+	@GetMapping("/misPublicaciones")
+	public List<Publicacion> misPublicaciones(@RequestParam String mail) {
+		return publicacionService.misPublicaciones(mail);
+	}
+
+	@DeleteMapping("/eliminarPublicacion")
+	public ResponseEntity<String> eliminarPublicacion(@RequestParam String mail, @RequestParam Integer idPublicacion) {
+		String resultado = publicacionService.eliminarPublicacion(mail, idPublicacion);
+		if (resultado.contains("Publicacion eliminada")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
+	@PutMapping("/publicacion/actualizarTitulo")
+	public ResponseEntity<String> actualizarTitulo(@RequestParam String mail, @RequestParam Integer idPublicacion,
+			@RequestParam String titulo) {
+		String resultado = publicacionService.actualizarTitulo(mail, idPublicacion, titulo);
+		if (resultado.contains("Titulo actualizado correctamente")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
+	@PutMapping("/publicacion/actualizarDescripcion")
+	public ResponseEntity<String> actualizarDescripcion(@RequestParam String mail, @RequestParam Integer idPublicacion,
+			@RequestParam String descripcion) {
+		String resultado = publicacionService.actualizarDescripcion(mail, idPublicacion, descripcion);
+		if (resultado.contains("Descripcion actualizada correctamente")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
+	@PutMapping("/publicacion/actualizarPrecio")
+	public ResponseEntity<String> actualizarPrecio(@RequestParam String mail, @RequestParam Integer idPublicacion,
+			@RequestParam Double precio) {
+		String resultado = publicacionService.actualizarPrecio(mail, idPublicacion, precio);
+		if (resultado.contains("Precio actualizado correctamente")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
+	@PutMapping("/editarPublicacion")
+	public ResponseEntity<String> editarPublicacion(@RequestParam String mail, @RequestParam Integer idPublicacion,
+			@RequestBody Publicacion nuevaPublicacion) {
+		Usuario usuario = usuarioService.buscarUsuario(mail);
+		if (usuario != null) {
+			Optional<Publicacion> publicacionOptional = publicacionRepository.findById(idPublicacion);
+			if (publicacionOptional.isPresent()) {
+				Publicacion publicacion = publicacionOptional.get();
+				if (publicacion.getMail().equals(mail)) {
+					publicacion.setTitulo(nuevaPublicacion.getTitulo());
+					publicacion.setDescripcion(nuevaPublicacion.getDescripcion());
+					publicacion.setPrecio(nuevaPublicacion.getPrecio());
+					publicacionRepository.save(publicacion);
+					return ResponseEntity.ok("Publicación actualizada exitosamente");
+				} else {
+					return ResponseEntity.status(HttpStatus.FORBIDDEN)
+							.body("No puedes editar una publicación que no es tuya");
+				}
+			} else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe esa publicación");
+			}
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe ese usuario");
 		}
 	}
 
