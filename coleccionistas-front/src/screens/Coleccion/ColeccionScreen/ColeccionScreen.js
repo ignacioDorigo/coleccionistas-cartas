@@ -81,7 +81,6 @@ export function ColeccionScreen({ navigation }) {
           <Text>No tenes colecciones todavia</Text>
         ) : (
           <View>
-            <Text>Aca tenes tu colecciones crack</Text>
             {misColecciones.map((coleccion, index) => (
               <TouchableOpacity
                 key={index}

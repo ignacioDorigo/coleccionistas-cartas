@@ -41,12 +41,12 @@ export const styles = StyleSheet.create({
   estadoText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#FF7043",
+    color: "#2E7D32", // Verde oscuro para el texto
     marginBottom: 10,
     paddingVertical: 4,
     paddingHorizontal: 8,
     borderRadius: 5,
-    backgroundColor: "#FFE6E1",
+    backgroundColor: "#E8F5E9", // Verde claro para el fondo
     alignSelf: "flex-start",
   },
   carouselContainer: {
@@ -57,8 +57,8 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   carouselImage: {
-    width: 250,
-    height: 200,
+    width: 270,
+    height: 380,
     resizeMode: "cover",
     borderRadius: 10,
     borderColor: "#DDD",
@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
   },
   titleIcon: {
     display: "flex",
-    flexDirection:'row'
+    flexDirection: "row",
   },
 });
 
