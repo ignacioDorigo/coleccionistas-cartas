@@ -9,9 +9,11 @@ import { Icon } from "@rneui/themed";
 import { ActualizarTituloForm } from "../../../components/Perfil/ActualizarTituloForm/ActualizarTituloForm";
 import { ActualizarDescripcionForm } from "../../../components/Perfil/ActualizarDescripcionForm/ActualizarDescripcionForm";
 import { ActualizarPrecioForm } from "../../../components/Perfil/ActualizarPrecioForm/ActualizarPrecioForm";
+import { RecargarContext } from "../../../context/RecargarContext";
 
 export function MisPublicacionesScreen() {
   const { isLoggedIn } = useContext(AuthContext);
+  const { recargarMarketplace } = useContext(RecargarContext);
   const mail = isLoggedIn;
   const [publicaciones, setPublicaciones] = useState([]);
   const [imagenesPublicacion, setImagenesPublicacion] = useState({});
@@ -29,7 +31,6 @@ export function MisPublicacionesScreen() {
   const ocultarModalDescripcion = () => {
     setVisibleDescripcion((prevState) => !prevState);
   };
-
   const ocultarModalPrecio = () => {
     setVisiblePrecio((prevState) => !prevState);
   };
@@ -54,6 +55,7 @@ export function MisPublicacionesScreen() {
       console.log(error);
     }
   };
+
   const obtenerImagenes = async (idPublicacion) => {
     try {
       const response = await axios.get(
@@ -65,7 +67,7 @@ export function MisPublicacionesScreen() {
       }));
       setIndiceImagenActual((prevIndices) => ({
         ...prevIndices,
-        [idPublicacion]: 0, // Índice inicial de la imagen actual para cada publicación
+        [idPublicacion]: 0,
       }));
     } catch (error) {
       console.log(
@@ -87,15 +89,35 @@ export function MisPublicacionesScreen() {
     }));
   };
 
+  const confirmarEliminarPublicacion = (idPublicacion) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que deseas eliminar esta publicación?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: () => eliminarPublicacion(idPublicacion)
+        }
+      ],
+      { cancelable: true }
+    );
+  };
+
   const eliminarPublicacion = async (idPublicacion) => {
     try {
       const response = await axios.delete(
         `http://${ipHost}:8080/coleccionistas/eliminarPublicacion?mail=${mail}&idPublicacion=${idPublicacion}`
       );
-      Alert.alert("Exito", response.data);
+      Alert.alert("Éxito", response.data);
       repintarScreen();
+      recargarMarketplace();
     } catch (error) {
-      Alert.alert("Error", error.response.data);
+      Alert.alert("Error", error.response?.data || "Error al eliminar la publicación");
     }
   };
 
@@ -161,10 +183,9 @@ export function MisPublicacionesScreen() {
               color={"#FF0000"}
               containerStyle={styles.iconCancel}
               size={30}
-              onPress={() => eliminarPublicacion(publicacion.id)}
+              onPress={() => confirmarEliminarPublicacion(publicacion.id)}
             ></Icon>
 
-            {/* Par el carrousel de las imgssss */}
             {imagenesPublicacion[publicacion.id]?.length ? (
               <View style={styles.carouselContainer}>
                 <TouchableOpacity

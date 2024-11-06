@@ -94,8 +94,8 @@ export function VenderCartaForm(props) {
   const subirFoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
+      allowsEditing: false,
+      // aspect: [6, 9],
     });
     if (!result.canceled) {
       const uriFoto = result.assets[0].uri;

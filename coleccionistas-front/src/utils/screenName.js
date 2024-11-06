@@ -1,14 +1,15 @@
-import { ElegirSetYugioh } from "../screens/Coleccion/ElegirSetYugioh/ElegirSetYugioh";
-
 const coleccionStack = {
   coleccionTab: "ColeccionTab",
   coleccion: "Coleccion",
   addCollection: "AddCollection",
   cartasSet: "CartasSet",
+  cartasSetYugioh: "CartasSetYugioh",
   elegirSetPokemon: "ElegirSetPokemon",
   elegirSetYugioh: "ElegirSetYugioh",
   misCartasSet: "MisCartasSet",
+  misCartasSetYugioh: "MisCartasSetYugioh",
   misSetsPokemon: "MisSetsPokemon",
+  misSetsYugioh: "MisSetsYugioh",
 };
 
 const favoritosStack = {

@@ -79,8 +79,8 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   carouselImage: {
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 370,
     resizeMode: "cover",
     marginHorizontal: 10,
     borderRadius: 10,

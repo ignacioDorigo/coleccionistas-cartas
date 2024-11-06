@@ -45,9 +45,13 @@ export function ColeccionScreen({ navigation }) {
   }, [colecciones]);
 
   const irAScreenColeccion = (nombre) => {
+    console.log("COLECCION SCREEN: Coleccion elegida --> " + nombre);
     let nombreScreen;
     if (nombre === "Pokemon") {
       nombreScreen = screen.coleccion.misSetsPokemon;
+    }
+    if (nombre === "Yugioh") {
+      nombreScreen = screen.coleccion.misSetsYugioh;
     }
     navigation.navigate(nombreScreen);
   };
@@ -77,7 +81,6 @@ export function ColeccionScreen({ navigation }) {
           <Text>No tenes colecciones todavia</Text>
         ) : (
           <View>
-            <Text>Aca tenes tu colecciones crack</Text>
             {misColecciones.map((coleccion, index) => (
               <TouchableOpacity
                 key={index}

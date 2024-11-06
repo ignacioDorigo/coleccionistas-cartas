@@ -20,6 +20,7 @@ import { RecargarContext } from "../../../context/RecargarContext";
 import { screen } from "../../../utils";
 
 import { styles } from "./ElegirSetPokemon.styles";
+import { Button } from "@rneui/themed";
 
 export function ElegirSetPokemon({ route, navigation }) {
   //   Context para identificar al usuario con su mail
@@ -54,6 +55,14 @@ export function ElegirSetPokemon({ route, navigation }) {
       setVisible(false);
     }
   };
+
+  // Funcion auxiliar para ver los ids
+  // const soloIdsPokemon = async () => {
+  //   const response = await axios.get("https://api.pokemontcg.io/v2/sets");
+  //   const sets = response.data.data;
+  //   const ids = sets.map((set)=>set.id);
+  //   console.log(ids)
+  // };
 
   const handleMazoPress = (mazo) => {
     Alert.alert(
@@ -91,6 +100,7 @@ export function ElegirSetPokemon({ route, navigation }) {
   return (
     <>
       <ModalCarga isVisible={visible} />
+      {/* <Button onPress={soloIdsPokemon} title={"Ver ids"}></Button> */}
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.viewHeader}>
           <Text style={styles.header}>Sets Disponibles</Text>

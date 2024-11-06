@@ -30,6 +30,7 @@ import com.example.demo.modelo.Publicacion;
 import com.example.demo.modelo.Usuario;
 import com.example.demo.modelo.UsuarioCard;
 import com.example.demo.modelo.UsuarioSet;
+import com.example.demo.modelo.UsuarioSetYugioh;
 import com.example.demo.repository.AvatarRepository;
 import com.example.demo.repository.FotoPublicacionRepository;
 import com.example.demo.repository.PublicacionRepository;
@@ -37,8 +38,10 @@ import com.example.demo.service.ColeccionService;
 import com.example.demo.service.FavoritosPokemonService;
 import com.example.demo.service.PublicacionService;
 import com.example.demo.service.UsuarioCardService;
+import com.example.demo.service.UsuarioCardYugiohService;
 import com.example.demo.service.UsuarioService;
 import com.example.demo.service.UsuarioSetService;
+import com.example.demo.service.UsuarioSetYugiohService;
 
 @RestController
 @RequestMapping("/coleccionistas")
@@ -70,6 +73,12 @@ public class Controlador {
 
 	@Autowired
 	FotoPublicacionRepository fotoPublicacionRepository;
+
+	@Autowired
+	UsuarioSetYugiohService usuarioSetYugiohService;
+
+	@Autowired
+	UsuarioCardYugiohService usuarioCardYugiohService;
 
 //	FotoPublicacion foto;
 
@@ -353,6 +362,44 @@ public class Controlador {
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe ese usuario");
 		}
+	}
+
+	@PostMapping("/yugioh/crearColeccion")
+	public ResponseEntity<String> crearColeccionYugioh(@RequestParam String mail, @RequestParam String setName,
+			@RequestParam Integer idColeccion) {
+		String resultado = usuarioSetYugiohService.crearSet(mail, setName, idColeccion);
+		if (resultado.contains("Set creado correctamente")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+
+	@PostMapping("yugioh/agregarCarta")
+	public ResponseEntity<String> agregarCartaYugioh(@RequestParam String mail, @RequestParam String setName,
+			@RequestParam String cardName) {
+		String resultado = usuarioCardYugiohService.agregarCarta(mail, setName, cardName);
+		if (resultado.contains("Carta agregada con exito")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+
+	@DeleteMapping("yugioh/eliminarCartaInventario")
+	public ResponseEntity<String> eliminarCartaInventarioYugioh(@RequestParam String mail, @RequestParam String setName,
+			@RequestParam String cardName) {
+		String resultado = usuarioCardYugiohService.eliminarCartaInventario(mail, setName, cardName);
+		if (resultado.contains("Carta eliminada del inventario")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+	
+	@GetMapping("yugioh/misSets")
+	public List<UsuarioSetYugioh> misSetsYugioh(@RequestParam String mail) {
+		return usuarioSetYugiohService.misSets(mail);
 	}
 
 }
