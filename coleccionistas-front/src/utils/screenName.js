@@ -7,6 +7,7 @@ const coleccionStack = {
   elegirSetPokemon: "ElegirSetPokemon",
   elegirSetYugioh: "ElegirSetYugioh",
   misCartasSet: "MisCartasSet",
+  misCartasSetYugioh: "MisCartasSetYugioh",
   misSetsPokemon: "MisSetsPokemon",
   misSetsYugioh: "MisSetsYugioh",
 };
