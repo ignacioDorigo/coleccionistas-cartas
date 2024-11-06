@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Alert, Image, FlatList, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, Alert, Image, FlatList, TextInput, TouchableOpacity, ActivityIndicator  } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { useFormik } from "formik";
 import { initialValues, validationSchema } from "./VenderCartaForm.data";
@@ -9,6 +9,7 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { ipHost } from "../../../utils/ipHost";
 import { RecargarContext } from "../../../context/RecargarContext";
+import { validarImagen } from "./ValidarImagen";
 
 export function VenderCartaForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -17,7 +18,7 @@ export function VenderCartaForm(props) {
   const [check1, setCheck1] = useState(false);
   const [imagenes, setImagenes] = useState([]);
   const { recargarMarketplace } = useContext(RecargarContext);
-
+  const [validandoImagen, setValidandoImagen] = useState(false);
   const renderImagen = ({ item, index }) => (
     <View style={styles.imageContainer}>
       <Image source={{ uri: item }} style={styles.image} />
@@ -93,16 +94,26 @@ export function VenderCartaForm(props) {
 
   const subirFoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
-      // aspect: [6, 9],
+
     });
+  
     if (!result.canceled) {
       const uriFoto = result.assets[0].uri;
-      setImagenes((prevImagenes) => [...prevImagenes, uriFoto]);
+      
+      setValidandoImagen(true);
+
+      // Validar la imagen antes de agregarla
+      const esValida = await validarImagen(uriFoto);
+      setValidandoImagen(false);
+
+      if (esValida) {
+        setImagenes((prevImagenes) => [...prevImagenes, uriFoto]);
+      } else {
+        Alert.alert("Imagen no válida", "La imagen no parece ser una carta.");
+      }
     }
   };
-
   return (
     <Overlay
       isVisible={visible}
@@ -163,6 +174,13 @@ export function VenderCartaForm(props) {
         Subir Imagen
         <Icon name="upload" color="white" />
       </Button>
+
+      {validandoImagen && (
+        <Overlay isVisible={true} overlayStyle={styles.overlayValidando}>
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text>Validando imagen...</Text>
+        </Overlay>
+      )}
 
       <Button
         title={"Publicar"}

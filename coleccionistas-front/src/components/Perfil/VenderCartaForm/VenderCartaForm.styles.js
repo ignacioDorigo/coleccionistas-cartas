@@ -64,4 +64,12 @@ export const styles = StyleSheet.create({
     padding: 2,
     zIndex: 1,
   },
+  overlayValidando: {
+    width: "80%",
+    height: "auto",
+    borderRadius: 5,
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
