@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Alert,
+} from "react-native";
 import axios from "axios";
 
 import { ModalCarga } from "../../../components/ModalCarga";
@@ -8,6 +15,7 @@ import { ModalCarga } from "../../../components/ModalCarga";
 import { AuthContext } from "../../../context/AuthContext";
 import { styles } from "./MisSetsPokemon.styles";
 import { ipHost } from "../../../utils/ipHost";
+import { Icon } from "@rneui/themed";
 
 export function MisSetsPokemon({ navigation }) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -16,11 +24,16 @@ export function MisSetsPokemon({ navigation }) {
 
   const [misSets, setMisSets] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [reload, setReload] = useState(false);
+
+  const actualizarScreen = () => {
+    setReload((prevState) => !prevState);
+  };
 
   // Me busca los sets que arme
   useEffect(() => {
     buscarMisSets();
-  }, []);
+  }, [reload]);
 
   const buscarMisSets = async () => {
     try {
@@ -45,6 +58,37 @@ export function MisSetsPokemon({ navigation }) {
     }
   };
 
+  const eliminarSet = async (idSet) => {
+    try {
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/pokemon/eliminarSet?mail=${mail}&idSet=${idSet}`
+      );
+      console.log(response.data);
+      actualizarScreen();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    }
+  };
+
+  const confirmarEliminarSet = (idSet) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que deseas eliminar este set?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: () => eliminarSet(idSet),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <>
       <ModalCarga isVisible={visible} />
@@ -53,25 +97,39 @@ export function MisSetsPokemon({ navigation }) {
           <Text style={styles.header}>Sets Armados</Text>
         </View>
 
-        {misSets.map((set, index) => (
-          <TouchableOpacity
-            style={styles.touchable}
-            key={index}
-            onPress={() => {
-              navigation.navigate("MisCartasSet", {
-                set: set,
-                title: `${set}`,
-              });
-            }}
-          >
-            <Text style={styles.idSet}>{set.id}</Text>
-            <Image
-              source={{ uri: `${set.images.logo}` }}
-              style={styles.image}
-            />
-            <Text style={styles.PrintedTotal}>{set.printedTotal}</Text>
-          </TouchableOpacity>
-        ))}
+        <>
+          {misSets.length === 0 ? (
+            <Text>No tenes sets creados</Text>
+          ) : (
+            misSets.map((set, index) => (
+              <View key={index}>
+                <TouchableOpacity
+                  style={styles.touchable}
+                  onPress={() => {
+                    navigation.navigate("MisCartasSet", {
+                      set: set,
+                      title: `${set}`,
+                    });
+                  }}
+                >
+                  <Text style={styles.idSet}>{set.id}</Text>
+                  <Image
+                    source={{ uri: `${set.images.logo}` }}
+                    style={styles.image}
+                  />
+                  <Text style={styles.PrintedTotal}>{set.printedTotal}</Text>
+                </TouchableOpacity>
+                <Icon
+                  type="material-community"
+                  name="close-circle"
+                  color={"#FF0000"}
+                  containerStyle={styles.iconEliminar}
+                  onPress={() => confirmarEliminarSet(set.id)}
+                />
+              </View>
+            ))
+          )}
+        </>
       </ScrollView>
     </>
   );

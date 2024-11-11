@@ -184,7 +184,7 @@ export function MisPublicacionesScreen() {
               containerStyle={styles.iconCancel}
               size={30}
               onPress={() => confirmarEliminarPublicacion(publicacion.id)}
-            ></Icon>
+            />
 
             {imagenesPublicacion[publicacion.id]?.length ? (
               <View style={styles.carouselContainer}>

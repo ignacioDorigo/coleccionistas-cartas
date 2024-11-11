@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
   },
   touchable: {
     flexDirection: "row",
-    backgroundColor: "#fff", 
+    backgroundColor: "#fff",
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: {
@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 10,
     elevation: 3,
-    alignItems:'center',
+    alignItems: "center",
   },
   idSet: {
     flex: 1,
@@ -46,10 +46,14 @@ export const styles = StyleSheet.create({
     height: 40,
   },
   PrintedTotal: {
-    flex:1,
-    textAlign:'right',
-    textAlignVertical:'center',
-    borderRadius:50,
-    
+    flex: 1,
+    textAlign: "right",
+    textAlignVertical: "center",
+    borderRadius: 50,
+  },
+  iconEliminar: {
+    position: "absolute",
+    right: 0,
+    top: 0,
   },
 });
