@@ -6,6 +6,8 @@ import { styles } from "./MisSetsYugioh.styles";
 import axios from "axios";
 import { ipHost } from "../../../utils/ipHost";
 import { TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { screen } from "../../../utils";
 
 export function MisSetsYugioh() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -15,6 +17,7 @@ export function MisSetsYugioh() {
   const [misSets, setMisSets] = useState([]);
   const [setCompletos, setSetsCompletos] = useState([]);
   const [setsCoincidentes, setSetsCoincidentes] = useState([]); // Estado para los sets coincidentes
+  const navigation = useNavigation();
 
   const mostrarOcultarModal = () => {
     setModal((prevState) => !prevState);
@@ -66,6 +69,9 @@ export function MisSetsYugioh() {
     }
   }, [misSets, setCompletos]);
 
+  const irAmisCartasSetYugioh = (set) => {
+    navigation.navigate(screen.coleccion.misCartasSetYugioh, { set: set });
+  };
   return (
     <>
       <ModalCarga isVisible={modal} />
@@ -74,7 +80,11 @@ export function MisSetsYugioh() {
           <Text style={styles.header}>Sets Yugioh armados</Text>
         </View>
         {setsCoincidentes.map((set, index) => (
-          <TouchableOpacity key={index} style={styles.setContainer}>
+          <TouchableOpacity
+            key={index}
+            style={styles.setContainer}
+            onPress={() => irAmisCartasSetYugioh(set)}
+          >
             <Image
               source={{
                 uri:

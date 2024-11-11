@@ -84,24 +84,28 @@ export function FavoritosScreen() {
             <Text style={styles.header}>Tus Cartas Favoritas</Text>
           </View>
 
-          {pokemones.map((pokemon, index) => (
-            <View key={index} style={styles.touchable}>
-              <PokemonCard card={pokemon} />
-              <Button
-                title="Eliminar de Favoritos"
-                onPress={() => eliminarCardFavorito(pokemon.id)}
-                containerStyle={styles.btnContainer}
-                buttonStyle={styles.btn}
-                icon={
-                  <Icon
-                    type="material-community"
-                    name="delete"
-                    color={"#FFFFFF"}
-                  />
-                }
-              />
-            </View>
-          ))}
+          {pokemones.length === 0 ? (
+            <Text>Aún no tenes favoritos</Text>
+          ) : (
+            pokemones.map((pokemon, index) => (
+              <View key={index} style={styles.touchable}>
+                <PokemonCard card={pokemon} />
+                <Button
+                  title="Eliminar de Favoritos"
+                  onPress={() => eliminarCardFavorito(pokemon.id)}
+                  containerStyle={styles.btnContainer}
+                  buttonStyle={styles.btn}
+                  icon={
+                    <Icon
+                      type="material-community"
+                      name="delete"
+                      color={"#FFFFFF"}
+                    />
+                  }
+                />
+              </View>
+            ))
+          )}
         </ScrollView>
       )}
     </View>
