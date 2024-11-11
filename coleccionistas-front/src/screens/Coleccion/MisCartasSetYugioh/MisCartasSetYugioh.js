@@ -13,9 +13,11 @@ export function MisCartasSetYugioh({ route }) {
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
   const { set } = route.params;
+  console.log(set.set_name);
 
   useEffect(() => {
     buscarTodasCartasSet();
+    buscarMisCartasSet();
   }, []);
 
   function construirURL(cardSetName) {
@@ -47,30 +49,52 @@ export function MisCartasSetYugioh({ route }) {
 
   const buscarMisCartasSet = async () => {
     try {
-      const response = await axios.get(``);
+      const response = await axios.get(
+        `http://localhost:8080/coleccionistas/yugioh/misCartas?mail=${mail}&idSet=${set.set_name}`
+      );
+      setMisCartas(response.data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  // Función para verificar si la carta está en la colección del usuario usando el nombre
+  const esCartaMia = (cartaName) => {
+    return misCartas.some((carta) => carta.id_card === cartaName);
+  };
+
   return (
     <>
       <ModalCarga isVisible={modal} />
       <ScrollView contentContainerStyle={styles.container}>
-        {cartas.map((carta, index) => (
-          <View key={index} style={styles.cardContainer}>
-            <Image
-              source={{ uri: carta.card_images?.[0]?.image_url }}
-              style={styles.imageCard}
-            />
-            {mostrarPropiedad("ID", carta.id)}
-            {mostrarPropiedad("Nombre", carta.name)}
-            {mostrarPropiedad("Descripción", carta.desc)}
-            {mostrarPropiedad("Tipo", carta.type)}
-            {mostrarPropiedad("Atributo", carta.attribute)}
-            {mostrarPropiedad("Ataque", carta.atk)}
-            {mostrarPropiedad("Defensa", carta.def)}
-          </View>
-        ))}
+        {cartas.map((carta, index) => {
+          console.log(carta.name);
+          const tengoCarta = esCartaMia(carta.name);
+          return (
+            <View
+              key={index}
+              style={[
+                styles.cardContainer,
+                tengoCarta ? styles.cardGreen : styles.cardRed, // Aplica estilos condicionales
+              ]}
+            >
+              <Image
+                source={{ uri: carta.card_images?.[0]?.image_url }}
+                style={styles.imageCard}
+              />
+              {mostrarPropiedad("ID", carta.id)}
+              {mostrarPropiedad("Nombre", carta.name)}
+              {mostrarPropiedad("Descripción", carta.desc)}
+              {mostrarPropiedad("Tipo", carta.type)}
+              {mostrarPropiedad("Atributo", carta.attribute)}
+              {mostrarPropiedad("Ataque", carta.atk)}
+              {mostrarPropiedad("Defensa", carta.def)}
+              <Text style={tengoCarta ? styles.textGreen : styles.textRed}>
+                {tengoCarta ? "Tengo esta carta" : "No tengo esta carta"}
+              </Text>
+            </View>
+          );
+        })}
       </ScrollView>
     </>
   );

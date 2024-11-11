@@ -68,7 +68,6 @@ public class UsuarioCardYugiohService {
 				if(carta.getId_set().equals(idSet) && carta.getId_card().equals(idCard)) {
 					idCardEliminar = carta.getId();
 					usuarioCardYugiohRepository.deleteById(idCardEliminar);
-//					Aca hacemos lo de borrar la carta
 					return "Carta eliminada del inventario";
 
 
@@ -81,6 +80,7 @@ public class UsuarioCardYugiohService {
 		}
 
 	}
+	
 
 
 }

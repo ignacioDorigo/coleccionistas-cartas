@@ -29,6 +29,7 @@ import com.example.demo.modelo.PerfilUsuario;
 import com.example.demo.modelo.Publicacion;
 import com.example.demo.modelo.Usuario;
 import com.example.demo.modelo.UsuarioCard;
+import com.example.demo.modelo.UsuarioCardYugioh;
 import com.example.demo.modelo.UsuarioSet;
 import com.example.demo.modelo.UsuarioSetYugioh;
 import com.example.demo.repository.AvatarRepository;
@@ -410,6 +411,11 @@ public class Controlador {
 		} else {
 			return ResponseEntity.badRequest().body(resultado);
 		}
+	}
+
+	@GetMapping("/yugioh/misCartas")
+	public List<UsuarioCardYugioh> misCartasSetYugioh(@RequestParam String mail, @RequestParam String idSet) {
+		return usuarioCardYugiohService.misCartasSet(mail, idSet);
 	}
 
 }

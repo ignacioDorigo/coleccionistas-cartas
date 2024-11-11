@@ -42,4 +42,24 @@ export const styles = StyleSheet.create({
     color: "#555",
     marginBottom: 5,
   },
+  cardGreen: {
+    borderColor: "green",
+    borderWidth: 2,
+    padding: 10,
+    margin: 5,
+  },
+  cardRed: {
+    borderColor: "red",
+    borderWidth: 2,
+    padding: 10,
+    margin: 5,
+  },
+  textGreen: {
+    color: "green",
+    fontWeight: "bold",
+  },
+  textRed: {
+    color: "red",
+    fontWeight: "bold",
+  },
 });
