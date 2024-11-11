@@ -28,6 +28,9 @@ public class UsuarioSetService {
 	@Autowired
 	UsuarioService usuarioService;
 
+	@Autowired
+	UsuarioCardService usuarioCardService;
+
 	public String crearSet(String mail, String idSet, Integer idColeccion) {
 
 //		Si es que no existe el usuario (aunque no deberia pasar, pero doble validacion por las dudas)
@@ -69,6 +72,34 @@ public class UsuarioSetService {
 
 	public List<UsuarioSet> misSets(String mail) {
 		return usuarioSetRepository.findByMail(mail);
+	}
+
+	public String eliminarSet(String mail, String idSet) {
+		Usuario usuario = usuarioService.buscarUsuario(mail);
+		if (usuario == null) {
+			return "El usuario no existe";
+		}
+		List<UsuarioSet> setsDelUser = usuarioSetRepository.findByMail(mail);
+
+		Integer idAeliminar = -1;
+		Boolean encontrado = false;
+		for (UsuarioSet set : setsDelUser) {
+			if (set.getId_set().equals(idSet)) {
+				encontrado = true;
+				idAeliminar = set.getId();
+				break;
+			}
+		}
+		if (encontrado == false) {
+			return "No tenes ese set creado";
+		} else {
+//			Aca ahacemos el proceso de buscar todas las cartas que tenga con el idDelSet
+			usuarioCardService.borrarTodasCartasSet(mail, idSet);
+//			Pro ultimo el,minamos el SET
+			usuarioSetRepository.deleteById(idAeliminar);
+			return "Set eliminado";
+		}
+
 	}
 
 }

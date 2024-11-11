@@ -396,10 +396,20 @@ public class Controlador {
 			return ResponseEntity.status(400).body(resultado);
 		}
 	}
-	
+
 	@GetMapping("yugioh/misSets")
 	public List<UsuarioSetYugioh> misSetsYugioh(@RequestParam String mail) {
 		return usuarioSetYugiohService.misSets(mail);
+	}
+
+	@DeleteMapping("pokemon/eliminarSet")
+	public ResponseEntity<String> eliminarSetPokemon(@RequestParam String mail, @RequestParam String idSet) {
+		String resultado = usuarioSetService.eliminarSet(mail, idSet);
+		if (resultado.contains("Set eliminado")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,12 +65,11 @@ public class UsuarioCardService {
 			Integer idCardEliminar;
 			List<UsuarioCard> misCartas = misCartasSet(mail, idSet);
 			for (UsuarioCard carta : misCartas) {
-				if(carta.getId_set().equals(idSet) && carta.getId_card().equals(idCard)) {
+				if (carta.getId_set().equals(idSet) && carta.getId_card().equals(idCard)) {
 					idCardEliminar = carta.getId();
 					usuarioCardRepository.deleteById(idCardEliminar);
 //					Aca hacemos lo de borrar la carta
 					return "Carta eliminada del inventario";
-
 
 				}
 			}
@@ -78,7 +78,22 @@ public class UsuarioCardService {
 		} else {
 			return "Usuario no encontrado";
 		}
+	}
 
+	public String borrarTodasCartasSet(String mail, String idSet) {
+		Usuario usuario = usuarioService.buscarUsuario(mail);
+		if (usuario == null) {
+			return "El usuario no existe";
+		}
+		List<UsuarioCard> misCartasDelSet = misCartasSet(mail, idSet);
+		System.out.println(misCartasDelSet);
+		for (UsuarioCard carta : misCartasDelSet) {
+			if (carta.getId_set().equals(idSet)) {
+				usuarioCardRepository.deleteById(carta.getId());
+				System.out.println("CARTA " + carta.getId_card() + " DEL SET " + idSet + " ELIMINADA");
+			}
+		}
+		return "Cartas eliminadas";
 	}
 
 }
