@@ -87,9 +87,9 @@ export function MisCartasSetYugioh({ route }) {
 
   const eliminarCarta = async (card_name) => {
     try {
-      // const response = await axios.post(
-      //   `http://${ipHost}:8080/coleccionistas/yugioh/agregarCarta?mail=${mail}&setName=${set.set_name}&cardName=${card_name}`
-      // );
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/yugioh/eliminarCartaInventario?mail=${mail}&setName=${set.set_name}&cardName=${card_name}`
+      );
       Alert.alert("Exito", response.data);
       recargarScreen();
     } catch (error) {
@@ -144,7 +144,7 @@ export function MisCartasSetYugioh({ route }) {
               {tengoCarta ? (
                 <Button
                   title={"Eliminar del inventario"}
-                  onPress={eliminarCarta}
+                  onPress={() => eliminarCarta(carta.name)}
                   buttonStyle={styles.btnEliminar}
                   containerStyle={styles.btnContainer}
                 />

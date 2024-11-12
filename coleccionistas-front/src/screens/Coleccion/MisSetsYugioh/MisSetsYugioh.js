@@ -28,6 +28,9 @@ export function MisSetsYugioh() {
       const response = await axios.get(
         `http://${ipHost}:8080/coleccionistas/yugioh/misSets?mail=${mail}`
       );
+      const sets = response.data;
+      console.log("------------------ MIS SETS ------------------ ");
+      sets.map((set) => console.log(set.id_set));
       setMisSets(response.data);
     } catch (error) {
       console.log(error);
@@ -40,6 +43,13 @@ export function MisSetsYugioh() {
       const response = await axios.get(
         `https://db.ygoprodeck.com/api/v7/cardsets.php`
       );
+      const sets = response.data;
+      console.log("------------------ SETS API ------------------ "); 
+      sets.map((set) => {
+        if (set.set_name.includes("2-")) {
+          console.log(set.set_name);
+        }
+      });
       setSetsCompletos(response.data);
     } catch (error) {
       console.log(error);
