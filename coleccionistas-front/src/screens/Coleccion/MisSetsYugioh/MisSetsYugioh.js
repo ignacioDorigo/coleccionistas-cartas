@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { ModalCarga } from "../../../components/ModalCarga";
 import { styles } from "./MisSetsYugioh.styles";
@@ -8,6 +8,7 @@ import { ipHost } from "../../../utils/ipHost";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { screen } from "../../../utils";
+import { Icon } from "@rneui/themed";
 
 export function MisSetsYugioh() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -28,9 +29,6 @@ export function MisSetsYugioh() {
       const response = await axios.get(
         `http://${ipHost}:8080/coleccionistas/yugioh/misSets?mail=${mail}`
       );
-      const sets = response.data;
-      console.log("------------------ MIS SETS ------------------ ");
-      sets.map((set) => console.log(set.id_set));
       setMisSets(response.data);
     } catch (error) {
       console.log(error);
@@ -43,13 +41,6 @@ export function MisSetsYugioh() {
       const response = await axios.get(
         `https://db.ygoprodeck.com/api/v7/cardsets.php`
       );
-      const sets = response.data;
-      console.log("------------------ SETS API ------------------ "); 
-      sets.map((set) => {
-        if (set.set_name.includes("2-")) {
-          console.log(set.set_name);
-        }
-      });
       setSetsCompletos(response.data);
     } catch (error) {
       console.log(error);
@@ -82,6 +73,34 @@ export function MisSetsYugioh() {
   const irAmisCartasSetYugioh = (set) => {
     navigation.navigate(screen.coleccion.misCartasSetYugioh, { set: set });
   };
+
+  const confirmarEliminarSet = (idSet) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que deseas eliminar este set de tu inventario?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: () => eliminarSet(idSet),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const eliminarSet = async (setName) => {
+    try {
+      // const response = axios.delete(``);
+      console.log(setName);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <ModalCarga isVisible={modal} />
@@ -90,28 +109,37 @@ export function MisSetsYugioh() {
           <Text style={styles.header}>Sets Yugioh armados</Text>
         </View>
         {setsCoincidentes.map((set, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.setContainer}
-            onPress={() => irAmisCartasSetYugioh(set)}
-          >
-            <Image
-              source={{
-                uri:
-                  set.set_image ||
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQumqw6UawRn7rOgAvevIfEnX55015CA-oTeA&s",
-              }}
-              style={styles.imageSet}
-            />
+          <View>
+            <TouchableOpacity
+              key={index}
+              style={styles.setContainer}
+              onPress={() => irAmisCartasSetYugioh(set)}
+            >
+              <Icon
+                type="material-community"
+                name="close-circle"
+                color={"#FF0000"}
+                containerStyle={styles.iconEliminar}
+                onPress={() => confirmarEliminarSet(set.set_name)}
+              />
+              <Image
+                source={{
+                  uri:
+                    set.set_image ||
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQumqw6UawRn7rOgAvevIfEnX55015CA-oTeA&s",
+                }}
+                style={styles.imageSet}
+              />
 
-            <View style={styles.setTextContainer}>
-              <Text style={styles.setName}>{set.set_name}</Text>
-              <Text style={styles.setNumCards}>
-                Número de cartas: {set.num_of_cards}
-              </Text>
-              <Text>Fecha de lanzamiento: {set.tcg_date}</Text>
-            </View>
-          </TouchableOpacity>
+              <View style={styles.setTextContainer}>
+                <Text style={styles.setName}>{set.set_name}</Text>
+                <Text style={styles.setNumCards}>
+                  Número de cartas: {set.num_of_cards}
+                </Text>
+                <Text>Fecha de lanzamiento: {set.tcg_date}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         ))}
       </ScrollView>
     </>

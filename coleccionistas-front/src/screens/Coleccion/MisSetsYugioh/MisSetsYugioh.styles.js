@@ -58,4 +58,9 @@ export const styles = StyleSheet.create({
   setTextContainer: {
     flex: 1,
   },
+  iconEliminar: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+  },
 });

@@ -1,5 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, Alert, TextInput, FlatList, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  Alert,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import { styles } from "./MisCartaSet.styles";
 import axios from "axios";
 import { Button, Icon, Switch } from "@rneui/themed";
@@ -144,7 +153,7 @@ export function MisCartasSet({ route }) {
 
   const handleSearchChange = (text) => {
     setSearchText(text);
-    
+
     // Filtrar solo cartas cuyos nombres empiezan con el texto de búsqueda
     const suggestions = mazoCompleto.filter((card) =>
       card.name.toLowerCase().startsWith(text.toLowerCase())
@@ -152,10 +161,10 @@ export function MisCartasSet({ route }) {
     setFilteredSuggestions(suggestions);
     setShowSuggestions(true);
   };
-  
+
   const handleSuggestionSelect = (name) => {
-    setSearchText(name);  // Coloca el nombre en la barra de busqueda
-    setFilteredSuggestions([]);  // Vacia las sugerencias para cerrar la lista
+    setSearchText(name); // Coloca el nombre en la barra de busqueda
+    setFilteredSuggestions([]); // Vacia las sugerencias para cerrar la lista
   };
 
   const handleSubmitEditing = () => {
@@ -195,7 +204,9 @@ export function MisCartasSet({ route }) {
                 data={filteredSuggestions}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleSuggestionSelect(item.name)}>
+                  <TouchableOpacity
+                    onPress={() => handleSuggestionSelect(item.name)}
+                  >
                     <Text style={styles.suggestionItem}>{item.name}</Text>
                   </TouchableOpacity>
                 )}
@@ -213,7 +224,9 @@ export function MisCartasSet({ route }) {
 
               {mazoCompleto
                 .filter((card) => (checked ? !mazoMio.includes(card.id) : true)) // Filtrar cartas cuando el switch está activo
-                .filter((card) => card.name.toLowerCase().startsWith(searchText.toLowerCase())) // Filtrar cartas por nombre
+                .filter((card) =>
+                  card.name.toLowerCase().startsWith(searchText.toLowerCase())
+                ) // Filtrar cartas por nombre
 
                 .map((card, index) => (
                   <View key={index} style={styles.cardContainer}>
@@ -254,7 +267,6 @@ export function MisCartasSet({ route }) {
                           onPress={() => eliminarCardInventario(card.id)}
                         />
                       ) : (
-                        
                         <Button
                           buttonStyle={styles.btnAgregar}
                           containerStyle={styles.btnContainer}

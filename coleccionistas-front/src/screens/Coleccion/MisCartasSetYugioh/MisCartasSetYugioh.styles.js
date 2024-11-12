@@ -96,4 +96,9 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f44336",
     borderRadius: 5,
   },
+  iconoTrophy: {
+    position: "absolute",
+    right: 0,
+    top: 20,
+  },
 });

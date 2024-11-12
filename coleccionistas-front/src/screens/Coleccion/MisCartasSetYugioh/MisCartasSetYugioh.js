@@ -13,7 +13,7 @@ import { styles } from "./MisCartasSetYugioh.styles";
 import { AuthContext } from "../../../context/AuthContext";
 import { ModalCarga } from "../../../components/ModalCarga";
 import { ipHost } from "../../../utils";
-import { Button } from "@rneui/themed";
+import { Button, Icon } from "@rneui/themed";
 
 export function MisCartasSetYugioh({ route }) {
   // Todas las cartas del SET (incluidas las que no tenemos)
@@ -126,7 +126,7 @@ export function MisCartasSetYugioh({ route }) {
               key={index}
               style={[
                 styles.cardContainer,
-                tengoCarta ? styles.cardGreen : styles.cardRed, // Aplica estilos condicionales
+                tengoCarta ? styles.cardGreen : styles.cardRed,
               ]}
             >
               <TouchableOpacity
@@ -160,6 +160,19 @@ export function MisCartasSetYugioh({ route }) {
               <Text style={tengoCarta ? styles.textGreen : styles.textRed}>
                 {tengoCarta ? "Tengo esta carta" : "No tengo esta carta"}
               </Text>
+
+              {/* Para poner el iconito del trofeo en caso de que la tengamos*/}
+              {tengoCarta ? (
+                <Icon
+                  type="material-community"
+                  name="trophy"
+                  color={"#FFD700"}
+                  raised
+                  containerStyle={styles.iconoTrophy}
+                />
+              ) : (
+                <></>
+              )}
             </View>
           );
         })}

@@ -69,7 +69,9 @@ export function ElegirSetYugioh({ route }) {
                   setName,
                 });
               })
-              .catch((error) => Alert.alert("Error", `${error.response?.data || error.message}`));
+              .catch((error) =>
+                Alert.alert("Error", `${error.response?.data || error.message}`)
+              );
           },
         },
       ],
@@ -80,12 +82,6 @@ export function ElegirSetYugioh({ route }) {
   const mostrarOcultarModal = () => {
     setModal((prevState) => !prevState);
   };
-
-  function construirURL(cardSetName) {
-    const baseUrl = "https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=";
-    const encodedCardSetName = encodeURIComponent(cardSetName.trim());
-    return `${baseUrl}${encodedCardSetName}`;
-  }
 
   return (
     <>
