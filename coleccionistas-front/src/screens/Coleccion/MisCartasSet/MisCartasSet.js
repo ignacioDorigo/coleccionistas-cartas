@@ -254,7 +254,7 @@ export function MisCartasSet({ route }) {
                           onPress={() => eliminarCardInventario(card.id)}
                         />
                       ) : (
-                        // Mostrar solo el botón "Agregar" si no tienes la carta
+                        
                         <Button
                           buttonStyle={styles.btnAgregar}
                           containerStyle={styles.btnContainer}

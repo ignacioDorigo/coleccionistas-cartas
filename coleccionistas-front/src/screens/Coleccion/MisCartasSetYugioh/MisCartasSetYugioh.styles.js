@@ -83,4 +83,17 @@ export const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  btnContainer: {
+    width: "100%",
+  },
+
+  btnAgregar: {
+    backgroundColor: "#4caf50",
+    borderRadius: 5,
+  },
+
+  btnEliminar: {
+    backgroundColor: "#f44336",
+    borderRadius: 5,
+  },
 });

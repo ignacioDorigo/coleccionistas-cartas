@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: "#f5f5f5", // Light background for contrast
-    justifyContent: 'center',
+    justifyContent: "center",
   },
 
   title: {
@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     color: "#333", // Darker text for better readability
   },
-  
+
   scrollView: {
     marginBottom: 10,
   },
@@ -68,12 +68,12 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around", // Space buttons evenly
     marginTop: 10,
-    width:"100%",
-    gap:0,
+    width: "100%",
+    gap: 0,
   },
 
-  btnContainer:{
-    width:"100%",
+  btnContainer: {
+    width: "100%",
   },
 
   btnAgregar: {
@@ -81,28 +81,27 @@ export const styles = StyleSheet.create({
     backgroundColor: "#4caf50",
     borderRadius: 5,
   },
-  
+
   btnEliminar: {
     marginLeft: 5, // Spacing between buttons
     backgroundColor: "#f44336",
     borderRadius: 5,
   },
 
-
-  iconoFavoritos:{
-    position:'absolute',
-    right:0,
-    top:0,
+  iconoFavoritos: {
+    position: "absolute",
+    right: 0,
+    top: 0,
   },
-  iconoTrophy:{
-    position:'absolute',
-    right:0,
-    top:60,
+  iconoTrophy: {
+    position: "absolute",
+    right: 0,
+    top: 60,
   },
-  viewSwitch:{
-    flexDirection:'row',
-    alignItems:'center',
-    marginBottom:20,
+  viewSwitch: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
   },
   searchContainer: {
     flexDirection: "row",
@@ -127,7 +126,7 @@ export const styles = StyleSheet.create({
   suggestionsList: {
     backgroundColor: "#f0f0f0",
     borderRadius: 5,
-    maxHeight: 150, // Limite de altura de la lista
+    maxHeight: 150,
     marginBottom: 10,
     width: "100%",
     overflow: "hidden",

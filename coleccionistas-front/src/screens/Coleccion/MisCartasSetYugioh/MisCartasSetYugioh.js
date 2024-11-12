@@ -7,11 +7,13 @@ import {
   Image,
   Modal,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { styles } from "./MisCartasSetYugioh.styles";
 import { AuthContext } from "../../../context/AuthContext";
 import { ModalCarga } from "../../../components/ModalCarga";
 import { ipHost } from "../../../utils";
+import { Button } from "@rneui/themed";
 
 export function MisCartasSetYugioh({ route }) {
   // Todas las cartas del SET (incluidas las que no tenemos)
@@ -34,10 +36,16 @@ export function MisCartasSetYugioh({ route }) {
   // Set elegido por el usuario
   const { set } = route.params;
 
+  const [recargar, setRecargar] = useState(false);
+
+  const recargarScreen = () => {
+    setRecargar((prevState) => !prevState);
+  };
+
   useEffect(() => {
     buscarTodasCartasSet();
     buscarMisCartasSet();
-  }, []);
+  }, [recargar]);
 
   function construirURL(cardSetName) {
     const baseUrl = "https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=";
@@ -69,11 +77,35 @@ export function MisCartasSetYugioh({ route }) {
   const buscarMisCartasSet = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/coleccionistas/yugioh/misCartas?mail=${mail}&idSet=${set.set_name}`
+        `http://${ipHost}:8080/coleccionistas/yugioh/misCartas?mail=${mail}&idSet=${set.set_name}`
       );
       setMisCartas(response.data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const eliminarCarta = async (card_name) => {
+    try {
+      // const response = await axios.post(
+      //   `http://${ipHost}:8080/coleccionistas/yugioh/agregarCarta?mail=${mail}&setName=${set.set_name}&cardName=${card_name}`
+      // );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    }
+  };
+
+  const agregarCarta = async (card_name) => {
+    try {
+      const response = await axios.post(
+        `http://${ipHost}:8080/coleccionistas/yugioh/agregarCarta?mail=${mail}&setName=${set.set_name}&cardName=${card_name}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
     }
   };
 
@@ -108,6 +140,22 @@ export function MisCartasSetYugioh({ route }) {
                   style={styles.imageCard}
                 />
               </TouchableOpacity>
+
+              {tengoCarta ? (
+                <Button
+                  title={"Eliminar del inventario"}
+                  onPress={eliminarCarta}
+                  buttonStyle={styles.btnEliminar}
+                  containerStyle={styles.btnContainer}
+                />
+              ) : (
+                <Button
+                  title={"Agregar al inventario"}
+                  onPress={() => agregarCarta(carta.name)}
+                  buttonStyle={styles.btnAgregar}
+                  containerStyle={styles.btnContainer}
+                />
+              )}
 
               <Text style={tengoCarta ? styles.textGreen : styles.textRed}>
                 {tengoCarta ? "Tengo esta carta" : "No tengo esta carta"}
