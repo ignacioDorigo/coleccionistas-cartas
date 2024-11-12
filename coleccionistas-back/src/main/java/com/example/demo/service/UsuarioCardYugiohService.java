@@ -13,14 +13,13 @@ import com.example.demo.repository.UsuarioCardYugiohRepository;
 
 @Service
 public class UsuarioCardYugiohService {
-	
+
 	@Autowired
 	UsuarioCardYugiohRepository usuarioCardYugiohRepository;
 
 	@Autowired
 	UsuarioService usuarioService;
-	
-	
+
 	public String agregarCarta(String mail, String idSet, String idCard) {
 
 //		Si es que no existe el usuario (aunque no deberia pasar, pero doble validacion por las dudas)
@@ -65,11 +64,10 @@ public class UsuarioCardYugiohService {
 			Integer idCardEliminar;
 			List<UsuarioCardYugioh> misCartas = misCartasSet(mail, idSet);
 			for (UsuarioCardYugioh carta : misCartas) {
-				if(carta.getId_set().equals(idSet) && carta.getId_card().equals(idCard)) {
+				if (carta.getId_set().equals(idSet) && carta.getId_card().equals(idCard)) {
 					idCardEliminar = carta.getId();
 					usuarioCardYugiohRepository.deleteById(idCardEliminar);
 					return "Carta eliminada del inventario";
-
 
 				}
 			}
@@ -80,7 +78,21 @@ public class UsuarioCardYugiohService {
 		}
 
 	}
-	
 
+	public String borrarTodasCartasSet(String mail, String idSet) {
+		Usuario usuario = usuarioService.buscarUsuario(mail);
+		if (usuario == null) {
+			return "El usuario no existe";
+		}
+		List<UsuarioCardYugioh> misCartasDelSet = misCartasSet(mail, idSet);
+		System.out.println(misCartasDelSet);
+		for (UsuarioCardYugioh carta : misCartasDelSet) {
+			if (carta.getId_set().equals(idSet)) {
+				usuarioCardYugiohRepository.deleteById(carta.getId());
+				System.out.println("CARTA " + carta.getId_card() + " DEL SET " + idSet + " ELIMINADA");
+			}
+		}
+		return "Cartas eliminadas";
+	}
 
 }

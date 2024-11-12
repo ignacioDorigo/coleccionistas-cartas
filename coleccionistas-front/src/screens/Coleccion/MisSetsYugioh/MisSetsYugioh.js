@@ -17,8 +17,13 @@ export function MisSetsYugioh() {
   const [modal, setModal] = useState(false);
   const [misSets, setMisSets] = useState([]);
   const [setCompletos, setSetsCompletos] = useState([]);
-  const [setsCoincidentes, setSetsCoincidentes] = useState([]); // Estado para los sets coincidentes
+  const [repintar, setRepintar] = useState(false);
+  const [setsCoincidentes, setSetsCoincidentes] = useState([]);
   const navigation = useNavigation();
+
+  const actualizarScreen = () => {
+    setRepintar((prevState) => !prevState);
+  };
 
   const mostrarOcultarModal = () => {
     setModal((prevState) => !prevState);
@@ -49,11 +54,10 @@ export function MisSetsYugioh() {
     }
   };
 
-  // Filtra los sets coincidentes
   const filtrarSetsCoincidentes = () => {
     const idsMisSets = misSets.map((set) => set.id_set);
-    const coincidencias = setCompletos.filter(
-      (set) => idsMisSets.includes(set.set_name) // O `set.set_code`, si el campo coincide
+    const coincidencias = setCompletos.filter((set) =>
+      idsMisSets.includes(set.set_name)
     );
     setSetsCoincidentes(coincidencias);
   };
@@ -61,14 +65,13 @@ export function MisSetsYugioh() {
   useEffect(() => {
     buscarTodosSets();
     buscarMisSets();
-  }, []);
+  }, [repintar]);
 
-  // Ejecuta el filtro cuando cambian los sets
   useEffect(() => {
     if (misSets.length > 0 && setCompletos.length > 0) {
       filtrarSetsCoincidentes();
     }
-  }, [misSets, setCompletos]);
+  }, [misSets, setCompletos, repintar]);
 
   const irAmisCartasSetYugioh = (set) => {
     navigation.navigate(screen.coleccion.misCartasSetYugioh, { set: set });
@@ -95,12 +98,31 @@ export function MisSetsYugioh() {
 
   const eliminarSet = async (setName) => {
     try {
-      // const response = axios.delete(``);
-      console.log(setName);
+      const encodedSetName = encodeURIComponent(setName);
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/yugioh/eliminarSet?mail=${mail}&idSet=${encodedSetName}`
+      );
+
+      // Actualiza el estado local de `misSets`
+      const nuevosMisSets = misSets.filter((set) => set.id_set !== setName);
+      setMisSets(nuevosMisSets);
+
+      // Recalcula los sets coincidentes con el nuevo estado
+      const idsMisSets = nuevosMisSets.map((set) => set.id_set);
+      const nuevasCoincidencias = setCompletos.filter((set) =>
+        idsMisSets.includes(set.set_name)
+      );
+      setSetsCoincidentes(nuevasCoincidencias);
+
+      Alert.alert("Éxito", response.data);
     } catch (error) {
-      console.log(error);
+      Alert.alert(
+        "Error",
+        error.response?.data || "No se pudo eliminar el set."
+      );
     }
   };
+
   return (
     <>
       <ModalCarga isVisible={modal} />
@@ -109,37 +131,34 @@ export function MisSetsYugioh() {
           <Text style={styles.header}>Sets Yugioh armados</Text>
         </View>
         {setsCoincidentes.map((set, index) => (
-          <View>
-            <TouchableOpacity
-              key={index}
-              style={styles.setContainer}
-              onPress={() => irAmisCartasSetYugioh(set)}
-            >
-              <Icon
-                type="material-community"
-                name="close-circle"
-                color={"#FF0000"}
-                containerStyle={styles.iconEliminar}
-                onPress={() => confirmarEliminarSet(set.set_name)}
-              />
-              <Image
-                source={{
-                  uri:
-                    set.set_image ||
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQumqw6UawRn7rOgAvevIfEnX55015CA-oTeA&s",
-                }}
-                style={styles.imageSet}
-              />
-
-              <View style={styles.setTextContainer}>
-                <Text style={styles.setName}>{set.set_name}</Text>
-                <Text style={styles.setNumCards}>
-                  Número de cartas: {set.num_of_cards}
-                </Text>
-                <Text>Fecha de lanzamiento: {set.tcg_date}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            key={index}
+            style={styles.setContainer}
+            onPress={() => irAmisCartasSetYugioh(set)}
+          >
+            <Icon
+              type="material-community"
+              name="close-circle"
+              color={"#FF0000"}
+              containerStyle={styles.iconEliminar}
+              onPress={() => confirmarEliminarSet(set.set_name)}
+            />
+            <Image
+              source={{
+                uri:
+                  set.set_image ||
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQumqw6UawRn7rOgAvevIfEnX55015CA-oTeA&s",
+              }}
+              style={styles.imageSet}
+            />
+            <View style={styles.setTextContainer}>
+              <Text style={styles.setName}>{set.set_name}</Text>
+              <Text style={styles.setNumCards}>
+                Número de cartas: {set.num_of_cards}
+              </Text>
+              <Text>Fecha de lanzamiento: {set.tcg_date}</Text>
+            </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
     </>

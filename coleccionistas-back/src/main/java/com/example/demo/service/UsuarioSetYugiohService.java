@@ -16,7 +16,7 @@ import com.example.demo.repository.UsuariosColeccionRepository;
 
 @Service
 public class UsuarioSetYugiohService {
-	
+
 	@Autowired
 	UsuarioSetYugiohRepository usuarioSetYugiohRepository;
 
@@ -28,7 +28,10 @@ public class UsuarioSetYugiohService {
 
 	@Autowired
 	UsuarioService usuarioService;
-	
+
+	@Autowired
+	UsuarioCardYugiohService usuarioCardYugiohService;
+
 	public String crearSet(String mail, String idSet, Integer idColeccion) {
 
 //		Si es que no existe el usuario (aunque no deberia pasar, pero doble validacion por las dudas)
@@ -70,6 +73,34 @@ public class UsuarioSetYugiohService {
 
 	public List<UsuarioSetYugioh> misSets(String mail) {
 		return usuarioSetYugiohRepository.findByMail(mail);
+	}
+
+	public String eliminarSet(String mail, String idSet) {
+		Usuario usuario = usuarioService.buscarUsuario(mail);
+		if (usuario == null) {
+			return "El usuario no existe";
+		}
+		List<UsuarioSetYugioh> setsDelUser = usuarioSetYugiohRepository.findByMail(mail);
+
+		Integer idAeliminar = -1;
+		Boolean encontrado = false;
+		for (UsuarioSetYugioh set : setsDelUser) {
+			if (set.getId_set().equals(idSet)) {
+				encontrado = true;
+				idAeliminar = set.getId();
+				break;
+			}
+		}
+		if (encontrado == false) {
+			return "No tenes ese set creado";
+		} else {
+//			Aca ahacemos el proceso de buscar todas las cartas que tenga con el idDelSet
+			usuarioCardYugiohService.borrarTodasCartasSet(mail, idSet);
+//			Pro ultimo el,minamos el SET
+			usuarioSetYugiohRepository.deleteById(idAeliminar);
+			return "Set eliminado";
+		}
+
 	}
 
 }

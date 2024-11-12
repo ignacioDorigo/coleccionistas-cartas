@@ -368,7 +368,6 @@ public class Controlador {
 	@PostMapping("/yugioh/crearColeccion")
 	public ResponseEntity<String> crearColeccionYugioh(@RequestParam String mail, @RequestParam String setName,
 			@RequestParam Integer idColeccion) {
-		System.out.println("SET RECIBIDO " + setName);
 		String resultado = usuarioSetYugiohService.crearSet(mail, setName, idColeccion);
 		if (resultado.contains("Set creado correctamente")) {
 			return ResponseEntity.ok(resultado);
@@ -417,6 +416,17 @@ public class Controlador {
 	@GetMapping("/yugioh/misCartas")
 	public List<UsuarioCardYugioh> misCartasSetYugioh(@RequestParam String mail, @RequestParam String idSet) {
 		return usuarioCardYugiohService.misCartasSet(mail, idSet);
+	}
+
+	@DeleteMapping("yugioh/eliminarSet")
+	public ResponseEntity<String> eliminarSetYugioh(@RequestParam String mail, @RequestParam String idSet) {
+		System.out.println(idSet);
+		String resultado = usuarioSetYugiohService.eliminarSet(mail, idSet);
+		if (resultado.contains("Set eliminado")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
 	}
 
 }
