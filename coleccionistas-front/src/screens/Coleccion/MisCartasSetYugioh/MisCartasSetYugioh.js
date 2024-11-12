@@ -1,19 +1,38 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, Image } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
 import { styles } from "./MisCartasSetYugioh.styles";
 import { AuthContext } from "../../../context/AuthContext";
 import { ModalCarga } from "../../../components/ModalCarga";
 import { ipHost } from "../../../utils";
 
 export function MisCartasSetYugioh({ route }) {
+  // Todas las cartas del SET (incluidas las que no tenemos)
   const [cartas, setCartas] = useState([]);
+
+  //Cartas que tenemos
   const [misCartas, setMisCartas] = useState([]);
+
+  //Modal de carga
   const [modal, setModal] = useState(false);
+
+  // Modal para imagen ampliada
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // Contexto para exxtraer mail
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
+
+  // Set elegido por el usuario
   const { set } = route.params;
-  console.log(set.set_name);
 
   useEffect(() => {
     buscarTodasCartasSet();
@@ -66,9 +85,9 @@ export function MisCartasSetYugioh({ route }) {
   return (
     <>
       <ModalCarga isVisible={modal} />
+
       <ScrollView contentContainerStyle={styles.container}>
         {cartas.map((carta, index) => {
-          console.log(carta.name);
           const tengoCarta = esCartaMia(carta.name);
           return (
             <View
@@ -78,17 +97,18 @@ export function MisCartasSetYugioh({ route }) {
                 tengoCarta ? styles.cardGreen : styles.cardRed, // Aplica estilos condicionales
               ]}
             >
-              <Image
-                source={{ uri: carta.card_images?.[0]?.image_url }}
-                style={styles.imageCard}
-              />
-              {mostrarPropiedad("ID", carta.id)}
-              {mostrarPropiedad("Nombre", carta.name)}
-              {mostrarPropiedad("Descripción", carta.desc)}
-              {mostrarPropiedad("Tipo", carta.type)}
-              {mostrarPropiedad("Atributo", carta.attribute)}
-              {mostrarPropiedad("Ataque", carta.atk)}
-              {mostrarPropiedad("Defensa", carta.def)}
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedImage(carta.card_images?.[0]?.image_url);
+                  setIsModalVisible(true);
+                }}
+              >
+                <Image
+                  source={{ uri: carta.card_images?.[0]?.image_url }}
+                  style={styles.imageCard}
+                />
+              </TouchableOpacity>
+
               <Text style={tengoCarta ? styles.textGreen : styles.textRed}>
                 {tengoCarta ? "Tengo esta carta" : "No tengo esta carta"}
               </Text>
@@ -96,6 +116,27 @@ export function MisCartasSetYugioh({ route }) {
           );
         })}
       </ScrollView>
+
+      {/* Modal para mostrar la imagen ampliada */}
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.overlayContainer}>
+          <TouchableOpacity
+            style={styles.overlayBackground}
+            onPress={() => setIsModalVisible(false)}
+          />
+          <View style={styles.modalImageContainer}>
+            <Image
+              source={{ uri: selectedImage }}
+              style={styles.modalImage}
+              resizeMode="contain"
+            />
+          </View>
+        </View>
+      </Modal>
     </>
   );
 }

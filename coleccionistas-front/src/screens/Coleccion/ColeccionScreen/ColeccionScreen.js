@@ -45,7 +45,6 @@ export function ColeccionScreen({ navigation }) {
   }, [colecciones]);
 
   const irAScreenColeccion = (nombre) => {
-    console.log("COLECCION SCREEN: Coleccion elegida --> " + nombre);
     let nombreScreen;
     if (nombre === "Pokemon") {
       nombreScreen = screen.coleccion.misSetsPokemon;
