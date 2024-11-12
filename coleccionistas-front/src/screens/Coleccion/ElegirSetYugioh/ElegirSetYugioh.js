@@ -15,16 +15,15 @@ export function ElegirSetYugioh({ route }) {
   const [modal, setModal] = useState(false);
   const [sets, setSets] = useState([]);
 
-  //   Para pedir el mail
+  // Para pedir el mail
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
 
-  //   Para recargar las paginas
+  // Para recargar las paginas
   const { recargarColecciones } = useContext(RecargarContext);
 
-  //   Para saber que coleccion se creo
+  // Para saber qué colección se creó
   const { coleccion } = route.params;
-  //   console.log(coleccion);
 
   useEffect(() => {
     buscarSets();
@@ -45,13 +44,15 @@ export function ElegirSetYugioh({ route }) {
   };
 
   const handleMazoPress = (setName) => {
+    // Codificar el nombre del set antes de enviarlo al backend
+    const encodedSetName = encodeURIComponent(setName);
     Alert.alert(
       "Confirmación",
       "¿Está seguro que quiere crear una colección de este mazo?",
       [
         {
           text: "CANCELAR",
-          onPress: () => console.log("Operacion Cncelada "),
+          onPress: () => console.log("Operación Cancelada"),
           style: "cancel",
         },
         {
@@ -59,7 +60,7 @@ export function ElegirSetYugioh({ route }) {
           onPress: () => {
             axios
               .post(
-                `http://${ipHost}:8080/coleccionistas/yugioh/crearColeccion?mail=${mail}&setName=${setName}&idColeccion=${coleccion.id}`
+                `http://${ipHost}:8080/coleccionistas/yugioh/crearColeccion?mail=${mail}&setName=${encodedSetName}&idColeccion=${coleccion.id}`
               )
               .then((response) => {
                 recargarColecciones();
@@ -68,7 +69,7 @@ export function ElegirSetYugioh({ route }) {
                   setName,
                 });
               })
-              .catch((error) => Alert.alert("Error", `${error.response.data}`));
+              .catch((error) => Alert.alert("Error", `${error.response?.data || error.message}`));
           },
         },
       ],
@@ -89,7 +90,6 @@ export function ElegirSetYugioh({ route }) {
   return (
     <>
       <ModalCarga isVisible={modal} />
-      {/* <Button onPress={soloIds} title={"Ver ids"}></Button> */}
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.viewHeader}>
           <Text style={styles.header}>Sets Disponibles</Text>
