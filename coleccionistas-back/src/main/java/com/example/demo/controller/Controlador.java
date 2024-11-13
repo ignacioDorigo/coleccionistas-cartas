@@ -420,7 +420,6 @@ public class Controlador {
 
 	@DeleteMapping("yugioh/eliminarSet")
 	public ResponseEntity<String> eliminarSetYugioh(@RequestParam String mail, @RequestParam String idSet) {
-		System.out.println(idSet);
 		String resultado = usuarioSetYugiohService.eliminarSet(mail, idSet);
 		if (resultado.contains("Set eliminado")) {
 			return ResponseEntity.ok(resultado);

@@ -1,36 +1,40 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-const createStyles = (theme) => StyleSheet.create({
+const createStyles = (theme) =>
+  StyleSheet.create({
     container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: theme.background,
+      flex: 1,
+      padding: 20,
+      backgroundColor: theme.background,
     },
     header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: 20,
+      borderBottomWidth: 1,
+      borderColor: "#C1C1C1",
     },
     header__text: {
-        fontWeight: 'bold',
-        fontSize: 30,
+      fontWeight: "bold",
+      fontSize: 30,
     },
     header__svg: {
-        color:'red',
+      color: "red",
     },
     text: {
-        fontSize: 24,
-        // marginBottom: 20,
-        color: theme.text,
+      fontSize: 24,
+      // marginBottom: 20,
+      color: theme.text,
     },
     button: {
-        backgroundColor: theme.primary,
-        padding: 10,
+      backgroundColor: theme.primary,
+      padding: 10,
     },
     buttonText: {
-        color: theme.textLight,
-        fontSize: 18,
-    }
-});
+      color: theme.textLight,
+      fontSize: 18,
+    },
+  });
 
 export default createStyles;

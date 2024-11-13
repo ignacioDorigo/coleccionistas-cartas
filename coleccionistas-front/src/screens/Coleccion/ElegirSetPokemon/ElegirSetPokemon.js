@@ -100,10 +100,12 @@ export function ElegirSetPokemon({ route, navigation }) {
   return (
     <>
       <ModalCarga isVisible={visible} />
-      {/* <Button onPress={soloIdsPokemon} title={"Ver ids"}></Button> */}
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.viewHeader}>
-          <Text style={styles.header}>Sets Disponibles</Text>
+        <View style={styles.header__view}>
+          <Text style={styles.header__title}>Sets Disponibles</Text>
+          <Text style={styles.header_subtitle}>
+            Estos son todos los sets de Pokemon, elegí uno
+          </Text>
         </View>
         {mazosDisponibles.map((mazo, index) => (
           <TouchableOpacity

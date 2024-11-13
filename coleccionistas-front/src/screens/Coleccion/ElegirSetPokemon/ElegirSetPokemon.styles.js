@@ -7,21 +7,22 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     alignItems: "center",
   },
-  viewHeader: {
+  header__view: {
     alignSelf: "flex-start",
     width: "100%",
     marginBottom: 20,
     borderBottomWidth: 1,
     borderColor: "#C1C1C1",
   },
-  header: {
+  header__title: {
     fontWeight: "bold",
     fontSize: 30,
     textAlign: "left",
   },
+  header__subtitle: {},
   touchable: {
     flexDirection: "row",
-    backgroundColor: "#fff", 
+    backgroundColor: "#fff",
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: {
@@ -34,7 +35,7 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 10,
     elevation: 3,
-    alignItems:'center',
+    alignItems: "center",
   },
   image: {
     flex: 2,

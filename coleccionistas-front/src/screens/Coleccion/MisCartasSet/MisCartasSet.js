@@ -180,7 +180,9 @@ export function MisCartasSet({ route }) {
           <ModalCarga isVisible={visible} />
 
           <View style={styles.container}>
-            <Text style={styles.title}>Tus Cartas Del Set {set.id}</Text>
+            <View style={styles.header__container}>
+              <Text style={styles.header__title}>Set {set.id}</Text>
+            </View>
             <View style={styles.searchContainer}>
               <Icon
                 type="material-community"

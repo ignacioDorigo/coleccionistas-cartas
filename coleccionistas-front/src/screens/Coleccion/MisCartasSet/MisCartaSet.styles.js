@@ -8,13 +8,17 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5", // Light background for contrast
     justifyContent: "center",
   },
-
-  title: {
+  header__container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderColor: "#C1C1C1",
+  },
+  header__title: {
     fontWeight: "bold",
     fontSize: 28,
-    marginBottom: 15,
-    textAlign: "center",
-    color: "#333", // Darker text for better readability
   },
 
   scrollView: {

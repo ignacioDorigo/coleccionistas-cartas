@@ -43,9 +43,9 @@ export function AddCollection({ navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.viewHeader}>
-        <Text style={styles.header}>Colecciones Disponibles</Text>
-        <Text style={styles.subtitle}>
+      <View style={styles.header__view}>
+        <Text style={styles.header__title}>Colecciones Disponibles</Text>
+        <Text style={styles.header_subtitle}>
           Elegí el tema sobre el cual queres empezar a coleccionar
         </Text>
       </View>
