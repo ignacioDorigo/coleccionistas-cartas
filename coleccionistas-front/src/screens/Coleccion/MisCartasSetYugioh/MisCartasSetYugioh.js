@@ -81,6 +81,69 @@ export function MisCartasSetYugioh({ route }) {
     return names.includes(cardName);
   }
 
+  const confirmarAgregarCarta = (cardName) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que deseas agregar esta carta a tu inventario?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Agregar",
+          style: "default",
+          onPress: () => agregarCarta(cardName),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const agregarCarta = async (cardName) => {
+    try {
+      const response = await axios.post(
+        `http://${ipHost}:8080/coleccionistas/yugioh/agregarCarta?mail=${mail}&setName=${setName}&cardName=${cardName}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+    } catch (error) {
+      Alert.alert(error.response.data);
+    }
+  };
+
+  // HAHY QUE MODIFICAR PARA ELMINAR PERO ES LA MISMA LOGICA
+  // const confirmarAgregarCarta = (cardName) => {
+  //   Alert.alert(
+  //     "Confirmación",
+  //     "¿Estás seguro de que deseas agregar esta carta a tu inventario?",
+  //     [
+  //       {
+  //         text: "Cancelar",
+  //         style: "destructive",
+  //       },
+  //       {
+  //         text: "Agregar",
+  //         style: "default",
+  //         onPress: () => agregarCarta(cardName),
+  //       },
+  //     ],
+  //     { cancelable: true }
+  //   );
+  // };
+
+  // const agregarCarta = async (cardName) => {
+  //   try {
+  //     const response = await axios.post(
+  //       `http://${ipHost}:8080/coleccionistas/yugioh/agregarCarta?mail=${mail}&setName=${setName}&cardName=${cardName}`
+  //     );
+  //     Alert.alert("Exito", response.data);
+  //     recargarScreen();
+  //   } catch (error) {
+  //     Alert.alert(error.response.data);
+  //   }
+  // };
+
   useEffect(() => {
     buscarNameMisCartas();
     todasCartasSet();
@@ -88,48 +151,54 @@ export function MisCartasSetYugioh({ route }) {
 
   return (
     <>
-    {todasCartas.length===0?      <ModalCarga isVisible={true} />:<>
-      <ScrollView contentContainerStyle={styles.container}>
-        {todasCartas.map((carta, index) => (
-          <View style={styles.cardContainer} key={index}>
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedImage(carta.img);
-                setIsModalVisible(true);
-              }}
-            >
-              <Image source={{ uri: carta.img }} style={styles.imageCard} />
-            </TouchableOpacity>
-            {tengoCarta(carta.name, namesMisCartas) ? (
-              <Button title={"ELIMINAR DEL INVENTARIO"}/>
-            ) : (
-              <Text>NO LA TENGO</Text>
-            )}
-          </View>
-        ))}
-      </ScrollView>
+      {todasCartas.length === 0 ? (
+        <ModalCarga isVisible={true} />
+      ) : (
+        <>
+          <ScrollView contentContainerStyle={styles.container}>
+            {todasCartas.map((carta, index) => (
+              <View style={styles.cardContainer} key={index}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedImage(carta.img);
+                    setIsModalVisible(true);
+                  }}
+                >
+                  <Image source={{ uri: carta.img }} style={styles.imageCard} />
+                </TouchableOpacity>
+                {tengoCarta(carta.name, namesMisCartas) ? (
+                  <Button title={"FATASASDASDASDASD"} />
+                ) : (
+                  <Button
+                    title={"Agregar a mi coleccion"}
+                    onPress={() => confirmarAgregarCarta(carta.name)}
+                  />
+                )}
+              </View>
+            ))}
+          </ScrollView>
 
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <View style={styles.overlayContainer}>
-          <TouchableOpacity
-            style={styles.overlayBackground}
-            onPress={() => setIsModalVisible(false)}
-          />
-          <View style={styles.modalImageContainer}>
-            <Image
-              source={{ uri: selectedImage }}
-              style={styles.modalImage}
-              resizeMode="contain"
-            />
-          </View>
-        </View>
-      </Modal></>}
-
-
+          <Modal
+            visible={isModalVisible}
+            transparent={true}
+            onRequestClose={() => setIsModalVisible(false)}
+          >
+            <View style={styles.overlayContainer}>
+              <TouchableOpacity
+                style={styles.overlayBackground}
+                onPress={() => setIsModalVisible(false)}
+              />
+              <View style={styles.modalImageContainer}>
+                <Image
+                  source={{ uri: selectedImage }}
+                  style={styles.modalImage}
+                  resizeMode="contain"
+                />
+              </View>
+            </View>
+          </Modal>
+        </>
+      )}
     </>
   );
 }
