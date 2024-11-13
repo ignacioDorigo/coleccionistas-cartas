@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: "left",
   },
-  header__subtitle: {},
+  header_subtitle: {},
   touchable: {
     flexDirection: "row",
     backgroundColor: "#fff",
@@ -42,5 +42,13 @@ export const styles = StyleSheet.create({
     width: "100%",
     resizeMode: "contain",
     height: 40,
+  },
+  tengoSet: {
+    borderColor: "green",
+    backgroundColor: "rgba(0, 255, 0, 0.3)"
+  },
+  noTengoSet: {
+    borderColor: "#FFF",
+    // backgroundColor: "rgba(128, 128, 128, 0.3)"
   },
 });

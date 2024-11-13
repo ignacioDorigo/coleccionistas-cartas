@@ -12,57 +12,45 @@ import { ModalCarga } from "../../../components/ModalCarga";
 
 import { ipHost } from "../../../utils";
 
-// Contexto
+// Contexts
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
 
-// Fichero Screen
+// File Screen
 import { screen } from "../../../utils";
 
 import { styles } from "./ElegirSetPokemon.styles";
-import { Button } from "@rneui/themed";
 
 export function ElegirSetPokemon({ route, navigation }) {
-  //   Context para identificar al usuario con su mail
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
-
-  //   Para recargar las paginas
   const { recargarColecciones } = useContext(RecargarContext);
-
-  //   Cosas que vienen desde otra Screen
   const { coleccion } = route.params;
   const [mazosDisponibles, setMazosDisponibles] = useState([]);
-
-  // Visiblidad del modal
   const [visible, setVisible] = useState(false);
+  const [misSets, setMisSets] = useState([]);
+  const [reload, setReload] = useState(false);
+
+  const repintarScreen = () => {
+    setReload((prevState) => !prevState);
+  };
 
   useEffect(() => {
     buscarSetsDisponibles();
-  }, []);
+    buscarMisSetsPokemon();
+  }, [reload]);
 
   const buscarSetsDisponibles = async () => {
     try {
       setVisible(true);
       const response = await axios.get(`https://api.pokemontcg.io/v2/sets`);
       setMazosDisponibles(response.data.data);
-      for (let index = 0; index < response.data.data.length; index++) {
-        const element = response.data.data[index];
-      }
     } catch (error) {
       console.log(error);
     } finally {
       setVisible(false);
     }
   };
-
-  // Funcion auxiliar para ver los ids
-  // const soloIdsPokemon = async () => {
-  //   const response = await axios.get("https://api.pokemontcg.io/v2/sets");
-  //   const sets = response.data.data;
-  //   const ids = sets.map((set)=>set.id);
-  //   console.log(ids)
-  // };
 
   const handleMazoPress = (mazo) => {
     Alert.alert(
@@ -87,15 +75,34 @@ export function ElegirSetPokemon({ route, navigation }) {
                   coleccion,
                   mazo,
                 });
+                repintarScreen();
               })
-              .catch((error) => Alert.alert("Error", `${error.response.data}`));
+              .catch((error) =>
+                Alert.alert("Error", `${error.response?.data || error.message}`)
+              );
           },
         },
       ],
       { cancelable: false }
     );
-    console.log("mazo: ", mazo);
   };
+
+  const buscarMisSetsPokemon = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/misSets?mail=${mail}`
+      );
+      const sets = response.data;
+      const idSetPropios = sets.map((set) => set.id_set);
+      setMisSets(idSetPropios);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  function tengoSet(set, sets) {
+    return sets.includes(set);
+  }
 
   return (
     <>
@@ -110,7 +117,12 @@ export function ElegirSetPokemon({ route, navigation }) {
         {mazosDisponibles.map((mazo, index) => (
           <TouchableOpacity
             key={index}
-            style={styles.touchable}
+            style={[
+              styles.touchable,
+              tengoSet(mazo.id, misSets)
+                ? { ...styles.tengoSet }
+                : { ...styles.noTengoSet },
+            ]}
             onPress={() => handleMazoPress(mazo)}
           >
             <Image style={styles.image} source={{ uri: mazo.images.logo }} />
