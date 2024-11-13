@@ -17,10 +17,14 @@ export function ElegirSetYugioh({ route }) {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-
-  // Para pedir el mail
+  const [misSets, setMisSets] = useState([]);
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
+  const [reload, setReload] = useState(false);
+
+  const repintarScreen = () => {
+    setReload((prevState) => !prevState);
+  };
 
   // Para recargar las paginas
   const { recargarColecciones } = useContext(RecargarContext);
@@ -28,9 +32,27 @@ export function ElegirSetYugioh({ route }) {
   // Para saber qué colección se creó
   const { coleccion } = route.params;
 
+  const buscarMisSetsYugioh = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/yugioh/misSets?mail=${mail}`
+      );
+      const setsId = response.data.map((objeto) => objeto.id_set);
+      setMisSets(setsId);
+    } catch (error) {
+      console.log("SCREEN ELEGIR SET YUGIOH :" + error);
+    }
+  };
+
+  function tengoSet(item, sets) {
+    console.log(item.set_name);
+    return sets.includes(item.set_name);
+  }
+
   useEffect(() => {
+    buscarMisSetsYugioh();
     buscarSets();
-  }, [page]);
+  }, [page, reload]);
 
   const buscarSets = async () => {
     if (loading || !hasMore) return;
@@ -38,9 +60,12 @@ export function ElegirSetYugioh({ route }) {
     setLoading(true);
     try {
       mostrarOcultarModal();
-      const response = await axios.get(`https://db.ygoprodeck.com/api/v7/cardsets.php`, {
-        params: { page: page, per_page: 20 },  // Llamada paginada
-      });
+      const response = await axios.get(
+        `https://db.ygoprodeck.com/api/v7/cardsets.php`,
+        {
+          params: { page: page, per_page: 20 }, // Llamada paginada
+        }
+      );
       if (response.data.length > 0) {
         setSets((prevSets) => [...prevSets, ...response.data]);
       } else {
@@ -79,6 +104,7 @@ export function ElegirSetYugioh({ route }) {
                   coleccion,
                   setName,
                 });
+                repintarScreen();
               })
               .catch((error) =>
                 Alert.alert("Error", `${error.response?.data || error.message}`)
@@ -96,9 +122,15 @@ export function ElegirSetYugioh({ route }) {
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      style={styles.setContainer}
+      style={[
+        styles.setContainer,
+        tengoSet(item, misSets)
+          ? { ...styles.tengoSet }
+          : { ...styles.noTengoSet },
+      ]}
       onPress={() => handleMazoPress(item.set_name)}
     >
+      {tengoSet(item.set_name, misSets)}
       <Image
         source={{
           uri:
@@ -109,9 +141,7 @@ export function ElegirSetYugioh({ route }) {
       />
       <View style={styles.setTextContainer}>
         <Text style={styles.setName}>{item.set_name}</Text>
-        <Text style={styles.setNumCards}>
-          {`${item.num_of_cards} cartas`}
-        </Text>
+        <Text style={styles.setNumCards}>{`${item.num_of_cards} cartas`}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -130,9 +160,9 @@ export function ElegirSetYugioh({ route }) {
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.container}
-        onEndReached={loadMore}  // Carga más cuando llega al final
-        onEndReachedThreshold={0.5}  // Activar cuando esté a la mitad
-        ListFooterComponent={loading ? <Text>Cargando...</Text> : null}  // Mostrar mensaje mientras carga
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={loading ? <Text>Cargando...</Text> : null} // Mostrar mensaje mientras carga
       />
     </>
   );

@@ -121,7 +121,7 @@ export function ElegirSetPokemon({ route, navigation }) {
               styles.touchable,
               tengoSet(mazo.id, misSets)
                 ? { ...styles.tengoSet }
-                : { ...styles.noTengoSet },
+                : { ...styles.noTengoSet }
             ]}
             onPress={() => handleMazoPress(mazo)}
           >

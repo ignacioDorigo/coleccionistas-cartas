@@ -9,8 +9,6 @@ import { AuthContext } from "../../../context/AuthContext";
 import { TouchableOpacity } from "react-native";
 
 export function CartasSetYugioh({ route }) {
-  console.log("screen cartas set yugioh");
-
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
 
@@ -26,7 +24,9 @@ export function CartasSetYugioh({ route }) {
     if (cartas.length > 0) return; // Evitar llamada si ya se cargaron las cartas
 
     try {
-      const url = `https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=${encodeURIComponent(setName.trim())}`;
+      const url = `https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=${encodeURIComponent(
+        setName.trim()
+      )}`;
       mostrarOcultarModal();
       const response = await axios.get(url);
       setCartas(response.data.data);
@@ -60,7 +60,10 @@ export function CartasSetYugioh({ route }) {
       );
       Alert.alert("Éxito", response.data);
     } catch (error) {
-      Alert.alert("Error", error.response?.data || "Hubo un problema al agregar la carta.");
+      Alert.alert(
+        "Error",
+        error.response?.data || "Hubo un problema al agregar la carta."
+      );
     }
   };
 
@@ -86,7 +89,9 @@ export function CartasSetYugioh({ route }) {
       {mostrarPropiedad("Defensa", item.def)}
       <Button
         iconPosition="left"
-        icon={<Icon type="material-community" name="account" color={"#FFFFFF"} />}
+        icon={
+          <Icon type="material-community" name="account" color={"#FFFFFF"} />
+        }
         containerStyle={styles.btnContainer}
         buttonStyle={styles.btn}
         title="   Agregar al inventario"

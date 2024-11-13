@@ -58,4 +58,12 @@ export const styles = StyleSheet.create({
   setTextContainer: {
     flex: 1,
   },
+  tengoSet: {
+    borderColor: "green",
+    backgroundColor: "rgba(0, 255, 0, 0.3)",
+  },
+  noTengoSet: {
+    borderColor: "#FFF",
+    // backgroundColor: "rgba(128, 128, 128, 0.3)"
+  },
 });
