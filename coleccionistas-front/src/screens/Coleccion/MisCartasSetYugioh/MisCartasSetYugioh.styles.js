@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
   imageCard: {
     width: 260,
     height: 380,
-    resizeMode: "cover",
+    resizeMode: "contain",
     borderRadius: 8,
     marginBottom: 10,
   },
@@ -28,40 +28,7 @@ export const styles = StyleSheet.create({
     borderColor: "#DDD",
     borderWidth: 1,
   },
-  textContainer: {
-    width: "100%",
-    marginTop: 10,
-  },
-  textLabel: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  textValue: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 5,
-  },
-  cardGreen: {
-    borderColor: "green",
-    borderWidth: 2,
-    padding: 10,
-    margin: 5,
-  },
-  cardRed: {
-    borderColor: "red",
-    borderWidth: 2,
-    padding: 10,
-    margin: 5,
-  },
-  textGreen: {
-    color: "green",
-    fontWeight: "bold",
-  },
-  textRed: {
-    color: "red",
-    fontWeight: "bold",
-  },
+
   overlayContainer: {
     flex: 1,
     justifyContent: "center",

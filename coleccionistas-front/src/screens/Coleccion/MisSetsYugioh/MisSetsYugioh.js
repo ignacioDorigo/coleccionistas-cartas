@@ -74,7 +74,9 @@ export function MisSetsYugioh() {
   }, [misSets, setCompletos, repintar]);
 
   const irAmisCartasSetYugioh = (set) => {
-    navigation.navigate(screen.coleccion.misCartasSetYugioh, { set: set });
+    navigation.navigate(screen.coleccion.misCartasSetYugioh, {
+      setName: set.set_name,
+    });
   };
 
   const confirmarEliminarSet = (idSet) => {

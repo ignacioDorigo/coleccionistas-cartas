@@ -8,6 +8,7 @@ import {
   Modal,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from "react-native";
 import { styles } from "./MisCartasSetYugioh.styles";
 import { AuthContext } from "../../../context/AuthContext";
@@ -16,163 +17,97 @@ import { ipHost } from "../../../utils";
 import { Button, Icon } from "@rneui/themed";
 
 export function MisCartasSetYugioh({ route }) {
-  const [cartas, setCartas] = useState([]);
-  const [misCartas, setMisCartas] = useState([]);
+  // Modal carga
   const [modal, setModal] = useState(false);
+  // Modal Img
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [isEndOfList, setIsEndOfList] = useState(false);
 
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
-  const { set } = route.params;
+  const { setName } = route.params;
+  const [reload, setReload] = useState(false);
 
-  useEffect(() => {
-    buscarTodasCartasSet();
-    buscarMisCartasSet();
-  }, []);
+  const [namesMisCartas, setNamesMisCartas] = useState([]);
+  const [todasCartas, setTodasCartas] = useState([]);
+
+  const recargarScreen = () => {
+    setReload((prevState) => !prevState);
+  };
+
+  const buscarNameMisCartas = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/yugioh/misCartas?mail=${mail}&idSet=${setName}`
+      );
+      const objetos = response.data;
+      const names = objetos.map((objeto) => objeto.id_card);
+      // console.log(names);
+      setNamesMisCartas(names);
+    } catch (error) {
+      console.log("Error en el fetch de buscar mis cartas");
+      console.log(error);
+    }
+  };
+
+  const todasCartasSet = async () => {
+    try {
+      const url = construirURL(setName);
+      const response = await axios.get(url);
+      const cartas = response.data.data;
+      // Solo me vpy a quedar con el nombre de la carta y la img
+      const objetos = cartas.map((carta) => ({
+        name: carta.name,
+        img: carta?.card_images[0]?.image_url,
+      }));
+      setTodasCartas(objetos);
+      // console.log(objetos);
+    } catch (error) {
+      console.log("Error en el fetch de buscar TODAS LAS CARTAS DE UN SET");
+      console.log(error);
+    }
+  };
 
   const construirURL = (cardSetName) => {
     const baseUrl = "https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=";
     const encodedCardSetName = encodeURIComponent(cardSetName.trim());
-    return `${baseUrl}${encodedCardSetName}&page=${page}&limit=20`; // Paginación
+    const url = `${baseUrl}${encodedCardSetName}`;
+    // console.log("URL: " + url);
+    return url;
   };
 
-  const buscarTodasCartasSet = async () => {
-    if (loading || isEndOfList) return; // Evitar peticiones duplicadas
-    setLoading(true);
-    try {
-      const url = construirURL(set.set_name);
-      const response = await axios.get(url);
-      console.log(response.data.data);
+  function tengoCarta(cardName, names) {
+    // console.log(names.includes(cardName));
+    return names.includes(cardName);
+  }
 
-      if (response.data.data.length < 20) {
-        setIsEndOfList(true); // Finalizó la carga
-      }
-      setCartas((prevState) => [...prevState, ...response.data.data]);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const buscarMisCartasSet = async () => {
-    try {
-      const response = await axios.get(
-        `http://${ipHost}:8080/coleccionistas/yugioh/misCartas?mail=${mail}&idSet=${set.set_name}`
-      );
-      setMisCartas(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const eliminarCarta = async (card_name) => {
-    try {
-      const response = await axios.delete(
-        `http://${ipHost}:8080/coleccionistas/yugioh/eliminarCartaInventario?mail=${mail}&setName=${set.set_name}&cardName=${card_name}`
-      );
-      Alert.alert("Éxito", response.data);
-      buscarMisCartasSet(); // Recargar las cartas del usuario
-    } catch (error) {
-      Alert.alert("Error", error.response?.data || error.message);
-    }
-  };
-
-  const agregarCarta = async (card_name) => {
-    try {
-      const response = await axios.post(
-        `http://${ipHost}:8080/coleccionistas/yugioh/agregarCarta?mail=${mail}&setName=${set.set_name}&cardName=${card_name}`
-      );
-      Alert.alert("Éxito", response.data);
-      buscarMisCartasSet(); // Recargar las cartas del usuario
-    } catch (error) {
-      Alert.alert("Error", error.response?.data || error.message);
-    }
-  };
-
-  const esCartaMia = (cartaName) => {
-    return misCartas.some((carta) => carta.id_card === cartaName);
-  };
-
-  const renderItem = ({ item }) => {
-    const tengoCarta = esCartaMia(item.name);
-    return (
-      <View
-        style={[
-          styles.cardContainer,
-          tengoCarta ? styles.cardGreen : styles.cardRed,
-        ]}
-      >
-        <TouchableOpacity
-          onPress={() => {
-            setSelectedImage(item.card_images?.[0]?.image_url);
-            setIsModalVisible(true);
-          }}
-        >
-          <Image
-            source={{ uri: item.card_images?.[0]?.image_url }}
-            style={styles.imageCard}
-          />
-        </TouchableOpacity>
-
-        {tengoCarta ? (
-          <Button
-            title={"Eliminar del inventario"}
-            onPress={() => eliminarCarta(item.name)}
-            buttonStyle={styles.btnEliminar}
-            containerStyle={styles.btnContainer}
-          />
-        ) : (
-          <Button
-            title={"Agregar al inventario"}
-            onPress={() => agregarCarta(item.name)}
-            buttonStyle={styles.btnAgregar}
-            containerStyle={styles.btnContainer}
-          />
-        )}
-
-        <Text style={tengoCarta ? styles.textGreen : styles.textRed}>
-          {tengoCarta ? "Tengo esta carta" : "No tengo esta carta"}
-        </Text>
-
-        {tengoCarta && (
-          <Icon
-            type="material-community"
-            name="trophy"
-            color={"#FFD700"}
-            raised
-            containerStyle={styles.iconoTrophy}
-          />
-        )}
-      </View>
-    );
-  };
-
-  const loadMore = () => {
-    if (!isEndOfList) {
-      setPage((prevPage) => prevPage + 1); // Incrementar página para cargar más
-      buscarTodasCartasSet();
-    }
-  };
+  useEffect(() => {
+    buscarNameMisCartas();
+    todasCartasSet();
+  }, [reload]);
 
   return (
     <>
-      <ModalCarga isVisible={modal} />
-
-      <FlatList
-        data={cartas}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        onEndReached={loadMore} // Cargar más al final
-        onEndReachedThreshold={0.5} // 50% de la lista
-        ListFooterComponent={
-          loading && !isEndOfList ? <Text>Cargando...</Text> : null
-        }
-      />
+    {todasCartas.length===0?      <ModalCarga isVisible={true} />:<>
+      <ScrollView contentContainerStyle={styles.container}>
+        {todasCartas.map((carta, index) => (
+          <View style={styles.cardContainer} key={index}>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedImage(carta.img);
+                setIsModalVisible(true);
+              }}
+            >
+              <Image source={{ uri: carta.img }} style={styles.imageCard} />
+            </TouchableOpacity>
+            {tengoCarta(carta.name, namesMisCartas) ? (
+              <Button title={"ELIMINAR DEL INVENTARIO"}/>
+            ) : (
+              <Text>NO LA TENGO</Text>
+            )}
+          </View>
+        ))}
+      </ScrollView>
 
       <Modal
         visible={isModalVisible}
@@ -192,7 +127,9 @@ export function MisCartasSetYugioh({ route }) {
             />
           </View>
         </View>
-      </Modal>
+      </Modal></>}
+
+
     </>
   );
 }
