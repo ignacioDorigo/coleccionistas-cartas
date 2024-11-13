@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
-  ScrollView,
+  FlatList,
   Image,
   Modal,
   TouchableOpacity,
@@ -16,53 +16,46 @@ import { ipHost } from "../../../utils";
 import { Button, Icon } from "@rneui/themed";
 
 export function MisCartasSetYugioh({ route }) {
-  // Todas las cartas del SET (incluidas las que no tenemos)
   const [cartas, setCartas] = useState([]);
-
-  //Cartas que tenemos
   const [misCartas, setMisCartas] = useState([]);
-
-  //Modal de carga
   const [modal, setModal] = useState(false);
-
-  // Modal para imagen ampliada
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [isEndOfList, setIsEndOfList] = useState(false);
 
-  // Contexto para exxtraer mail
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
-
-  // Set elegido por el usuario
   const { set } = route.params;
-
-  const [recargar, setRecargar] = useState(false);
-
-  const recargarScreen = () => {
-    setRecargar((prevState) => !prevState);
-  };
 
   useEffect(() => {
     buscarTodasCartasSet();
     buscarMisCartasSet();
-  }, [recargar]);
+  }, []);
 
-  function construirURL(cardSetName) {
+  const construirURL = (cardSetName) => {
     const baseUrl = "https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=";
     const encodedCardSetName = encodeURIComponent(cardSetName.trim());
-    return `${baseUrl}${encodedCardSetName}`;
-  }
+    return `${baseUrl}${encodedCardSetName}&page=${page}&limit=20`; // Paginación
+  };
 
   const buscarTodasCartasSet = async () => {
+    if (loading || isEndOfList) return; // Evitar peticiones duplicadas
+    setLoading(true);
     try {
-      setModal(true);
       const url = construirURL(set.set_name);
       const response = await axios.get(url);
-      setCartas(response.data.data);
+      console.log(response.data.data);
+
+      if (response.data.data.length < 20) {
+        setIsEndOfList(true); // Finalizó la carga
+      }
+      setCartas((prevState) => [...prevState, ...response.data.data]);
     } catch (error) {
       console.log(error);
     } finally {
-      setModal(false);
+      setLoading(false);
     }
   };
 
@@ -82,10 +75,10 @@ export function MisCartasSetYugioh({ route }) {
       const response = await axios.delete(
         `http://${ipHost}:8080/coleccionistas/yugioh/eliminarCartaInventario?mail=${mail}&setName=${set.set_name}&cardName=${card_name}`
       );
-      Alert.alert("Exito", response.data);
-      recargarScreen();
+      Alert.alert("Éxito", response.data);
+      buscarMisCartasSet(); // Recargar las cartas del usuario
     } catch (error) {
-      Alert.alert("Error", error.response.data);
+      Alert.alert("Error", error.response?.data || error.message);
     }
   };
 
@@ -94,83 +87,93 @@ export function MisCartasSetYugioh({ route }) {
       const response = await axios.post(
         `http://${ipHost}:8080/coleccionistas/yugioh/agregarCarta?mail=${mail}&setName=${set.set_name}&cardName=${card_name}`
       );
-      Alert.alert("Exito", response.data);
-      recargarScreen();
+      Alert.alert("Éxito", response.data);
+      buscarMisCartasSet(); // Recargar las cartas del usuario
     } catch (error) {
-      Alert.alert("Error", error.response.data);
+      Alert.alert("Error", error.response?.data || error.message);
     }
   };
 
-  // Función para verificar si la carta está en la colección del usuario usando el nombre
   const esCartaMia = (cartaName) => {
     return misCartas.some((carta) => carta.id_card === cartaName);
+  };
+
+  const renderItem = ({ item }) => {
+    const tengoCarta = esCartaMia(item.name);
+    return (
+      <View
+        style={[
+          styles.cardContainer,
+          tengoCarta ? styles.cardGreen : styles.cardRed,
+        ]}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            setSelectedImage(item.card_images?.[0]?.image_url);
+            setIsModalVisible(true);
+          }}
+        >
+          <Image
+            source={{ uri: item.card_images?.[0]?.image_url }}
+            style={styles.imageCard}
+          />
+        </TouchableOpacity>
+
+        {tengoCarta ? (
+          <Button
+            title={"Eliminar del inventario"}
+            onPress={() => eliminarCarta(item.name)}
+            buttonStyle={styles.btnEliminar}
+            containerStyle={styles.btnContainer}
+          />
+        ) : (
+          <Button
+            title={"Agregar al inventario"}
+            onPress={() => agregarCarta(item.name)}
+            buttonStyle={styles.btnAgregar}
+            containerStyle={styles.btnContainer}
+          />
+        )}
+
+        <Text style={tengoCarta ? styles.textGreen : styles.textRed}>
+          {tengoCarta ? "Tengo esta carta" : "No tengo esta carta"}
+        </Text>
+
+        {tengoCarta && (
+          <Icon
+            type="material-community"
+            name="trophy"
+            color={"#FFD700"}
+            raised
+            containerStyle={styles.iconoTrophy}
+          />
+        )}
+      </View>
+    );
+  };
+
+  const loadMore = () => {
+    if (!isEndOfList) {
+      setPage((prevPage) => prevPage + 1); // Incrementar página para cargar más
+      buscarTodasCartasSet();
+    }
   };
 
   return (
     <>
       <ModalCarga isVisible={modal} />
 
-      <ScrollView contentContainerStyle={styles.container}>
-        {cartas.map((carta, index) => {
-          const tengoCarta = esCartaMia(carta.name);
-          return (
-            <View
-              key={index}
-              style={[
-                styles.cardContainer,
-                tengoCarta ? styles.cardGreen : styles.cardRed,
-              ]}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedImage(carta.card_images?.[0]?.image_url);
-                  setIsModalVisible(true);
-                }}
-              >
-                <Image
-                  source={{ uri: carta.card_images?.[0]?.image_url }}
-                  style={styles.imageCard}
-                />
-              </TouchableOpacity>
+      <FlatList
+        data={cartas}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+        onEndReached={loadMore} // Cargar más al final
+        onEndReachedThreshold={0.5} // 50% de la lista
+        ListFooterComponent={
+          loading && !isEndOfList ? <Text>Cargando...</Text> : null
+        }
+      />
 
-              {tengoCarta ? (
-                <Button
-                  title={"Eliminar del inventario"}
-                  onPress={() => eliminarCarta(carta.name)}
-                  buttonStyle={styles.btnEliminar}
-                  containerStyle={styles.btnContainer}
-                />
-              ) : (
-                <Button
-                  title={"Agregar al inventario"}
-                  onPress={() => agregarCarta(carta.name)}
-                  buttonStyle={styles.btnAgregar}
-                  containerStyle={styles.btnContainer}
-                />
-              )}
-
-              <Text style={tengoCarta ? styles.textGreen : styles.textRed}>
-                {tengoCarta ? "Tengo esta carta" : "No tengo esta carta"}
-              </Text>
-
-              {/* Para poner el iconito del trofeo en caso de que la tengamos*/}
-              {tengoCarta ? (
-                <Icon
-                  type="material-community"
-                  name="trophy"
-                  color={"#FFD700"}
-                  raised
-                  containerStyle={styles.iconoTrophy}
-                />
-              ) : (
-                <></>
-              )}
-            </View>
-          );
-        })}
-      </ScrollView>
-
-      {/* Modal para mostrar la imagen ampliada */}
       <Modal
         visible={isModalVisible}
         transparent={true}

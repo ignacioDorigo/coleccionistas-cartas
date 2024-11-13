@@ -1,38 +1,32 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, Alert } from "react-native";
+import React, { useContext, useEffect, useState, useCallback } from "react";
+import { View, Text, Modal, Image, Alert, FlatList } from "react-native";
 import { ModalCarga } from "../../../components/ModalCarga";
 import { styles } from "./CartasSetYugioh.styles";
 import { Button, Icon } from "@rneui/themed";
 import { ipHost } from "../../../utils/ipHost";
 import { AuthContext } from "../../../context/AuthContext";
+import { TouchableOpacity } from "react-native";
 
 export function CartasSetYugioh({ route }) {
+  console.log("screen cartas set yugioh");
+
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
 
   const [modal, setModal] = useState(false);
   const { coleccion, setName } = route.params;
-  // console.log("CARTAS SET YUGIOH SCREEN : SET NAME --> " + setName);
+
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [cartas, setCartas] = useState([]);
 
-  useEffect(() => {
-    buscarCartas();
-  }, []);
+  // Función optimizada para evitar la recarga innecesaria de cartas
+  const buscarCartas = useCallback(async () => {
+    if (cartas.length > 0) return; // Evitar llamada si ya se cargaron las cartas
 
-  const mostrarOcultarModal = () => {
-    setModal((prevState) => !prevState);
-  };
-
-  function construirURL(cardSetName) {
-    const baseUrl = "https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=";
-    const encodedCardSetName = encodeURIComponent(cardSetName.trim());
-    return `${baseUrl}${encodedCardSetName}`;
-  }
-
-  const buscarCartas = async () => {
     try {
-      const url = construirURL(setName);
+      const url = `https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=${encodeURIComponent(setName.trim())}`;
       mostrarOcultarModal();
       const response = await axios.get(url);
       setCartas(response.data.data);
@@ -41,6 +35,14 @@ export function CartasSetYugioh({ route }) {
     } finally {
       mostrarOcultarModal();
     }
+  }, [cartas, setName]);
+
+  useEffect(() => {
+    buscarCartas();
+  }, [buscarCartas]);
+
+  const mostrarOcultarModal = () => {
+    setModal((prevState) => !prevState);
   };
 
   const mostrarPropiedad = (label, valor) =>
@@ -56,45 +58,72 @@ export function CartasSetYugioh({ route }) {
       const response = await axios.post(
         `http://${ipHost}:8080/coleccionistas/yugioh/agregarCarta?mail=${mail}&setName=${setName}&cardName=${cardName}`
       );
-      Alert.alert("Exito", response.data);
+      Alert.alert("Éxito", response.data);
     } catch (error) {
-      Alert.alert("Error", error.response.data);
+      Alert.alert("Error", error.response?.data || "Hubo un problema al agregar la carta.");
     }
   };
+
+  const renderItem = ({ item }) => (
+    <View style={styles.cardContainer}>
+      <TouchableOpacity
+        onPress={() => {
+          setSelectedImage(item.card_images?.[0]?.image_url);
+          setIsModalVisible(true);
+        }}
+      >
+        <Image
+          source={{ uri: item.card_images?.[0]?.image_url }}
+          style={styles.imageCard}
+        />
+      </TouchableOpacity>
+      {mostrarPropiedad("ID", item.id)}
+      {mostrarPropiedad("Nombre", item.name)}
+      {mostrarPropiedad("Descripción", item.desc)}
+      {mostrarPropiedad("Tipo", item.type)}
+      {mostrarPropiedad("Atributo", item.attribute)}
+      {mostrarPropiedad("Ataque", item.atk)}
+      {mostrarPropiedad("Defensa", item.def)}
+      <Button
+        iconPosition="left"
+        icon={<Icon type="material-community" name="account" color={"#FFFFFF"} />}
+        containerStyle={styles.btnContainer}
+        buttonStyle={styles.btn}
+        title="   Agregar al inventario"
+        onPress={() => agregarCartaAColeccion(item.name)}
+      />
+    </View>
+  );
+
   return (
     <>
       <ModalCarga isVisible={modal} />
-      <ScrollView contentContainerStyle={styles.container}>
-        {cartas.map((carta, index) => (
-          <View key={index} style={styles.cardContainer}>
+      <FlatList
+        data={cartas}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        contentContainerStyle={styles.container}
+      />
+      {/* Modal para mostrar la imagen ampliada */}
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.overlayContainer}>
+          <TouchableOpacity
+            style={styles.overlayBackground}
+            onPress={() => setIsModalVisible(false)}
+          />
+          <View style={styles.modalImageContainer}>
             <Image
-              source={{ uri: carta.card_images?.[0]?.image_url }}
-              style={styles.imageCard}
-            />
-            {mostrarPropiedad("ID", carta.id)}
-            {mostrarPropiedad("Nombre", carta.name)}
-            {mostrarPropiedad("Descripción", carta.desc)}
-            {mostrarPropiedad("Tipo", carta.type)}
-            {mostrarPropiedad("Atributo", carta.attribute)}
-            {mostrarPropiedad("Ataque", carta.atk)}
-            {mostrarPropiedad("Defensa", carta.def)}
-            <Button
-              iconPosition="left"
-              icon={
-                <Icon
-                  type="material-community"
-                  name="account"
-                  color={"#FFFFFF"}
-                ></Icon>
-              }
-              containerStyle={styles.btnContainer}
-              buttonStyle={styles.btn}
-              title={"   Agregar al inventario"}
-              onPress={() => agregarCartaAColeccion(carta.name)}
+              source={{ uri: selectedImage }}
+              style={styles.modalImage}
+              resizeMode="contain"
             />
           </View>
-        ))}
-      </ScrollView>
+        </View>
+      </Modal>
     </>
   );
 }

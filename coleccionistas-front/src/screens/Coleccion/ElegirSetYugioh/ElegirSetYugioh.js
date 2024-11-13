@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, Alert } from "react-native";
+import { View, Text, Alert, FlatList, Image } from "react-native";
 import { styles } from "./ElegirSetYugioh.styles";
 import { ModalCarga } from "../../../components/ModalCarga";
 import axios from "axios";
-import { Button, Image } from "@rneui/themed";
+import { Button } from "@rneui/themed";
 import { TouchableOpacity } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
@@ -14,6 +14,9 @@ export function ElegirSetYugioh({ route }) {
   const navigation = useNavigation();
   const [modal, setModal] = useState(false);
   const [sets, setSets] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   // Para pedir el mail
   const { isLoggedIn } = useContext(AuthContext);
@@ -27,18 +30,26 @@ export function ElegirSetYugioh({ route }) {
 
   useEffect(() => {
     buscarSets();
-  }, []);
+  }, [page]);
 
   const buscarSets = async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
     try {
       mostrarOcultarModal();
-      const response = await axios.get(
-        `https://db.ygoprodeck.com/api/v7/cardsets.php`
-      );
-      setSets(response.data);
+      const response = await axios.get(`https://db.ygoprodeck.com/api/v7/cardsets.php`, {
+        params: { page: page, per_page: 20 },  // Llamada paginada
+      });
+      if (response.data.length > 0) {
+        setSets((prevSets) => [...prevSets, ...response.data]);
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       console.log(error);
     } finally {
+      setLoading(false);
       mostrarOcultarModal();
     }
   };
@@ -83,36 +94,46 @@ export function ElegirSetYugioh({ route }) {
     setModal((prevState) => !prevState);
   };
 
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.setContainer}
+      onPress={() => handleMazoPress(item.set_name)}
+    >
+      <Image
+        source={{
+          uri:
+            item.set_image ||
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQumqw6UawRn7rOgAvevIfEnX55015CA-oTeA&s",
+        }}
+        style={styles.imageSet}
+      />
+      <View style={styles.setTextContainer}>
+        <Text style={styles.setName}>{item.set_name}</Text>
+        <Text style={styles.setNumCards}>
+          {`${item.num_of_cards} cartas`}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const loadMore = () => {
+    if (!loading && hasMore) {
+      setPage(page + 1);
+    }
+  };
+
   return (
     <>
       <ModalCarga isVisible={modal} />
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.viewHeader}>
-          <Text style={styles.header}>Sets Disponibles</Text>
-        </View>
-        {sets.map((set, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.setContainer}
-            onPress={() => handleMazoPress(set.set_name)}
-          >
-            <Image
-              source={{
-                uri:
-                  set.set_image ||
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQumqw6UawRn7rOgAvevIfEnX55015CA-oTeA&s",
-              }}
-              style={styles.imageSet}
-            />
-            <View style={styles.setTextContainer}>
-              <Text style={styles.setName}>{set.set_name}</Text>
-              <Text style={styles.setNumCards}>
-                {`${set.num_of_cards} cartas`}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <FlatList
+        data={sets}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.container}
+        onEndReached={loadMore}  // Carga más cuando llega al final
+        onEndReachedThreshold={0.5}  // Activar cuando esté a la mitad
+        ListFooterComponent={loading ? <Text>Cargando...</Text> : null}  // Mostrar mensaje mientras carga
+      />
     </>
   );
 }
