@@ -53,14 +53,6 @@ export function MisCartasSetYugioh({ route }) {
     return `${baseUrl}${encodedCardSetName}`;
   }
 
-  const mostrarPropiedad = (label, valor) =>
-    valor ? (
-      <View style={styles.textContainer}>
-        <Text style={styles.textLabel}>{label}:</Text>
-        <Text style={styles.textValue}>{valor}</Text>
-      </View>
-    ) : null;
-
   const buscarTodasCartasSet = async () => {
     try {
       setModal(true);

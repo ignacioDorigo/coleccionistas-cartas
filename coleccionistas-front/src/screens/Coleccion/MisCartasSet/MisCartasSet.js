@@ -8,6 +8,7 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
+  Modal,
 } from "react-native";
 import { styles } from "./MisCartaSet.styles";
 import axios from "axios";
@@ -30,6 +31,9 @@ export function MisCartasSet({ route }) {
 
   // De alguna manera tengo que recargar el screen de favoritos, entonces cree un context de eso
   const { recargarFavoritos } = useContext(RecargarContext);
+  // Modal para imagen ampliada
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const navigation = useNavigation();
 
@@ -232,10 +236,17 @@ export function MisCartasSet({ route }) {
 
                 .map((card, index) => (
                   <View key={index} style={styles.cardContainer}>
-                    <Image
-                      style={styles.cardImage}
-                      source={{ uri: card.images.small }}
-                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSelectedImage(card.images.small);
+                        setIsModalVisible(true);
+                      }}
+                    >
+                      <Image
+                        style={styles.cardImage}
+                        source={{ uri: card.images.small }}
+                      />
+                    </TouchableOpacity>
 
                     {mazoMio.includes(card.id) ? (
                       <Icon
@@ -280,7 +291,29 @@ export function MisCartasSet({ route }) {
                   </View>
                 ))}
             </ScrollView>
+
+            {/* Modal para mostrar la imagen ampliada */}
           </View>
+          <Modal
+            visible={isModalVisible}
+            transparent={true}
+            onRequestClose={() => setIsModalVisible(false)}
+          >
+            <View style={styles.overlayContainer}>
+              <TouchableOpacity
+                style={styles.overlayBackground}
+                onPress={() => setIsModalVisible(false)}
+              />
+              <View style={styles.modalImageContainer}>
+                <Image
+                  style={[styles.modalImage, { resizeMode: "contain" }]}
+                  source={{ uri: selectedImage }}
+                />
+                {console.log(selectedImage)}
+                <Text></Text>
+              </View>
+            </View>
+          </Modal>
         </>
       )}
     </>
