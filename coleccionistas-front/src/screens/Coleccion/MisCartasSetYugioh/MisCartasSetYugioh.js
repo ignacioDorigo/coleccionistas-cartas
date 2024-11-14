@@ -113,36 +113,36 @@ export function MisCartasSetYugioh({ route }) {
   };
 
   // HAHY QUE MODIFICAR PARA ELMINAR PERO ES LA MISMA LOGICA
-  // const confirmarAgregarCarta = (cardName) => {
-  //   Alert.alert(
-  //     "Confirmación",
-  //     "¿Estás seguro de que deseas agregar esta carta a tu inventario?",
-  //     [
-  //       {
-  //         text: "Cancelar",
-  //         style: "destructive",
-  //       },
-  //       {
-  //         text: "Agregar",
-  //         style: "default",
-  //         onPress: () => agregarCarta(cardName),
-  //       },
-  //     ],
-  //     { cancelable: true }
-  //   );
-  // };
+  const confirmarEliminarCarta = (cardName) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que deseas eliminar esta carta de tu inventario?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Eliminar",
+          style: "default",
+          onPress: () => eliminarCarta(cardName),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
-  // const agregarCarta = async (cardName) => {
-  //   try {
-  //     const response = await axios.post(
-  //       `http://${ipHost}:8080/coleccionistas/yugioh/agregarCarta?mail=${mail}&setName=${setName}&cardName=${cardName}`
-  //     );
-  //     Alert.alert("Exito", response.data);
-  //     recargarScreen();
-  //   } catch (error) {
-  //     Alert.alert(error.response.data);
-  //   }
-  // };
+  const eliminarCarta = async (cardName) => {
+    try {
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/yugioh/eliminarCartaInventario?mail=${mail}&setName=${setName}&cardName=${cardName}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+    } catch (error) {
+      Alert.alert(error.response.data);
+    }
+  };
 
   useEffect(() => {
     buscarNameMisCartas();
@@ -167,12 +167,47 @@ export function MisCartasSetYugioh({ route }) {
                   <Image source={{ uri: carta.img }} style={styles.imageCard} />
                 </TouchableOpacity>
                 {tengoCarta(carta.name, namesMisCartas) ? (
-                  <Button title={"FATASASDASDASDASD"} />
+                  <Button
+                    title={"Eliminar de mi coleccion"}
+                    buttonStyle={styles.btnEliminar}
+                    onPress={() => confirmarEliminarCarta(carta.name)}
+                    containerStyle={styles.btnContainer}
+                    iconPosition="left"
+                    icon={
+                      <Icon
+                        type="material-community"
+                        name="book-remove-outline"
+                        iconStyle={styles.iconoBtn}
+                      />
+                    }
+                  />
                 ) : (
                   <Button
                     title={"Agregar a mi coleccion"}
                     onPress={() => confirmarAgregarCarta(carta.name)}
+                    buttonStyle={styles.btnAgregar}
+                    containerStyle={styles.btnContainer}
+                    iconPosition="left"
+                    icon={
+                      <Icon
+                        type="material-community"
+                        name="book-plus-outline"
+                        iconStyle={styles.iconoBtn}
+                      />
+                    }
                   />
+                )}
+
+                {tengoCarta(carta.name, namesMisCartas) ? (
+                  <Icon
+                    type="material-community"
+                    name="trophy"
+                    color={"#FFD700"}
+                    raised
+                    containerStyle={styles.iconoTrophy}
+                  />
+                ) : (
+                  <></>
                 )}
               </View>
             ))}

@@ -53,7 +53,10 @@ export const styles = StyleSheet.create({
   btnContainer: {
     width: "100%",
   },
-
+  iconoBtn: {
+    marginRight: 10,
+    color: "#FFF",
+  },
   btnAgregar: {
     backgroundColor: "#4caf50",
     borderRadius: 5,
