@@ -2,8 +2,6 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import {
   View,
-  Text,
-  FlatList,
   Image,
   Modal,
   TouchableOpacity,
@@ -17,8 +15,6 @@ import { ipHost } from "../../../utils";
 import { Button, Icon } from "@rneui/themed";
 
 export function MisCartasSetYugioh({ route }) {
-  // Modal carga
-  const [modal, setModal] = useState(false);
   // Modal Img
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -108,11 +104,10 @@ export function MisCartasSetYugioh({ route }) {
       Alert.alert("Exito", response.data);
       recargarScreen();
     } catch (error) {
-      Alert.alert(error.response.data);
+      Alert.alert("Error", error.response.data);
     }
   };
 
-  // HAHY QUE MODIFICAR PARA ELMINAR PERO ES LA MISMA LOGICA
   const confirmarEliminarCarta = (cardName) => {
     Alert.alert(
       "Confirmación",
@@ -140,7 +135,7 @@ export function MisCartasSetYugioh({ route }) {
       Alert.alert("Exito", response.data);
       recargarScreen();
     } catch (error) {
-      Alert.alert(error.response.data);
+      Alert.alert("Error", error.response.data);
     }
   };
 

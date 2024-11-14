@@ -1,134 +1,228 @@
-import axios from "axios";
-import React, { useContext, useEffect, useState, useCallback } from "react";
-import { View, Text, Modal, Image, Alert, FlatList } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, Text, Modal, Image, ScrollView, Alert } from "react-native";
 import { ModalCarga } from "../../../components/ModalCarga";
 import { styles } from "./CartasSetYugioh.styles";
-import { Button, Icon } from "@rneui/themed";
-import { ipHost } from "../../../utils/ipHost";
-import { AuthContext } from "../../../context/AuthContext";
 import { TouchableOpacity } from "react-native";
+import axios from "axios";
+import { Button, Icon } from "@rneui/themed";
+import { AuthContext } from "../../../context/AuthContext";
+import { ipHost } from "../../../utils";
 
 export function CartasSetYugioh({ route }) {
-  const { isLoggedIn } = useContext(AuthContext);
-  const mail = isLoggedIn;
-
-  const [modal, setModal] = useState(false);
-  const { coleccion, setName } = route.params;
-
+  // Modal Img
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [cartas, setCartas] = useState([]);
 
-  // Función optimizada para evitar la recarga innecesaria de cartas
-  const buscarCartas = useCallback(async () => {
-    if (cartas.length > 0) return; // Evitar llamada si ya se cargaron las cartas
+  const { isLoggedIn } = useContext(AuthContext);
+  const mail = isLoggedIn;
+  const { setName } = route.params;
+  const [reload, setReload] = useState(false);
 
-    try {
-      const url = `https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=${encodeURIComponent(
-        setName.trim()
-      )}`;
-      mostrarOcultarModal();
-      const response = await axios.get(url);
-      setCartas(response.data.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      mostrarOcultarModal();
-    }
-  }, [cartas, setName]);
+  const [namesMisCartas, setNamesMisCartas] = useState([]);
+  const [todasCartas, setTodasCartas] = useState([]);
 
-  useEffect(() => {
-    buscarCartas();
-  }, [buscarCartas]);
-
-  const mostrarOcultarModal = () => {
-    setModal((prevState) => !prevState);
+  const recargarScreen = () => {
+    setReload((prevState) => !prevState);
   };
 
-  const mostrarPropiedad = (label, valor) =>
-    valor ? (
-      <View style={styles.textContainer}>
-        <Text style={styles.textLabel}>{label}:</Text>
-        <Text style={styles.textValue}>{valor}</Text>
-      </View>
-    ) : null;
+  const buscarNameMisCartas = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/yugioh/misCartas?mail=${mail}&idSet=${setName}`
+      );
+      const objetos = response.data;
+      const names = objetos.map((objeto) => objeto.id_card);
+      // console.log(names);
+      setNamesMisCartas(names);
+    } catch (error) {
+      console.log("Error en el fetch de buscar mis cartas");
+      console.log(error);
+    }
+  };
 
-  const agregarCartaAColeccion = async (cardName) => {
+  const todasCartasSet = async () => {
+    try {
+      const url = construirURL(setName);
+      const response = await axios.get(url);
+      const cartas = response.data.data;
+      // Solo me vpy a quedar con el nombre de la carta y la img
+      const objetos = cartas.map((carta) => ({
+        name: carta.name,
+        img: carta?.card_images[0]?.image_url,
+      }));
+      setTodasCartas(objetos);
+      // console.log(objetos);
+    } catch (error) {
+      console.log("Error en el fetch de buscar TODAS LAS CARTAS DE UN SET");
+      console.log(error);
+    }
+  };
+
+  const construirURL = (cardSetName) => {
+    const baseUrl = "https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=";
+    const encodedCardSetName = encodeURIComponent(cardSetName.trim());
+    const url = `${baseUrl}${encodedCardSetName}`;
+    // console.log("URL: " + url);
+    return url;
+  };
+
+  function tengoCarta(cardName, names) {
+    // console.log(names.includes(cardName));
+    return names.includes(cardName);
+  }
+
+  const confirmarAgregarCarta = (cardName) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que deseas agregar esta carta a tu inventario?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Agregar",
+          style: "default",
+          onPress: () => agregarCarta(cardName),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const agregarCarta = async (cardName) => {
     try {
       const response = await axios.post(
         `http://${ipHost}:8080/coleccionistas/yugioh/agregarCarta?mail=${mail}&setName=${setName}&cardName=${cardName}`
       );
-      Alert.alert("Éxito", response.data);
+      Alert.alert("Exito", response.data);
+      recargarScreen();
     } catch (error) {
-      Alert.alert(
-        "Error",
-        error.response?.data || "Hubo un problema al agregar la carta."
-      );
+      Alert.alert("Error", error.response.data);
     }
   };
 
-  const renderItem = ({ item }) => (
-    <View style={styles.cardContainer}>
-      <TouchableOpacity
-        onPress={() => {
-          setSelectedImage(item.card_images?.[0]?.image_url);
-          setIsModalVisible(true);
-        }}
-      >
-        <Image
-          source={{ uri: item.card_images?.[0]?.image_url }}
-          style={styles.imageCard}
-        />
-      </TouchableOpacity>
-      {mostrarPropiedad("ID", item.id)}
-      {mostrarPropiedad("Nombre", item.name)}
-      {mostrarPropiedad("Descripción", item.desc)}
-      {mostrarPropiedad("Tipo", item.type)}
-      {mostrarPropiedad("Atributo", item.attribute)}
-      {mostrarPropiedad("Ataque", item.atk)}
-      {mostrarPropiedad("Defensa", item.def)}
-      <Button
-        iconPosition="left"
-        icon={
-          <Icon type="material-community" name="account" color={"#FFFFFF"} />
-        }
-        containerStyle={styles.btnContainer}
-        buttonStyle={styles.btn}
-        title="   Agregar al inventario"
-        onPress={() => agregarCartaAColeccion(item.name)}
-      />
-    </View>
-  );
+  const confirmarEliminarCarta = (cardName) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que deseas eliminar esta carta de tu inventario?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Eliminar",
+          style: "default",
+          onPress: () => eliminarCarta(cardName),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const eliminarCarta = async (cardName) => {
+    try {
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/yugioh/eliminarCartaInventario?mail=${mail}&setName=${setName}&cardName=${cardName}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    }
+  };
+
+  useEffect(() => {
+    buscarNameMisCartas();
+    todasCartasSet();
+  }, [reload]);
 
   return (
     <>
-      <ModalCarga isVisible={modal} />
-      <FlatList
-        data={cartas}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-        contentContainerStyle={styles.container}
-      />
-      {/* Modal para mostrar la imagen ampliada */}
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <View style={styles.overlayContainer}>
-          <TouchableOpacity
-            style={styles.overlayBackground}
-            onPress={() => setIsModalVisible(false)}
-          />
-          <View style={styles.modalImageContainer}>
-            <Image
-              source={{ uri: selectedImage }}
-              style={styles.modalImage}
-              resizeMode="contain"
-            />
-          </View>
-        </View>
-      </Modal>
+      {todasCartas.length === 0 ? (
+        <ModalCarga isVisible={true} />
+      ) : (
+        <>
+          <ScrollView contentContainerStyle={styles.container}>
+            {todasCartas.map((carta, index) => (
+              <View style={styles.cardContainer} key={index}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedImage(carta.img);
+                    setIsModalVisible(true);
+                  }}
+                >
+                  <Image source={{ uri: carta.img }} style={styles.imageCard} />
+                </TouchableOpacity>
+                {tengoCarta(carta.name, namesMisCartas) ? (
+                  <Button
+                    title={"Eliminar de mi coleccion"}
+                    buttonStyle={styles.btnEliminar}
+                    onPress={() => confirmarEliminarCarta(carta.name)}
+                    containerStyle={styles.btnContainer}
+                    iconPosition="left"
+                    icon={
+                      <Icon
+                        type="material-community"
+                        name="book-remove-outline"
+                        iconStyle={styles.iconoBtn}
+                      />
+                    }
+                  />
+                ) : (
+                  <Button
+                    title={"Agregar a mi coleccion"}
+                    onPress={() => confirmarAgregarCarta(carta.name)}
+                    buttonStyle={styles.btnAgregar}
+                    containerStyle={styles.btnContainer}
+                    iconPosition="left"
+                    icon={
+                      <Icon
+                        type="material-community"
+                        name="book-plus-outline"
+                        iconStyle={styles.iconoBtn}
+                      />
+                    }
+                  />
+                )}
+
+                {tengoCarta(carta.name, namesMisCartas) ? (
+                  <Icon
+                    type="material-community"
+                    name="trophy"
+                    color={"#FFD700"}
+                    raised
+                    containerStyle={styles.iconoTrophy}
+                  />
+                ) : (
+                  <></>
+                )}
+              </View>
+            ))}
+          </ScrollView>
+
+          <Modal
+            visible={isModalVisible}
+            transparent={true}
+            onRequestClose={() => setIsModalVisible(false)}
+          >
+            <View style={styles.overlayContainer}>
+              <TouchableOpacity
+                style={styles.overlayBackground}
+                onPress={() => setIsModalVisible(false)}
+              />
+              <View style={styles.modalImageContainer}>
+                <Image
+                  source={{ uri: selectedImage }}
+                  style={styles.modalImage}
+                  resizeMode="contain"
+                />
+              </View>
+            </View>
+          </Modal>
+        </>
+      )}
     </>
   );
 }

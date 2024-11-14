@@ -28,20 +28,6 @@ export const styles = StyleSheet.create({
     borderColor: "#DDD",
     borderWidth: 1,
   },
-  textContainer: {
-    width: "100%",
-    marginTop: 10,
-  },
-  textLabel: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  textValue: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 5,
-  },
   overlayContainer: {
     flex: 1,
     justifyContent: "center",
@@ -62,5 +48,26 @@ export const styles = StyleSheet.create({
   modalImage: {
     width: "100%",
     height: "100%",
+  },
+  btnContainer: {
+    width: "100%",
+  },
+  iconoBtn: {
+    marginRight: 10,
+    color: "#FFF",
+  },
+  btnAgregar: {
+    backgroundColor: "#4caf50",
+    borderRadius: 5,
+  },
+
+  btnEliminar: {
+    backgroundColor: "#f44336",
+    borderRadius: 5,
+  },
+  iconoTrophy: {
+    position: "absolute",
+    right: 0,
+    top: 20,
   },
 });

@@ -45,7 +45,7 @@ export function ElegirSetYugioh({ route }) {
   };
 
   function tengoSet(item, sets) {
-    console.log(item.set_name);
+    // console.log(item.set_name);
     return sets.includes(item.set_name);
   }
 
