@@ -70,4 +70,13 @@ export const styles = StyleSheet.create({
     right: 0,
     top: 20,
   },
+  view__switch: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  view__switch__texto: {
+    fontWeight: "bold",
+  },
 });

@@ -5,14 +5,14 @@ import {
   Image,
   Modal,
   TouchableOpacity,
-  Alert,
+  Alert,Text,
   ScrollView,
 } from "react-native";
 import { styles } from "./MisCartasSetYugioh.styles";
 import { AuthContext } from "../../../context/AuthContext";
 import { ModalCarga } from "../../../components/ModalCarga";
 import { ipHost } from "../../../utils";
-import { Button, Icon } from "@rneui/themed";
+import { Button, Icon, Switch } from "@rneui/themed";
 
 export function MisCartasSetYugioh({ route }) {
   // Modal Img
@@ -26,6 +26,11 @@ export function MisCartasSetYugioh({ route }) {
 
   const [namesMisCartas, setNamesMisCartas] = useState([]);
   const [todasCartas, setTodasCartas] = useState([]);
+  const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
+
+  const clickSwitch = () => {
+    setMostrarSoloObtenidas((prevState) => !prevState);
+  };
 
   const recargarScreen = () => {
     setReload((prevState) => !prevState);
@@ -151,7 +156,77 @@ export function MisCartasSetYugioh({ route }) {
       ) : (
         <>
           <ScrollView contentContainerStyle={styles.container}>
-            {todasCartas.map((carta, index) => (
+            <View style={styles.view__switch}>
+              <Switch
+                value={mostrarSoloObtenidas}
+                onValueChange={(value) => setMostrarSoloObtenidas(value)}
+              />
+              <Text style={styles.view__switch__texto}>Obtenidas</Text>
+            </View>
+
+            {todasCartas
+              .filter((carta) =>
+                mostrarSoloObtenidas
+                  ? tengoCarta(carta.name, namesMisCartas)
+                  : true
+              )
+              .map((carta, index) => (
+                <View style={styles.cardContainer} key={index}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectedImage(carta.img);
+                      setIsModalVisible(true);
+                    }}
+                  >
+                    <Image
+                      source={{ uri: carta.img }}
+                      style={styles.imageCard}
+                    />
+                  </TouchableOpacity>
+                  {tengoCarta(carta.name, namesMisCartas) ? (
+                    <Button
+                      title={"Eliminar de mi coleccion"}
+                      buttonStyle={styles.btnEliminar}
+                      onPress={() => confirmarEliminarCarta(carta.name)}
+                      containerStyle={styles.btnContainer}
+                      iconPosition="left"
+                      icon={
+                        <Icon
+                          type="material-community"
+                          name="book-remove-outline"
+                          iconStyle={styles.iconoBtn}
+                        />
+                      }
+                    />
+                  ) : (
+                    <Button
+                      title={"Agregar a mi coleccion"}
+                      onPress={() => confirmarAgregarCarta(carta.name)}
+                      buttonStyle={styles.btnAgregar}
+                      containerStyle={styles.btnContainer}
+                      iconPosition="left"
+                      icon={
+                        <Icon
+                          type="material-community"
+                          name="book-plus-outline"
+                          iconStyle={styles.iconoBtn}
+                        />
+                      }
+                    />
+                  )}
+
+                  {tengoCarta(carta.name, namesMisCartas) ? (
+                    <Icon
+                      type="material-community"
+                      name="trophy"
+                      color={"#FFD700"}
+                      raised
+                      containerStyle={styles.iconoTrophy}
+                    />
+                  ) : null}
+                </View>
+              ))}
+            {/* {todasCartas.map((carta, index) => (
               <View style={styles.cardContainer} key={index}>
                 <TouchableOpacity
                   onPress={() => {
@@ -205,7 +280,7 @@ export function MisCartasSetYugioh({ route }) {
                   <></>
                 )}
               </View>
-            ))}
+            ))} */}
           </ScrollView>
 
           <Modal
