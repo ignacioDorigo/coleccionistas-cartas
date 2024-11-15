@@ -66,4 +66,13 @@ export const styles = StyleSheet.create({
     borderColor: "#FFF",
     // backgroundColor: "rgba(128, 128, 128, 0.3)"
   },
+  view__switch: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  view__switch__texto: {
+    fontWeight: "bold",
+  },
 });

@@ -3,7 +3,7 @@ import { View, Text, Alert, FlatList, Image } from "react-native";
 import { styles } from "./ElegirSetYugioh.styles";
 import { ModalCarga } from "../../../components/ModalCarga";
 import axios from "axios";
-import { Button } from "@rneui/themed";
+import { Switch } from "@rneui/themed";
 import { TouchableOpacity } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
@@ -21,6 +21,12 @@ export function ElegirSetYugioh({ route }) {
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
   const [reload, setReload] = useState(false);
+
+  const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
+
+  const clickSwitch = () => {
+    setMostrarSoloObtenidas((prevState) => !prevState);
+  };
 
   const repintarScreen = () => {
     setReload((prevState) => !prevState);
@@ -155,6 +161,10 @@ export function ElegirSetYugioh({ route }) {
   return (
     <>
       <ModalCarga isVisible={modal} />
+      <View style={styles.view__switch}>
+        <Switch value={mostrarSoloObtenidas} onValueChange={clickSwitch} />
+        <Text style={styles.view__switch__texto}>Obtenidas</Text>
+      </View>
       <FlatList
         data={sets}
         renderItem={renderItem}
