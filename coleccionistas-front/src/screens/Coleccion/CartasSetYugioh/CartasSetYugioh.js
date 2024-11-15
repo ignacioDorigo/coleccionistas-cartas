@@ -71,6 +71,7 @@ export function CartasSetYugioh({ route }) {
               source={{ uri: carta.card_images?.[0]?.image_url }}
               style={styles.imageCard}
             />
+            
             {mostrarPropiedad("ID", carta.id)}
             {mostrarPropiedad("Nombre", carta.name)}
             {mostrarPropiedad("Descripción", carta.desc)}
