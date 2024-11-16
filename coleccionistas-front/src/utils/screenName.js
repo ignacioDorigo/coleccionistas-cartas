@@ -20,9 +20,7 @@ const favoritosStack = {
 const marketplaceStack = {
   marketplaceTab: "MarketplaceTab",
   marketplace: "Marketplace",
-  comprar: "Comprar",
-  vender: "Vender",
-  buscarInformación: "BuscarInformacion",
+  detallePublicacion: "DetallePublicacion",
 };
 
 const perfilStack = {

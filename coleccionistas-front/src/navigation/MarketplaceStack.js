@@ -5,11 +5,9 @@ import { View, Text } from "react-native";
 // Fichero Screen
 import { screen } from "../utils";
 
-// Screens relacionadas a
+// Screens relacionadas a Marketplace
 import { MarketPlaceScreen } from "../screens/Marketplace";
-import { BuscarDetalleCardScreen } from "../screens/Marketplace/BuscarDetalleCardScreen";
-import { VenderScreen } from "../screens/Marketplace/VenderScreen";
-import { ComprarScreen } from "../screens/Marketplace/ComprarScreen";
+import { DetallePublicacion } from "../screens/Marketplace";
 
 export function MarketplaceStack() {
   const Stack = createNativeStackNavigator();
@@ -20,15 +18,10 @@ export function MarketplaceStack() {
         name={screen.marketplace.marketplace}
         component={MarketPlaceScreen}
       />
-      <Stack.Screen name={screen.marketplace.vender} component={VenderScreen} />
       <Stack.Screen
-        name={screen.marketplace.comprar}
-        component={ComprarScreen}
-      />
-      <Stack.Screen
-        name={screen.marketplace.buscarInformación}
-        component={BuscarDetalleCardScreen}
-        options={{ title: "Buscar Información" }}
+        name={screen.marketplace.detallePublicacion}
+        component={DetallePublicacion}
+        options={{title:"Publicacion"}}
       />
     </Stack.Navigator>
   );

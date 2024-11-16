@@ -9,9 +9,10 @@ import {
 } from "react-native";
 import { Icon } from "@rneui/themed";
 import axios from "axios";
-import { ipHost } from "../../../utils";
+import { ipHost, screen } from "../../../utils";
 import { styles } from "./MarketPlaceScreen.styles";
 import { RecargarContext } from "../../../context/RecargarContext";
+import { useNavigation } from "@react-navigation/native";
 
 export function MarketPlaceScreen() {
   const [publicaciones, setPublicaciones] = useState([]);
@@ -19,6 +20,7 @@ export function MarketPlaceScreen() {
   const [indiceImagenActual, setIndiceImagenActual] = useState({});
   const [searchText, setSearchText] = useState(""); // Estado para el texto de búsqueda
   const { marketplace } = useContext(RecargarContext);
+  const navigation = useNavigation();
 
   useEffect(() => {
     buscarPublicaciones();
@@ -76,6 +78,12 @@ export function MarketPlaceScreen() {
     publicacion.titulo.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  const goToDetalleCard = (publicacion) => {
+    navigation.navigate(screen.marketplace.detallePublicacion, {
+      publicacion: publicacion,
+    });
+  };
+
   return (
     <View style={styles.container}>
       {/* Barra de búsqueda */}
@@ -101,16 +109,16 @@ export function MarketPlaceScreen() {
           <Text>No hay publicaciones</Text>
         ) : (
           publicacionesFiltradas.map((publicacion, index) => (
-            <View key={index} style={styles.publicacionContainer}>
-              <Text style={styles.publicacionText}>
-                {publicacion.titulo}
-              </Text>
+            <TouchableOpacity
+              key={index}
+              style={styles.publicacionContainer}
+              onPress={() => goToDetalleCard(publicacion)}
+            >
+              <Text style={styles.publicacionText}>{publicacion.titulo}</Text>
               <Text style={styles.publicacionDetail}>
                 {publicacion.descripcion}
               </Text>
-              <Text style={styles.priceText}>
-                ${publicacion.precio}
-              </Text>
+              <Text style={styles.priceText}>${publicacion.precio}</Text>
 
               {/* Carrusel de imágenes */}
               {imagenesPublicacion[publicacion.id]?.length ? (
@@ -141,7 +149,7 @@ export function MarketPlaceScreen() {
               ) : (
                 <Text>No hay imágenes</Text>
               )}
-            </View>
+            </TouchableOpacity>
           ))
         )}
       </ScrollView>
