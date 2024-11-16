@@ -1,7 +1,16 @@
 import { Button } from "@rneui/themed";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, TouchableOpacity, Modal, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+  Alert,
+} from "react-native";
 import { ipHost } from "../../../utils";
 import { styles } from "./DetallePublicacion.styles";
 
@@ -29,7 +38,10 @@ export function DetallePublicacion({ route }) {
         [idPublicacion]: 0,
       }));
     } catch (error) {
-      console.log(`Error al obtener imágenes para la publicación ${idPublicacion}:`, error);
+      console.log(
+        `Error al obtener imágenes para la publicación ${idPublicacion}:`,
+        error
+      );
     }
   };
 
@@ -45,8 +57,27 @@ export function DetallePublicacion({ route }) {
     }));
   };
 
+  const confirmarComprarCarta = () => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que deseas comprar esta carta?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Comprar",
+          style: "default",
+          onPress: () => comprar(),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   const comprar = () => {
-    console.log("Comprando .......");
+    Alert.alert("Exito");
   };
 
   const mostrarImagenAmpliada = (imagen) => {
@@ -59,17 +90,24 @@ export function DetallePublicacion({ route }) {
 
   return (
     <ScrollView>
-      {imagenesPublicacion[publicacion.id] && imagenesPublicacion[publicacion.id].length ? (
+      {imagenesPublicacion[publicacion.id] &&
+      imagenesPublicacion[publicacion.id].length ? (
         <View style={styles.carouselContainer}>
           <TouchableOpacity
             onPress={() =>
-              mostrarImagenAmpliada(imagenesPublicacion[publicacion.id][indiceImagenActual[publicacion.id]])
+              mostrarImagenAmpliada(
+                imagenesPublicacion[publicacion.id][
+                  indiceImagenActual[publicacion.id]
+                ]
+              )
             }
           >
             <Image
               source={{
                 uri: `data:image/jpeg;base64,${
-                  imagenesPublicacion[publicacion.id][indiceImagenActual[publicacion.id]]
+                  imagenesPublicacion[publicacion.id][
+                    indiceImagenActual[publicacion.id]
+                  ]
                 }`,
               }}
               style={styles.carouselImage}
@@ -100,7 +138,7 @@ export function DetallePublicacion({ route }) {
         <Text style={styles.precio}>${publicacion.precio}</Text>
         <Button
           title={"Comprar"}
-          onPress={comprar}
+          onPress={confirmarComprarCarta}
           containerStyle={styles.buttonComprar}
         />
       </View>
