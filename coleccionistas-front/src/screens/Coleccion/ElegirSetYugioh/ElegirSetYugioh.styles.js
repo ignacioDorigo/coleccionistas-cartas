@@ -6,26 +6,29 @@ export const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: "#F3F4F6",
   },
-  viewHeader: {
+  padding: {
+    paddingTop: 15,
+    paddingHorizontal: 15,
+  },
+  header__view: {
     alignSelf: "flex-start",
     width: "100%",
     marginBottom: 20,
     borderBottomWidth: 1,
     borderColor: "#C1C1C1",
-    paddingBottom: 5,
   },
-  header: {
+  header__title: {
     fontWeight: "bold",
-    fontSize: 28,
-    color: "#333",
+    fontSize: 30,
     textAlign: "left",
   },
+  header_subtitle: {},
   imageSet: {
     width: 100,
     height: 150,
     resizeMode: "contain",
-    borderRadius: 8,
     marginRight: 15,
+    borderRadius: 12,
   },
   setContainer: {
     flexDirection: "row",

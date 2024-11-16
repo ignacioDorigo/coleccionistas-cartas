@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
   },
   imagenAmpliada: {
     width: width - 40,
-    height: height / 2,
+    height: height / 1.5,
     resizeMode: "contain",
   },
 });

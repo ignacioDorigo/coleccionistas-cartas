@@ -161,9 +161,19 @@ export function ElegirSetYugioh({ route }) {
   return (
     <>
       <ModalCarga isVisible={modal} />
-      <View style={styles.view__switch}>
-        <Switch value={mostrarSoloObtenidas} onValueChange={clickSwitch} />
-        <Text style={styles.view__switch__texto}>Obtenidas</Text>
+      <View style={styles.padding}>
+        <View style={styles.header__view}>
+          <Text style={styles.header__title}>Sets Disponibles</Text>
+          <Text style={styles.header_subtitle}>
+            Estos son todos los sets de YuGiOh, elegí uno
+          </Text>
+        </View>
+        <View style={styles.view__switch}>
+          <Switch value={mostrarSoloObtenidas} onValueChange={clickSwitch} />
+          <Text style={styles.view__switch__texto}>
+            Obtenidas(TODAVIA NO ANDA)
+          </Text>
+        </View>
       </View>
       <FlatList
         data={sets}
