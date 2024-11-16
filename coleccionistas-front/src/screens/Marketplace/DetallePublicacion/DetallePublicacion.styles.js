@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   carouselContainer: {
@@ -60,5 +60,18 @@ export const styles = StyleSheet.create({
   },
   buttonComprar: {
     marginTop: 10,
+  },
+
+  // Estilos para el modal y la imagen ampliada
+  overlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+  },
+  imagenAmpliada: {
+    width: width - 40,
+    height: height / 2,
+    resizeMode: "contain",
   },
 });

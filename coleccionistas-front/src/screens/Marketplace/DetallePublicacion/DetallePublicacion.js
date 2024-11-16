@@ -1,13 +1,14 @@
 import { Button } from "@rneui/themed";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, Image, TouchableOpacity, Modal, TouchableWithoutFeedback } from "react-native";
 import { ipHost } from "../../../utils";
 import { styles } from "./DetallePublicacion.styles";
 
 export function DetallePublicacion({ route }) {
   const [imagenesPublicacion, setImagenesPublicacion] = useState({});
   const [indiceImagenActual, setIndiceImagenActual] = useState({});
+  const [imagenAmpliada, setImagenAmpliada] = useState(null); // Estado para la imagen ampliada
   const { publicacion } = route.params;
 
   useEffect(() => {
@@ -21,17 +22,14 @@ export function DetallePublicacion({ route }) {
       );
       setImagenesPublicacion((prevImagenes) => ({
         ...prevImagenes,
-        [idPublicacion]: response.data,
+        [idPublicacion]: response.data || [],
       }));
       setIndiceImagenActual((prevIndices) => ({
         ...prevIndices,
         [idPublicacion]: 0,
       }));
     } catch (error) {
-      console.log(
-        `Error al obtener imágenes para la publicación ${idPublicacion}:`,
-        error
-      );
+      console.log(`Error al obtener imágenes para la publicación ${idPublicacion}:`, error);
     }
   };
 
@@ -51,20 +49,32 @@ export function DetallePublicacion({ route }) {
     console.log("Comprando .......");
   };
 
+  const mostrarImagenAmpliada = (imagen) => {
+    setImagenAmpliada(imagen);
+  };
+
+  const cerrarImagenAmpliada = () => {
+    setImagenAmpliada(null);
+  };
+
   return (
     <ScrollView>
-      {imagenesPublicacion[publicacion.id]?.length ? (
+      {imagenesPublicacion[publicacion.id] && imagenesPublicacion[publicacion.id].length ? (
         <View style={styles.carouselContainer}>
-          <Image
-            source={{
-              uri: `data:image/jpeg;base64,${
-                imagenesPublicacion[publicacion.id][
-                  indiceImagenActual[publicacion.id]
-                ]
-              }`,
-            }}
-            style={styles.carouselImage}
-          />
+          <TouchableOpacity
+            onPress={() =>
+              mostrarImagenAmpliada(imagenesPublicacion[publicacion.id][indiceImagenActual[publicacion.id]])
+            }
+          >
+            <Image
+              source={{
+                uri: `data:image/jpeg;base64,${
+                  imagenesPublicacion[publicacion.id][indiceImagenActual[publicacion.id]]
+                }`,
+              }}
+              style={styles.carouselImage}
+            />
+          </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.arrowLeft}
@@ -83,6 +93,7 @@ export function DetallePublicacion({ route }) {
       ) : (
         <Text>No hay imágenes</Text>
       )}
+
       <View style={styles.descripcion}>
         <Text style={styles.titulo}>{publicacion.titulo}</Text>
         <Text style={styles.descripcionTexto}>{publicacion.descripcion}</Text>
@@ -93,6 +104,27 @@ export function DetallePublicacion({ route }) {
           containerStyle={styles.buttonComprar}
         />
       </View>
+
+      {/* Modal para imagen ampliada */}
+      <Modal
+        visible={imagenAmpliada !== null}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={cerrarImagenAmpliada}
+      >
+        <TouchableWithoutFeedback onPress={cerrarImagenAmpliada}>
+          <View style={styles.overlay}>
+            <TouchableWithoutFeedback>
+              <Image
+                source={{
+                  uri: `data:image/jpeg;base64,${imagenAmpliada}`,
+                }}
+                style={styles.imagenAmpliada}
+              />
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </ScrollView>
   );
 }
