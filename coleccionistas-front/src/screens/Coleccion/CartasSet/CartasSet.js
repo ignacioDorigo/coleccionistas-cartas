@@ -16,7 +16,7 @@ import { RecargarContext } from "../../../context/RecargarContext";
 import { styles } from "./CartasSet.styles";
 
 import { ModalCarga } from "../../../components/ModalCarga";
-import { Button, Icon } from "@rneui/themed";
+import { Button, Icon, Switch } from "@rneui/themed";
 import { ipHost } from "../../../utils/ipHost";
 
 export function CartasSet({ route, navigation }) {
@@ -27,6 +27,12 @@ export function CartasSet({ route, navigation }) {
 
   const [cards, setCards] = useState([]);
   const [visible, setVisible] = useState(false);
+
+  const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
+
+  const clickSwitch = () => {
+    setMostrarSoloObtenidas((prevState) => !prevState);
+  };
 
   useEffect(() => {
     buscarCartaSet();
@@ -83,6 +89,12 @@ export function CartasSet({ route, navigation }) {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.viewHeader}>
           <Text style={styles.header}>Mazo {mazo.name}</Text>
+        </View>
+        <View style={styles.view__switch}>
+          <Switch value={mostrarSoloObtenidas} onValueChange={clickSwitch} />
+          <Text style={styles.view__switch__texto}>
+            Obtenidas(TODAVIA NO ANDA)
+          </Text>
         </View>
         {cards.map((card, index) => (
           <View key={index} style={styles.touchable}>

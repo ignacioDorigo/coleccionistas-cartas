@@ -41,11 +41,22 @@ export const styles = StyleSheet.create({
     resizeMode: "contain",
     height: 400,
   },
-  btnContainer:{
-    marginTop:20,
-    width:"100%",
+  btnContainer: {
+    marginTop: 20,
+    width: "100%",
   },
-  btn:{
-    backgroundColor:"#38B000",
-  }
+  btn: {
+    backgroundColor: "#38B000",
+  },
+  view__switch: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 10,
+    paddingBottom: 10,
+  },
+  view__switch__texto: {
+    fontWeight: "bold",
+  },
 });
