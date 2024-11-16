@@ -20,6 +20,7 @@ import { RecargarContext } from "../../../context/RecargarContext";
 import { screen } from "../../../utils";
 
 import { styles } from "./ElegirSetPokemon.styles";
+import { Switch } from "@rneui/themed";
 
 export function ElegirSetPokemon({ route, navigation }) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -30,6 +31,11 @@ export function ElegirSetPokemon({ route, navigation }) {
   const [visible, setVisible] = useState(false);
   const [misSets, setMisSets] = useState([]);
   const [reload, setReload] = useState(false);
+  const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
+
+  const clickSwitch = () => {
+    setMostrarSoloObtenidas((prevState) => !prevState);
+  };
 
   const repintarScreen = () => {
     setReload((prevState) => !prevState);
@@ -114,6 +120,12 @@ export function ElegirSetPokemon({ route, navigation }) {
             Estos son todos los sets de Pokemon, elegí uno
           </Text>
         </View>
+        <View style={styles.view__switch}>
+          <Switch value={mostrarSoloObtenidas} onValueChange={clickSwitch} />
+          <Text style={styles.view__switch__texto}>
+            Obtenidas(TODAVIA NO ANDA)
+          </Text>
+        </View>
         {mazosDisponibles.map((mazo, index) => (
           <TouchableOpacity
             key={index}
@@ -121,7 +133,7 @@ export function ElegirSetPokemon({ route, navigation }) {
               styles.touchable,
               tengoSet(mazo.id, misSets)
                 ? { ...styles.tengoSet }
-                : { ...styles.noTengoSet }
+                : { ...styles.noTengoSet },
             ]}
             onPress={() => handleMazoPress(mazo)}
           >

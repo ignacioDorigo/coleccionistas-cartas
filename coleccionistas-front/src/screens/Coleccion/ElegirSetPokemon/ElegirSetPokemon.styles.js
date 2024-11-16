@@ -45,10 +45,21 @@ export const styles = StyleSheet.create({
   },
   tengoSet: {
     borderColor: "green",
-    backgroundColor: "rgba(0, 255, 0, 0.3)"
+    backgroundColor: "rgba(0, 255, 0, 0.3)",
   },
   noTengoSet: {
     borderColor: "#FFF",
     // backgroundColor: "rgba(128, 128, 128, 0.3)"
+  },
+  view__switch: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 10,
+    paddingBottom: 10,
+  },
+  view__switch__texto: {
+    fontWeight: "bold",
   },
 });
