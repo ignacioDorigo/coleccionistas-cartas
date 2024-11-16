@@ -309,7 +309,7 @@ export function MisCartasSet({ route }) {
                   style={[styles.modalImage, { resizeMode: "contain" }]}
                   source={{ uri: selectedImage }}
                 />
-                {console.log(selectedImage)}
+                {/* {console.log(selectedImage)} */}
                 <Text></Text>
               </View>
             </View>

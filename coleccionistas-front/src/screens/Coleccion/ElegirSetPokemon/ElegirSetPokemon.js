@@ -9,16 +9,9 @@ import {
 } from "react-native";
 import axios from "axios";
 import { ModalCarga } from "../../../components/ModalCarga";
-
-import { ipHost } from "../../../utils";
-
-// Contexts
+import { ipHost, screen } from "../../../utils";
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
-
-// File Screen
-import { screen } from "../../../utils";
-
 import { styles } from "./ElegirSetPokemon.styles";
 import { Switch } from "@rneui/themed";
 
@@ -123,23 +116,28 @@ export function ElegirSetPokemon({ route, navigation }) {
         <View style={styles.view__switch}>
           <Switch value={mostrarSoloObtenidas} onValueChange={clickSwitch} />
           <Text style={styles.view__switch__texto}>
-            Obtenidas(TODAVIA NO ANDA)
+            {mostrarSoloObtenidas
+              ? "Mostrando solo obtenidas"
+              : "Mostrar todos"}
           </Text>
         </View>
-        {mazosDisponibles.map((mazo, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.touchable,
-              tengoSet(mazo.id, misSets)
-                ? { ...styles.tengoSet }
-                : { ...styles.noTengoSet },
-            ]}
-            onPress={() => handleMazoPress(mazo)}
-          >
-            <Image style={styles.image} source={{ uri: mazo.images.logo }} />
-          </TouchableOpacity>
-        ))}
+
+        {mazosDisponibles
+          .filter((mazo) => !mostrarSoloObtenidas || tengoSet(mazo.id, misSets))
+          .map((mazo, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.touchable,
+                tengoSet(mazo.id, misSets)
+                  ? { ...styles.tengoSet }
+                  : { ...styles.noTengoSet },
+              ]}
+              onPress={() => handleMazoPress(mazo)}
+            >
+              <Image style={styles.image} source={{ uri: mazo.images.logo }} />
+            </TouchableOpacity>
+          ))}
       </ScrollView>
     </>
   );
