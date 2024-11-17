@@ -19,27 +19,27 @@ export const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: "left",
   },
-  touchable: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
+
+  overlayContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
+  overlayBackground: {
+    position: "absolute",
     width: "100%",
-    shadowRadius: 4,
-    marginBottom: 15,
-    padding: 10,
-    elevation: 3,
+    height: "100%",
+  },
+  modalImageContainer: {
+    width: "90%",
+    height: "70%",
+    justifyContent: "center",
     alignItems: "center",
   },
-  image: {
-    // flex: ,
+  modalImage: {
     width: "100%",
-    resizeMode: "contain",
-    height: 400,
+    height: "100%",
   },
   btnContainer: {
     marginTop: 20,
@@ -73,5 +73,28 @@ export const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 20,
+  },
+  imageCard: {
+    width: 260,
+    height: 380,
+    resizeMode: "cover",
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  cardContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    width: "90%",
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
+    borderColor: "#DDD",
+    borderWidth: 1,
   },
 });

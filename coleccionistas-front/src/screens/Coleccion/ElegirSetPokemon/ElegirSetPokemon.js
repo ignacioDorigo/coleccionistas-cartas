@@ -59,7 +59,7 @@ export function ElegirSetPokemon({ route, navigation }) {
         {
           text: "CANCELAR",
           onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
+          style: "destructive",
         },
         {
           text: "ACEPTO",

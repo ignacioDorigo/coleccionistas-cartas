@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Modal,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -28,6 +29,9 @@ export function CartasSet({ route, navigation }) {
   const [reload, setReload] = useState(false);
   const [misCartas, setMisCartas] = useState([]);
   const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
+  // Modal Img
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const recargarScreen = () => {
     setReload((prevState) => !prevState);
@@ -168,12 +172,18 @@ export function CartasSet({ route, navigation }) {
             return !mostrarSoloObtenidas || tengoCarta(card, misCartas);
           })
           .map((card, index) => (
-            <View key={index} style={styles.touchable}>
-              <Image
-                style={styles.image}
-                resizeMode="contain"
-                source={{ uri: `${card.images.large}` }}
-              />
+            <View key={index} style={styles.cardContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedImage(card.images.large);
+                  setIsModalVisible(true);
+                }}
+              >
+                <Image
+                  style={styles.imageCard}
+                  source={{ uri: `${card.images.large}` }}
+                />
+              </TouchableOpacity>
               {tengoCarta(card, misCartas) ? (
                 <Button
                   title={"Eliminar de mi coleccion"}
@@ -217,6 +227,25 @@ export function CartasSet({ route, navigation }) {
               ) : null}
             </View>
           ))}
+        <Modal
+          visible={isModalVisible}
+          transparent={true}
+          onRequestClose={() => setIsModalVisible(false)}
+        >
+          <View style={styles.overlayContainer}>
+            <TouchableOpacity
+              style={styles.overlayBackground}
+              onPress={() => setIsModalVisible(false)}
+            />
+            <View style={styles.modalImageContainer}>
+              <Image
+                source={{ uri: selectedImage }}
+                style={styles.modalImage}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </>
   );
