@@ -162,6 +162,7 @@ export function MisCartasSet({ route }) {
   };
 
   // ------------------ TODO LO DE FAVORITOS ------------------
+  
   const buscarMisFavoritos = async () => {
     try {
       const response = await axios.get(

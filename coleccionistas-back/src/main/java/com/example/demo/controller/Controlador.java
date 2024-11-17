@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.modelo.Avatar;
 import com.example.demo.modelo.Coleccion;
 import com.example.demo.modelo.FavoritosPokemon;
+import com.example.demo.modelo.FavoritosYugioh;
 import com.example.demo.modelo.FotoPublicacion;
 import com.example.demo.modelo.PerfilUsuario;
 import com.example.demo.modelo.Publicacion;
@@ -433,8 +434,8 @@ public class Controlador {
 	}
 
 	@GetMapping("/misFavoritosYugioh")
-	public List<FavoritosPokemon> misFavoritosYugioh(@RequestParam String mail) {
-		return favoritosPokemonService.misFavoritos(mail);
+	public List<FavoritosYugioh> misFavoritosYugioh(@RequestParam String mail) {
+		return favoritosYugiohService.misFavoritos(mail);
 	}
 
 	@PostMapping("/agregarFavoritoYugioh")

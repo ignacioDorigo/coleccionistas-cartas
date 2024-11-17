@@ -69,7 +69,18 @@ export const styles = StyleSheet.create({
   iconoTrophy: {
     position: "absolute",
     right: 0,
-    top: 20,
+    top: 60,
+  },
+  iconoFavoritos: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+  },
+  iconoCorazonFaltante: {
+    color: "#240046",
+  },
+  iconoCorazonAgregado: {
+    color: "#240046",
   },
   view__switch: {
     display: "flex",
