@@ -93,8 +93,11 @@ export function MisSetsPokemon({ navigation }) {
     <>
       <ModalCarga isVisible={visible} />
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.viewHeader}>
-          <Text style={styles.header}>Sets Armados</Text>
+        <View style={styles.header__view}>
+          <Text style={styles.header__title}>Tus Sets Pokemon</Text>
+          <Text style={styles.header_subtitle}>
+            Estos son todos los sets pokemon que empezaste
+          </Text>
         </View>
 
         <>

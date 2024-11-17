@@ -129,8 +129,11 @@ export function MisSetsYugioh() {
     <>
       <ModalCarga isVisible={modal} />
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.viewHeader}>
-          <Text style={styles.header}>Sets Yugioh armados</Text>
+        <View style={styles.header__view}>
+          <Text style={styles.header__title}>Tus Sets YuGiOh</Text>
+          <Text style={styles.header_subtitle}>
+            Estos son todos los sets YuGiOh que empezaste
+          </Text>
         </View>
         {setsCoincidentes.map((set, index) => (
           <TouchableOpacity
