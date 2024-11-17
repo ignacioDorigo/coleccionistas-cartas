@@ -5,7 +5,8 @@ import {
   Image,
   Modal,
   TouchableOpacity,
-  Alert,Text,
+  Alert,
+  Text,
   ScrollView,
 } from "react-native";
 import { styles } from "./MisCartasSetYugioh.styles";
@@ -224,6 +225,29 @@ export function MisCartasSetYugioh({ route }) {
                       containerStyle={styles.iconoTrophy}
                     />
                   ) : null}
+
+                  {/* {estaEnFavoritos(card.id, misFavoritosIds) ? (
+                    <Icon
+                      containerStyle={styles.iconoFavoritos}
+                      iconStyle={styles.iconoCorazonAgregado}
+                      raised
+                      name="heart"
+                      type="material-community"
+                      color="#FFFFFF"
+                      onPress={() => confirmarEliminarAfavoritos(card.id)}
+                    />
+                  ) : (
+                    <Icon
+                      containerStyle={styles.iconoFavoritos}
+                      iconStyle={styles.iconoCorazonFaltante}
+                      raised
+                      reverse
+                      name="heart-outline"
+                      type="material-community"
+                      color="#FFFFFF"
+                      onPress={() => confirmarAgregarAfavoritos(card.id)}
+                    />
+                  )} */}
                 </View>
               ))}
             {/* {todasCartas.map((carta, index) => (
