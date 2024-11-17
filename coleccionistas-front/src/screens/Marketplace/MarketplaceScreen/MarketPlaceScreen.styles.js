@@ -1,4 +1,7 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+// Obtener el ancho de la pantalla
+const windowWidth = Dimensions.get("window").width;
 
 export const styles = StyleSheet.create({
   container: {
@@ -50,7 +53,6 @@ export const styles = StyleSheet.create({
     elevation: 5,
     borderColor: "#DDD",
     borderWidth: 1,
-    width: "100%",
   },
   publicacionText: {
     fontSize: 18,
@@ -77,10 +79,11 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 10,
     paddingVertical: 10,
+    width: "100%",
   },
   carouselImage: {
-    width: 250,
-    height: 370,
+    width: "80%",
+    height: 270,
     resizeMode: "cover",
     marginHorizontal: 10,
     borderRadius: 10,
@@ -88,6 +91,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
   },
   arrow: {
+    // position: 0,
     fontSize: 30,
     color: "#8D31D8",
     paddingHorizontal: 10,
