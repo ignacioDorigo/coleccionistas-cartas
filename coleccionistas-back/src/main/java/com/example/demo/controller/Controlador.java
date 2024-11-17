@@ -37,6 +37,7 @@ import com.example.demo.repository.FotoPublicacionRepository;
 import com.example.demo.repository.PublicacionRepository;
 import com.example.demo.service.ColeccionService;
 import com.example.demo.service.FavoritosPokemonService;
+import com.example.demo.service.FavoritosYugiohService;
 import com.example.demo.service.PublicacionService;
 import com.example.demo.service.UsuarioCardService;
 import com.example.demo.service.UsuarioCardYugiohService;
@@ -62,6 +63,9 @@ public class Controlador {
 
 	@Autowired
 	FavoritosPokemonService favoritosPokemonService;
+
+	@Autowired
+	FavoritosYugiohService favoritosYugiohService;
 
 	@Autowired
 	PublicacionRepository publicacionRepository;
@@ -425,6 +429,31 @@ public class Controlador {
 			return ResponseEntity.ok(resultado);
 		} else {
 			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
+	@GetMapping("/misFavoritosYugioh")
+	public List<FavoritosPokemon> misFavoritosYugioh(@RequestParam String mail) {
+		return favoritosPokemonService.misFavoritos(mail);
+	}
+
+	@PostMapping("/agregarFavoritoYugioh")
+	public ResponseEntity<String> agregarFavoritoYugioh(@RequestParam String idCard, @RequestParam String mail) {
+		String resultado = favoritosYugiohService.agregarFavorito(idCard, mail);
+		if (resultado.contains("Agregado a favoritos")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+
+	@DeleteMapping("/eliminarFavoritoYugioh")
+	public ResponseEntity<String> eliminarFavoritoYugioh(@RequestParam String idCard, @RequestParam String mail) {
+		String resultado = favoritosYugiohService.eliminarFavorito(idCard, mail);
+		if (resultado.contains("Eliminado de Favoritos")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
 		}
 	}
 
