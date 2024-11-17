@@ -54,7 +54,7 @@ export function CartasSet({ route, navigation }) {
 
   const buscarCartaSet = async () => {
     try {
-      setVisible(true);
+      // setVisible(true);
       const response = await axios.get(
         `https://api.pokemontcg.io/v2/cards/?q=id:${mazo.id}&select=id,name,images`,
         {
@@ -67,7 +67,7 @@ export function CartasSet({ route, navigation }) {
     } catch (error) {
       console.log(error);
     } finally {
-      setVisible(false);
+      // setVisible(false);
     }
   };
 

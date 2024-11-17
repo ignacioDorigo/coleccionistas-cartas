@@ -242,133 +242,127 @@ export function CartasSetYugioh({ route }) {
 
   return (
     <>
-      {todasCartas.length === 0 ? (
+      <>
         <ModalCarga isVisible={true} />
-      ) : (
-        <>
-          <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.header__view}>
-              <Text style={styles.header__title}>{setName}</Text>
-              <Text style={styles.header_subtitle}>
-                Estas son todas las cartas del set {setName}
-              </Text>
-            </View>
-            <View style={styles.view__switch}>
-              <Switch
-                value={mostrarSoloObtenidas}
-                onValueChange={(value) => setMostrarSoloObtenidas(value)}
-              />
-              <Text style={styles.view__switch__texto}>Obtenidas</Text>
-            </View>
+        <ScrollView contentContainerStyle={styles.container}>
+          <View style={styles.header__view}>
+            <Text style={styles.header__title}>{setName}</Text>
+            <Text style={styles.header_subtitle}>
+              Estas son todas las cartas del set {setName}
+            </Text>
+          </View>
+          <View style={styles.view__switch}>
+            <Switch
+              value={mostrarSoloObtenidas}
+              onValueChange={(value) => setMostrarSoloObtenidas(value)}
+            />
+            <Text style={styles.view__switch__texto}>Obtenidas</Text>
+          </View>
 
-            {todasCartas
-              .filter((carta) =>
-                mostrarSoloObtenidas
-                  ? tengoCarta(carta.name, namesMisCartas)
-                  : true
-              )
-              .map((carta, index) => (
-                <View style={styles.cardContainer} key={index}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedImage(carta.img);
-                      setIsModalVisible(true);
-                    }}
-                  >
-                    <Image
-                      source={{ uri: carta.img }}
-                      style={styles.imageCard}
-                    />
-                  </TouchableOpacity>
-                  {tengoCarta(carta.name, namesMisCartas) ? (
-                    <Button
-                      title={"Eliminar de mi coleccion"}
-                      buttonStyle={styles.btnEliminar}
-                      onPress={() => confirmarEliminarCarta(carta.name)}
-                      containerStyle={styles.btnContainer}
-                      iconPosition="left"
-                      icon={
-                        <Icon
-                          type="material-community"
-                          name="book-remove-outline"
-                          iconStyle={styles.iconoBtn}
-                        />
-                      }
-                    />
-                  ) : (
-                    <Button
-                      title={"Agregar a mi coleccion"}
-                      onPress={() => confirmarAgregarCarta(carta.name)}
-                      buttonStyle={styles.btnAgregar}
-                      containerStyle={styles.btnContainer}
-                      iconPosition="left"
-                      icon={
-                        <Icon
-                          type="material-community"
-                          name="book-plus-outline"
-                          iconStyle={styles.iconoBtn}
-                        />
-                      }
-                    />
-                  )}
+          {todasCartas
+            .filter((carta) =>
+              mostrarSoloObtenidas
+                ? tengoCarta(carta.name, namesMisCartas)
+                : true
+            )
+            .map((carta, index) => (
+              <View style={styles.cardContainer} key={index}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedImage(carta.img);
+                    setIsModalVisible(true);
+                  }}
+                >
+                  <Image source={{ uri: carta.img }} style={styles.imageCard} />
+                </TouchableOpacity>
+                {tengoCarta(carta.name, namesMisCartas) ? (
+                  <Button
+                    title={"Eliminar de mi coleccion"}
+                    buttonStyle={styles.btnEliminar}
+                    onPress={() => confirmarEliminarCarta(carta.name)}
+                    containerStyle={styles.btnContainer}
+                    iconPosition="left"
+                    icon={
+                      <Icon
+                        type="material-community"
+                        name="book-remove-outline"
+                        iconStyle={styles.iconoBtn}
+                      />
+                    }
+                  />
+                ) : (
+                  <Button
+                    title={"Agregar a mi coleccion"}
+                    onPress={() => confirmarAgregarCarta(carta.name)}
+                    buttonStyle={styles.btnAgregar}
+                    containerStyle={styles.btnContainer}
+                    iconPosition="left"
+                    icon={
+                      <Icon
+                        type="material-community"
+                        name="book-plus-outline"
+                        iconStyle={styles.iconoBtn}
+                      />
+                    }
+                  />
+                )}
 
-                  {estaEnFavoritos(carta.name, misFavoritosIds) ? (
-                    <Icon
-                      containerStyle={styles.iconoFavoritos}
-                      iconStyle={styles.iconoCorazonAgregado}
-                      raised
-                      name="heart"
-                      type="material-community"
-                      color="#FFFFFF"
-                      onPress={() => confirmarEliminarAfavoritos(carta.name)}
-                    />
-                  ) : (
-                    <Icon
-                      containerStyle={styles.iconoFavoritos}
-                      iconStyle={styles.iconoCorazonFaltante}
-                      raised
-                      reverse
-                      name="heart-outline"
-                      type="material-community"
-                      color="#FFFFFF"
-                      onPress={() => confirmarAgregarAfavoritos(carta.name)}
-                    />
-                  )}
+                {estaEnFavoritos(carta.name, misFavoritosIds) ? (
+                  <Icon
+                    containerStyle={styles.iconoFavoritos}
+                    iconStyle={styles.iconoCorazonAgregado}
+                    raised
+                    name="heart"
+                    type="material-community"
+                    color="#FFFFFF"
+                    onPress={() => confirmarEliminarAfavoritos(carta.name)}
+                  />
+                ) : (
+                  <Icon
+                    containerStyle={styles.iconoFavoritos}
+                    iconStyle={styles.iconoCorazonFaltante}
+                    raised
+                    reverse
+                    name="heart-outline"
+                    type="material-community"
+                    color="#FFFFFF"
+                    onPress={() => confirmarAgregarAfavoritos(carta.name)}
+                  />
+                )}
 
-                  {tengoCarta(carta.name, namesMisCartas) ? (
-                    <Icon
-                      type="material-community"
-                      name="trophy"
-                      color={"#FFD700"}
-                      raised
-                      containerStyle={styles.iconoTrophy}
-                    />
-                  ) : null}
-                </View>
-              ))}
-          </ScrollView>
-
-          <Modal
-            visible={isModalVisible}
-            transparent={true}
-            onRequestClose={() => setIsModalVisible(false)}
-          >
-            <View style={styles.overlayContainer}>
-              <TouchableOpacity
-                style={styles.overlayBackground}
-                onPress={() => setIsModalVisible(false)}
-              />
-              <View style={styles.modalImageContainer}>
-                <Image
-                  source={{ uri: selectedImage }}
-                  style={styles.modalImage}
-                  resizeMode="contain"
-                />
+                {tengoCarta(carta.name, namesMisCartas) ? (
+                  <Icon
+                    type="material-community"
+                    name="trophy"
+                    color={"#FFD700"}
+                    raised
+                    containerStyle={styles.iconoTrophy}
+                  />
+                ) : null}
               </View>
+            ))}
+        </ScrollView>
+
+        <Modal
+          visible={isModalVisible}
+          transparent={true}
+          onRequestClose={() => setIsModalVisible(false)}
+        >
+          <View style={styles.overlayContainer}>
+            <TouchableOpacity
+              style={styles.overlayBackground}
+              onPress={() => setIsModalVisible(false)}
+            />
+            <View style={styles.modalImageContainer}>
+              <Image
+                source={{ uri: selectedImage }}
+                style={styles.modalImage}
+                resizeMode="contain"
+              />
             </View>
-          </Modal>
-        </>
-      )}
+          </View>
+        </Modal>
+      </>
     </>
   );
 }
