@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import { styles } from "./MisCartaSet.styles";
+import { styles } from "./MisCartasSet.styles";
 import axios from "axios";
 import { Button, Icon, Switch } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
@@ -162,7 +162,7 @@ export function MisCartasSet({ route }) {
   };
 
   // ------------------ TODO LO DE FAVORITOS ------------------
-  
+
   const buscarMisFavoritos = async () => {
     try {
       const response = await axios.get(
@@ -265,26 +265,6 @@ export function MisCartasSet({ route }) {
           <ModalCarga isVisible={visible} />
 
           <View style={styles.container}>
-            <View style={styles.header__container}>
-              <Text style={styles.header__title}>Set {set.id}</Text>
-            </View>
-            <View style={styles.searchContainer}>
-              <Icon
-                type="material-community"
-                name="magnify"
-                size={20}
-                color="#000"
-                containerStyle={styles.iconSearch}
-              />
-              <TextInput
-                style={styles.searchBar}
-                placeholder="Buscar carta por nombre..."
-                value={searchText}
-                onChangeText={handleSearchChange}
-                onSubmitEditing={handleSubmitEditing}
-              />
-            </View>
-
             {showSuggestions && filteredSuggestions.length > 0 && (
               <FlatList
                 style={styles.suggestionsList}
@@ -301,6 +281,26 @@ export function MisCartasSet({ route }) {
             )}
 
             <ScrollView style={styles.scrollView}>
+              <View style={styles.header__container}>
+                <Text style={styles.header__title}>Set {set.id}</Text>
+              </View>
+              <View style={styles.searchContainer}>
+                <Icon
+                  type="material-community"
+                  name="magnify"
+                  size={20}
+                  color="#000"
+                  containerStyle={styles.iconSearch}
+                />
+                <TextInput
+                  style={styles.searchBar}
+                  placeholder="Buscar carta por nombre..."
+                  value={searchText}
+                  onChangeText={handleSearchChange}
+                  onSubmitEditing={handleSubmitEditing}
+                />
+              </View>
+
               <View style={styles.viewSwitch}>
                 <Switch
                   value={checked}

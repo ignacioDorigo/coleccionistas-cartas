@@ -4,9 +4,10 @@ export const styles = StyleSheet.create({
   // General container
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: "#f5f5f5", // Light background for contrast
+    padding: 5,
+    backgroundColor: "#f5f5f5",
     justifyContent: "center",
+    // alignContent: "center",
   },
   header__container: {
     flexDirection: "row",
@@ -26,9 +27,9 @@ export const styles = StyleSheet.create({
   },
 
   cardContainer: {
-    backgroundColor: "#fff", // White background for cards
+    backgroundColor: "#fff",
     borderRadius: 10,
-    shadowColor: "#000", // Adding shadow for depth
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -38,6 +39,8 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 10,
     elevation: 3,
+    width: "90%",
+    alignSelf: "center",
   },
 
   cardImage: {
