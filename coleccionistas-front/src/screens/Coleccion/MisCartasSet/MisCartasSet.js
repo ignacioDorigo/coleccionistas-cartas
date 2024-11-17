@@ -34,6 +34,7 @@ export function MisCartasSet({ route }) {
   // Modal para imagen ampliada
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [misFavoritosIds, setMisFavoritosIds] = useState([]);
 
   const navigation = useNavigation();
 
@@ -64,6 +65,7 @@ export function MisCartasSet({ route }) {
   // Este useEffect es para traer los datos de las cartas que tengo yo (id, id_set, id_card, mail)
   useEffect(() => {
     navigation.setOptions({ title: "Inventario " + set.id });
+    buscarMisFavoritos();
     setVisible(true);
     axios
       .get(
@@ -90,40 +92,6 @@ export function MisCartasSet({ route }) {
       .catch((error) => console.log(error));
     setVisible(false);
   }, []);
-
-  const confirmarAgregarAfavoritos = async (idCard) => {
-    Alert.alert(
-      "Confirmación",
-      "¿Estás seguro de que queres agregar esta carta a tus favoritos?",
-      [
-        {
-          text: "Cancelar",
-          style: "destructive",
-        },
-        {
-          text: "Agregar",
-          style: "default",
-          onPress: () => agregarCardFavoritos(idCard),
-        },
-      ],
-      { cancelable: true }
-    );
-  };
-
-  const agregarCardFavoritos = async (idCard) => {
-    try {
-      setVisible(true);
-      const response = await axios.post(
-        `http://${ipHost}:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
-      );
-      Alert.alert("Exito", response.data);
-      recargarFavoritos();
-    } catch (error) {
-      Alert.alert("Error", error.response.data);
-    } finally {
-      setVisible(false);
-    }
-  };
 
   const agregarCardInventario = async (idCard) => {
     try {
@@ -193,6 +161,100 @@ export function MisCartasSet({ route }) {
     setShowSuggestions(false);
   };
 
+  // ------------------ TODO LO DE FAVORITOS ------------------
+  const buscarMisFavoritos = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`
+      );
+      const misFavoritos = response.data;
+      const misFavoritosIdsss = misFavoritos.map(
+        (favorito) => favorito.id_card
+      );
+      setMisFavoritosIds(misFavoritosIdsss);
+      // console.log("Mis favoritos");
+      // console.log(misFavoritosIdsss);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
+  const confirmarAgregarAfavoritos = async (idCard) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que queres agregar esta carta a tus favoritos?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Agregar",
+          style: "default",
+          onPress: () => agregarCardFavoritos(idCard),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const agregarCardFavoritos = async (idCard) => {
+    try {
+      setVisible(true);
+      const response = await axios.post(
+        `http://${ipHost}:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+      recargarFavoritos();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    } finally {
+      setVisible(false);
+    }
+  };
+
+  const estaEnFavoritos = (cardId, favoritos) => {
+    // console.log(favoritos.includes(cardId));
+    return favoritos.includes(cardId);
+  };
+
+  const confirmarEliminarAfavoritos = async (idCard) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que queres eliminar esta carta de tus favoritos?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Eliminar",
+          style: "default",
+          onPress: () => eliminarCardFavoritos(idCard),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const eliminarCardFavoritos = async (idCard) => {
+    try {
+      setVisible(true);
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/eliminarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+      recargarFavoritos();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    } finally {
+      setVisible(false);
+    }
+  };
+
+  // -----------------------------------------------------------
   return (
     <>
       {mazoCompleto.length === 0 ? (
@@ -247,10 +309,10 @@ export function MisCartasSet({ route }) {
               </View>
 
               {mazoCompleto
-                .filter((card) => (checked ? !mazoMio.includes(card.id) : true)) // Filtrar cartas cuando el switch está activo
+                .filter((card) => (checked ? !mazoMio.includes(card.id) : true))
                 .filter((card) =>
                   card.name.toLowerCase().startsWith(searchText.toLowerCase())
-                ) // Filtrar cartas por nombre
+                )
 
                 .map((card, index) => (
                   <View key={index} style={styles.cardContainer}>
@@ -278,26 +340,28 @@ export function MisCartasSet({ route }) {
                       <Text style={styles.noTenes}>No la tienes</Text>
                     )}
 
-                    <Icon
-                      containerStyle={styles.iconoFavoritos}
-                      iconStyle={styles.iconoCorazonFaltante}
-                      raised
-                      reverse
-                      name="heart-outline"
-                      type="material-community"
-                      color="#FFFFFF"
-                      onPress={() => confirmarAgregarAfavoritos(card.id)}
-                    />
-
-                    {/* <Icon
-                      containerStyle={styles.iconoFavoritos}
-                      iconStyle={styles.iconoCorazonAgregado}
-                      raised
-                      name="heart"
-                      type="material-community"
-                      color="#FFFFFF"
-                      onPress={() => agregarCardFavoritos(card.id)}
-                    /> */}
+                    {estaEnFavoritos(card.id, misFavoritosIds) ? (
+                      <Icon
+                        containerStyle={styles.iconoFavoritos}
+                        iconStyle={styles.iconoCorazonAgregado}
+                        raised
+                        name="heart"
+                        type="material-community"
+                        color="#FFFFFF"
+                        onPress={() => confirmarEliminarAfavoritos(card.id)}
+                      />
+                    ) : (
+                      <Icon
+                        containerStyle={styles.iconoFavoritos}
+                        iconStyle={styles.iconoCorazonFaltante}
+                        raised
+                        reverse
+                        name="heart-outline"
+                        type="material-community"
+                        color="#FFFFFF"
+                        onPress={() => confirmarAgregarAfavoritos(card.id)}
+                      />
+                    )}
 
                     <View style={styles.botonesInventario}>
                       {mazoMio.includes(card.id) ? (
