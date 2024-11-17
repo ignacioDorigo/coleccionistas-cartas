@@ -91,7 +91,7 @@ export function PerfilScreen() {
   const cambiarAvatar = async () => {
     // Usar foto de la galeria
     const foto = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images", "videos"],
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -119,7 +119,8 @@ export function PerfilScreen() {
           }
         );
         const result = await response.text();
-        repintarComponentes();
+        setAvatar(foto.assets[0].uri);
+        // repintarComponentes();
       } catch (error) {
         console.error("Error al enviar la imagen:", error);
       }
@@ -128,6 +129,26 @@ export function PerfilScreen() {
     }
   };
 
+  // const obtenerAvatar = async (mail) => {
+  //   try {
+  //     const response = await fetch(
+  //       `http://${ipHost}:8080/coleccionistas/avatar/${mail}`
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error("No se pudo obtener el avatar");
+  //     }
+
+  //     const blob = await response.blob();
+  //     console.log(response);
+  //     const imageUrl = URL.createObjectURL(blob);
+  //     setAvatar(imageUrl);
+  //     return imageUrl;
+  //   } catch (error) {
+  //     console.error("Error al obtener el avatar:", error);
+  //     return null; // Retorna null o maneja el error según lo necesites
+  //   }
+  // };
   const obtenerAvatar = async (mail) => {
     try {
       const response = await fetch(
@@ -138,13 +159,19 @@ export function PerfilScreen() {
         throw new Error("No se pudo obtener el avatar");
       }
 
+      // Convert response to a Blob
       const blob = await response.blob();
-      const imageUrl = URL.createObjectURL(blob);
-      setAvatar(imageUrl);
-      return imageUrl;
+
+      // Convert the Blob to a Base64 string
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        setAvatar(base64data);
+      };
+      reader.readAsDataURL(blob);
     } catch (error) {
       console.error("Error al obtener el avatar:", error);
-      return null; // Retorna null o maneja el error según lo necesites
+      setAvatar(null); // Optional: fallback or error handling
     }
   };
 
@@ -233,11 +260,7 @@ export function PerfilScreen() {
           <ListItem.Content>
             <ListItem.Title>Mis Compras</ListItem.Title>
           </ListItem.Content>
-          <Icon
-            type="material-community"
-            name="cart-outline"
-            color="#CCCCCC"
-          />
+          <Icon type="material-community" name="cart-outline" color="#CCCCCC" />
         </ListItem>
       </TouchableOpacity>
 
