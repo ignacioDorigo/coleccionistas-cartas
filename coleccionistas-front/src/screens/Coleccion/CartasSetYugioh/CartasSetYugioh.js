@@ -24,9 +24,14 @@ export function CartasSetYugioh({ route }) {
   const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
   const [misFavoritosIds, setMisFavoritosIds] = useState([]);
 
-  const clickSwitch = () => {
-    setMostrarSoloObtenidas((prevState) => !prevState);
-  };
+  useEffect(() => {
+    todasCartasSet();
+  }, []);
+
+  useEffect(() => {
+    buscarNameMisCartas();
+    buscarMisFavoritos();
+  }, [reload]);
 
   const recargarScreen = () => {
     setReload((prevState) => !prevState);
@@ -139,14 +144,6 @@ export function CartasSetYugioh({ route }) {
       Alert.alert("Error", error.response.data);
     }
   };
-  useEffect(() => {
-    todasCartasSet();
-  }, []);
-
-  useEffect(() => {
-    buscarNameMisCartas();
-    buscarMisFavoritos();
-  }, [reload]);
 
   // ------------------ TODO LO DE FAVORITOS ------------------
 
@@ -252,6 +249,12 @@ export function CartasSetYugioh({ route }) {
       ) : (
         <>
           <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.header__view}>
+              <Text style={styles.header__title}>{setName}</Text>
+              <Text style={styles.header_subtitle}>
+                Estas son todas las cartas del set {setName}
+              </Text>
+            </View>
             <View style={styles.view__switch}>
               <Switch
                 value={mostrarSoloObtenidas}
@@ -345,61 +348,6 @@ export function CartasSetYugioh({ route }) {
                   ) : null}
                 </View>
               ))}
-            {/* {todasCartas.map((carta, index) => (
-              <View style={styles.cardContainer} key={index}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedImage(carta.img);
-                    setIsModalVisible(true);
-                  }}
-                >
-                  <Image source={{ uri: carta.img }} style={styles.imageCard} />
-                </TouchableOpacity>
-                {tengoCarta(carta.name, namesMisCartas) ? (
-                  <Button
-                    title={"Eliminar de mi coleccion"}
-                    buttonStyle={styles.btnEliminar}
-                    onPress={() => confirmarEliminarCarta(carta.name)}
-                    containerStyle={styles.btnContainer}
-                    iconPosition="left"
-                    icon={
-                      <Icon
-                        type="material-community"
-                        name="book-remove-outline"
-                        iconStyle={styles.iconoBtn}
-                      />
-                    }
-                  />
-                ) : (
-                  <Button
-                    title={"Agregar a mi coleccion"}
-                    onPress={() => confirmarAgregarCarta(carta.name)}
-                    buttonStyle={styles.btnAgregar}
-                    containerStyle={styles.btnContainer}
-                    iconPosition="left"
-                    icon={
-                      <Icon
-                        type="material-community"
-                        name="book-plus-outline"
-                        iconStyle={styles.iconoBtn}
-                      />
-                    }
-                  />
-                )}
-
-                {tengoCarta(carta.name, namesMisCartas) ? (
-                  <Icon
-                    type="material-community"
-                    name="trophy"
-                    color={"#FFD700"}
-                    raised
-                    containerStyle={styles.iconoTrophy}
-                  />
-                ) : (
-                  <></>
-                )}
-              </View>
-            ))} */}
           </ScrollView>
 
           <Modal

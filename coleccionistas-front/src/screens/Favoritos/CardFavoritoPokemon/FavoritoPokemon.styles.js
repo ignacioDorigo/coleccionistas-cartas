@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
 
   cardImage: {
     width: "100%",
-    height: 300,
+    height: 350,
     borderRadius: 10,
     marginBottom: 10,
     resizeMode: "contain",

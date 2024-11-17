@@ -14,11 +14,12 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 10,
     elevation: 3,
+    // width: "90%",
   },
 
   cardImage: {
     width: "100%",
-    height: 300,
+    height: 350,
     borderRadius: 10,
     marginBottom: 10,
     resizeMode: "contain",
