@@ -44,13 +44,14 @@ export const styles = StyleSheet.create({
     borderColor: "#DDD",
     borderWidth: 1,
     alignSelf: "center",
-    width: "90%",
+    width: "100%",
   },
 
   imageCard: {
     width: 260,
     height: 380,
     resizeMode: "contain",
+    // resizeMode: "cover",
     borderRadius: 8,
     marginBottom: 10,
   },
