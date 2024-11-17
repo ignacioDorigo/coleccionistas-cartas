@@ -1,4 +1,6 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+
+const { width } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   // General container
@@ -6,6 +8,7 @@ export const styles = StyleSheet.create({
     gap: 10,
     padding: 15,
     backgroundColor: "#F3F4F6",
+    width: width,
   },
   header__container: {
     flexDirection: "row",
@@ -44,12 +47,12 @@ export const styles = StyleSheet.create({
     borderColor: "#DDD",
     borderWidth: 1,
     alignSelf: "center",
-    width: "100%",
+    width: width / 1.1,
   },
 
   imageCard: {
-    width: 260,
-    height: 380,
+    width: width / 1.3,
+    height: 350,
     resizeMode: "contain",
     // resizeMode: "cover",
     borderRadius: 8,
