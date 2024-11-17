@@ -97,6 +97,12 @@ export const styles = StyleSheet.create({
     right: 0,
     top: 0,
   },
+  iconoCorazonFaltante: {
+    color: "#240046",
+  },
+  iconoCorazonAgregado: {
+    color: "#240046",
+  },
   iconoTrophy: {
     position: "absolute",
     right: 0,

@@ -91,6 +91,25 @@ export function MisCartasSet({ route }) {
     setVisible(false);
   }, []);
 
+  const confirmarAgregarAfavoritos = async (idCard) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que queres agregar esta carta a tus favoritos?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Agregar",
+          style: "default",
+          onPress: () => agregarCardFavoritos(idCard),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   const agregarCardFavoritos = async (idCard) => {
     try {
       setVisible(true);
@@ -101,7 +120,6 @@ export function MisCartasSet({ route }) {
       recargarFavoritos();
     } catch (error) {
       Alert.alert("Error", error.response.data);
-      recargarFavoritos();
     } finally {
       setVisible(false);
     }
@@ -167,12 +185,12 @@ export function MisCartasSet({ route }) {
   };
 
   const handleSuggestionSelect = (name) => {
-    setSearchText(name); // Coloca el nombre en la barra de busqueda
-    setFilteredSuggestions([]); // Vacia las sugerencias para cerrar la lista
+    setSearchText(name);
+    setFilteredSuggestions([]);
   };
 
   const handleSubmitEditing = () => {
-    setShowSuggestions(false); // Oculta la lista de sugerencias
+    setShowSuggestions(false);
   };
 
   return (
@@ -262,13 +280,24 @@ export function MisCartasSet({ route }) {
 
                     <Icon
                       containerStyle={styles.iconoFavoritos}
+                      iconStyle={styles.iconoCorazonFaltante}
                       raised
                       reverse
-                      name="heart-plus"
+                      name="heart-outline"
                       type="material-community"
-                      color="#240046"
-                      onPress={() => agregarCardFavoritos(card.id)}
+                      color="#FFFFFF"
+                      onPress={() => confirmarAgregarAfavoritos(card.id)}
                     />
+
+                    {/* <Icon
+                      containerStyle={styles.iconoFavoritos}
+                      iconStyle={styles.iconoCorazonAgregado}
+                      raised
+                      name="heart"
+                      type="material-community"
+                      color="#FFFFFF"
+                      onPress={() => agregarCardFavoritos(card.id)}
+                    /> */}
 
                     <View style={styles.botonesInventario}>
                       {mazoMio.includes(card.id) ? (
@@ -309,8 +338,6 @@ export function MisCartasSet({ route }) {
                   style={[styles.modalImage, { resizeMode: "contain" }]}
                   source={{ uri: selectedImage }}
                 />
-                {/* {console.log(selectedImage)} */}
-                <Text></Text>
               </View>
             </View>
           </Modal>
