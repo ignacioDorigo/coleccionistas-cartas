@@ -45,9 +45,19 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     width: "100%",
   },
-  btn: {
-    backgroundColor: "#38B000",
+  iconoBtn: {
+    marginRight: 10,
+    color: "#FFF",
   },
+  btnAgregar: {
+    backgroundColor: "#4caf50",
+    borderRadius: 5,
+  },
+  btnEliminar: {
+    backgroundColor: "#f44336",
+    borderRadius: 5,
+  },
+
   view__switch: {
     display: "flex",
     flexDirection: "row",
@@ -58,5 +68,10 @@ export const styles = StyleSheet.create({
   },
   view__switch__texto: {
     fontWeight: "bold",
+  },
+  iconoTrophy: {
+    position: "absolute",
+    right: 0,
+    top: 20,
   },
 });

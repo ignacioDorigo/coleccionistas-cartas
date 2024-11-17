@@ -181,7 +181,7 @@ export function CartasSetYugioh({ route }) {
                     <Button
                       title={"Eliminar de mi coleccion"}
                       buttonStyle={styles.btnEliminar}
-                      onPress={() => confirmarEliminarCarta(carta.name)}
+                      // onPress={() => confirmarEliminarCarta(carta.name)}
                       containerStyle={styles.btnContainer}
                       iconPosition="left"
                       icon={

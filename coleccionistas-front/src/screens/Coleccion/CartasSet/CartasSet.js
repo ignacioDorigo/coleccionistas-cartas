@@ -22,17 +22,24 @@ import { ipHost } from "../../../utils/ipHost";
 export function CartasSet({ route, navigation }) {
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
-
   const { mazo } = route.params;
-
   const [cards, setCards] = useState([]);
   const [visible, setVisible] = useState(false);
-
+  const [reload, setReload] = useState(false);
+  const [misCartas, setMisCartas] = useState([]);
   const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
+
+  const recargarScreen = () => {
+    setReload((prevState) => !prevState);
+  };
 
   const clickSwitch = () => {
     setMostrarSoloObtenidas((prevState) => !prevState);
   };
+
+  useEffect(() => {
+    buscarMisCartas();
+  }, [reload]);
 
   useEffect(() => {
     buscarCartaSet();
@@ -57,7 +64,33 @@ export function CartasSet({ route, navigation }) {
     }
   };
 
-  const AgregarCartaAColeccion = (idCard) => {
+  const buscarMisCartas = async () => {
+    try {
+      // console.log(mazo);
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${mazo.id}`
+      );
+      const idsMisCartas = response.data.map((carta) => carta.id_card);
+      setMisCartas(idsMisCartas);
+      // console.log(idsMisCartas);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
+  const agregarCarta = async (idCard) => {
+    try {
+      const response = await axios.post(
+        `http://${ipHost}:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    }
+  };
+
+  const confimarAgregarCarta = (idCard) => {
     Alert.alert(
       "Confirmación",
       "¿Está seguro que quiere agregar esta carta a tu mazo?",
@@ -65,22 +98,21 @@ export function CartasSet({ route, navigation }) {
         {
           text: "CANCELAR",
           onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
+          style: "destructive",
         },
         {
           text: "ACEPTO",
-          onPress: () => {
-            axios
-              .post(
-                `http://${ipHost}:8080/coleccionistas/agregarCarta?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`
-              )
-              .then((response) => Alert.alert("Exito", response.data))
-              .catch((error) => Alert.alert("Error", `${error.response.data}`));
-          },
+          onPress: () => agregarCarta(idCard),
         },
       ],
       { cancelable: false }
     );
+  };
+
+  const tengoCarta = (carta, cartas) => {
+    // console.log(carta.id);
+    console.log(cartas);
+    return cartas.includes(carta.id);
   };
 
   return (
@@ -89,6 +121,7 @@ export function CartasSet({ route, navigation }) {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.viewHeader}>
           <Text style={styles.header}>Mazo {mazo.name}</Text>
+          <Text style>Estas son las cartas del Mazo {mazo.name}</Text>
         </View>
         <View style={styles.view__switch}>
           <Switch value={mostrarSoloObtenidas} onValueChange={clickSwitch} />
@@ -103,20 +136,47 @@ export function CartasSet({ route, navigation }) {
               resizeMode="contain"
               source={{ uri: `${card.images.large}` }}
             />
-            <Button
-              iconPosition="left"
-              icon={
-                <Icon
-                  type="material-community"
-                  name="account"
-                  color={"#FFFFFF"}
-                ></Icon>
-              }
-              containerStyle={styles.btnContainer}
-              buttonStyle={styles.btn}
-              title={"   Agregar al inventario"}
-              onPress={() => AgregarCartaAColeccion(card.id)}
-            />
+            {tengoCarta(card, misCartas) ? (
+              <Button
+                title={"Eliminar de mi coleccion"}
+                onPress={() => confirmarEliminarCarta(carta.name)}
+                buttonStyle={styles.btnEliminar}
+                containerStyle={styles.btnContainer}
+                iconPosition="left"
+                icon={
+                  <Icon
+                    type="material-community"
+                    name="book-remove-outline"
+                    iconStyle={styles.iconoBtn}
+                  />
+                }
+              />
+            ) : (
+              <Button
+                title={"Agregar al inventario"}
+                onPress={() => confimarAgregarCarta(card.id)}
+                buttonStyle={styles.btnAgregar}
+                containerStyle={styles.btnContainer}
+                iconPosition="left"
+                icon={
+                  <Icon
+                    type="material-community"
+                    name="book-plus-outline"
+                    iconStyle={styles.iconoBtn}
+                  ></Icon>
+                }
+              />
+            )}
+
+            {tengoCarta(card, misCartas) ? (
+              <Icon
+                type="material-community"
+                name="trophy"
+                color={"#FFD700"}
+                raised
+                containerStyle={styles.iconoTrophy}
+              />
+            ) : null}
           </View>
         ))}
       </ScrollView>
