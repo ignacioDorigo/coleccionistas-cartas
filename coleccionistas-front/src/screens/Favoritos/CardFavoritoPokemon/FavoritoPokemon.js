@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, Alert } from "react-native";
+import { View, Text, Image, Alert, Modal } from "react-native";
 import { styles } from "./FavoritoPokemon.styles";
 import { Icon } from "@rneui/themed";
 import { TouchableOpacity } from "react-native";
@@ -9,6 +9,9 @@ import { ipHost } from "../../../utils/ipHost";
 export function FavoritoPokemon(props) {
   const { idPokemon, index, misFavoritosIdsPokemon, recargarFavoritos, mail } =
     props;
+  // Modal Img
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [pokemon, setPokemon] = useState(null);
 
   useEffect(() => {
@@ -99,8 +102,8 @@ export function FavoritoPokemon(props) {
     <View key={index} style={styles.cardContainer}>
       <TouchableOpacity
         onPress={() => {
-          //   setSelectedImage(card.images.small);
-          //   setIsModalVisible(true);
+          setSelectedImage(pokemon?.images?.small);
+          setIsModalVisible(true);
         }}
       >
         <Image
@@ -131,6 +134,25 @@ export function FavoritoPokemon(props) {
           onPress={() => confirmarAgregarAfavoritos(pokemon?.id)}
         />
       )}
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.overlayContainer}>
+          <TouchableOpacity
+            style={styles.overlayBackground}
+            onPress={() => setIsModalVisible(false)}
+          />
+          <View style={styles.modalImageContainer}>
+            <Image
+              source={{ uri: selectedImage }}
+              style={styles.modalImage}
+              resizeMode="contain"
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

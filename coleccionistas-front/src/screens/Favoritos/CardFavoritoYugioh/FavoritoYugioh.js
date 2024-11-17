@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Image, Alert, Modal } from "react-native";
 import { ipHost } from "../../../utils/ipHost";
 import axios from "axios";
 import { styles } from "./FavoritoYugioh.styles";
@@ -9,6 +9,9 @@ export function FavoritoYugioh(props) {
   const { idYugioh, index, misFavoritosIdsYugioh, recargarFavoritos, mail } =
     props;
   const [yugioh, setYugioh] = useState(null);
+  // Modal Img
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     buscarObjeto();
@@ -67,8 +70,8 @@ export function FavoritoYugioh(props) {
     <View key={index} style={styles.cardContainer}>
       <TouchableOpacity
         onPress={() => {
-          //   setSelectedImage(card.images.small);
-          //   setIsModalVisible(true);
+          setSelectedImage(yugioh?.card_images[0]?.image_url);
+          setIsModalVisible(true);
         }}
       >
         <Image
@@ -86,6 +89,25 @@ export function FavoritoYugioh(props) {
         color="#FFFFFF"
         onPress={() => confirmarEliminarAfavoritos(yugioh?.name)}
       />
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.overlayContainer}>
+          <TouchableOpacity
+            style={styles.overlayBackground}
+            onPress={() => setIsModalVisible(false)}
+          />
+          <View style={styles.modalImageContainer}>
+            <Image
+              source={{ uri: selectedImage }}
+              style={styles.modalImage}
+              resizeMode="contain"
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
