@@ -7,20 +7,22 @@ import axios from "axios";
 import { Button, Icon, Switch } from "@rneui/themed";
 import { AuthContext } from "../../../context/AuthContext";
 import { ipHost } from "../../../utils";
+import { RecargarContext } from "../../../context/RecargarContext";
 
 export function CartasSetYugioh({ route }) {
   // Modal Img
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  // De alguna manera tengo que recargar el screen de favoritos, entonces cree un context de eso
+  const { recargarFavoritos } = useContext(RecargarContext);
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
   const { setName } = route.params;
   const [reload, setReload] = useState(false);
-
   const [namesMisCartas, setNamesMisCartas] = useState([]);
   const [todasCartas, setTodasCartas] = useState([]);
   const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
+  const [misFavoritosIds, setMisFavoritosIds] = useState([]);
 
   const clickSwitch = () => {
     setMostrarSoloObtenidas((prevState) => !prevState);
@@ -137,11 +139,111 @@ export function CartasSetYugioh({ route }) {
       Alert.alert("Error", error.response.data);
     }
   };
+  useEffect(() => {
+    todasCartasSet();
+  }, []);
 
   useEffect(() => {
     buscarNameMisCartas();
-    todasCartasSet();
+    buscarMisFavoritos();
   }, [reload]);
+
+  // ------------------ TODO LO DE FAVORITOS ------------------
+
+  const buscarMisFavoritos = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/misFavoritosYugioh?mail=${mail}`
+      );
+      const misFavoritos = response.data;
+      const misFavoritosIdsss = misFavoritos.map(
+        (favorito) => favorito.id_card
+      );
+      setMisFavoritosIds(misFavoritosIdsss);
+      console.log("Mis favoritos");
+      console.log(misFavoritosIdsss);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
+  const confirmarAgregarAfavoritos = async (idCard) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que queres agregar esta carta a tus favoritos?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Agregar",
+          style: "default",
+          onPress: () => agregarCardFavoritos(idCard),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const agregarCardFavoritos = async (idCard) => {
+    try {
+      // setVisible(true);
+      const response = await axios.post(
+        `http://${ipHost}:8080/coleccionistas/agregarFavoritoYugioh?idCard=${idCard}&mail=${mail}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+      recargarFavoritos();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    } finally {
+      // setVisible(false);
+    }
+  };
+
+  const estaEnFavoritos = (cardId, favoritos) => {
+    // console.log(cardId);
+    // console.log(favoritos.includes(cardId));
+    return favoritos.includes(cardId);
+  };
+
+  const confirmarEliminarAfavoritos = async (idCard) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que queres eliminar esta carta de tus favoritos?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Eliminar",
+          style: "default",
+          onPress: () => eliminarCardFavoritos(idCard),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const eliminarCardFavoritos = async (idCard) => {
+    try {
+      // setVisible(true);
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/eliminarFavoritoYugioh?idCard=${idCard}&mail=${mail}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+      recargarFavoritos();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    } finally {
+      // setVisible(false);
+    }
+  };
+
+  // -----------------------------------------------------------
 
   return (
     <>
@@ -206,6 +308,29 @@ export function CartasSetYugioh({ route }) {
                           iconStyle={styles.iconoBtn}
                         />
                       }
+                    />
+                  )}
+
+                  {estaEnFavoritos(carta.name, misFavoritosIds) ? (
+                    <Icon
+                      containerStyle={styles.iconoFavoritos}
+                      iconStyle={styles.iconoCorazonAgregado}
+                      raised
+                      name="heart"
+                      type="material-community"
+                      color="#FFFFFF"
+                      onPress={() => confirmarEliminarAfavoritos(carta.name)}
+                    />
+                  ) : (
+                    <Icon
+                      containerStyle={styles.iconoFavoritos}
+                      iconStyle={styles.iconoCorazonFaltante}
+                      raised
+                      reverse
+                      name="heart-outline"
+                      type="material-community"
+                      color="#FFFFFF"
+                      onPress={() => confirmarAgregarAfavoritos(carta.name)}
                     />
                   )}
 
