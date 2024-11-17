@@ -3,11 +3,9 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   // General container
   container: {
-    flex: 1,
-    padding: 5,
-    backgroundColor: "#f5f5f5",
-    justifyContent: "center",
-    // alignContent: "center",
+    gap: 10,
+    padding: 15,
+    backgroundColor: "#F3F4F6",
   },
   header__container: {
     flexDirection: "row",
@@ -17,63 +15,49 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#C1C1C1",
   },
+  header__view: {
+    alignSelf: "flex-start",
+    width: "100%",
+    marginBottom: 5,
+    borderBottomWidth: 1,
+    borderColor: "#C1C1C1",
+  },
   header__title: {
     fontWeight: "bold",
-    fontSize: 28,
+    fontSize: 30,
+    textAlign: "left",
   },
-
-  scrollView: {
-    marginBottom: 10,
-  },
+  header_subtitle: {},
 
   cardContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    padding: 15,
+    borderRadius: 12,
     marginBottom: 15,
-    padding: 10,
-    elevation: 3,
-    width: "90%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
+    borderColor: "#DDD",
+    borderWidth: 1,
     alignSelf: "center",
+    width: "90%",
   },
 
-  cardImage: {
-    width: "100%",
-    height: 250,
-    borderRadius: 10,
-    marginBottom: 10,
+  imageCard: {
+    width: 260,
+    height: 380,
     resizeMode: "contain",
-  },
-
-  highlightedText: {
-    padding: 8,
-    color: "#fff",
-    backgroundColor: "#4caf50", // Green color for highlight
-    borderRadius: 5,
-    fontWeight: "bold",
-    marginTop: 5,
-    textAlign: "center",
-  },
-
-  noTenes: {
-    padding: 8,
-    color: "#fff",
-    backgroundColor: "#f44336", // Red color for no possession
-    borderRadius: 5,
-    fontWeight: "bold",
-    marginTop: 5,
-    textAlign: "center",
+    borderRadius: 8,
+    marginBottom: 10,
   },
 
   botonesInventario: {
     flexDirection: "row",
-    justifyContent: "space-around", // Space buttons evenly
+    justifyContent: "space-around",
     marginTop: 10,
     width: "100%",
     gap: 0,

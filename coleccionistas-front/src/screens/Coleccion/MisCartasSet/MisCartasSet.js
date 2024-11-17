@@ -64,7 +64,7 @@ export function MisCartasSet({ route }) {
 
   // Este useEffect es para traer los datos de las cartas que tengo yo (id, id_set, id_card, mail)
   useEffect(() => {
-    navigation.setOptions({ title: "Inventario " + set.id });
+    navigation.setOptions({ title:  set.name });
     buscarMisFavoritos();
     setVisible(true);
     axios
@@ -264,8 +264,7 @@ export function MisCartasSet({ route }) {
         <>
           <ModalCarga isVisible={visible} />
 
-          <View style={styles.container}>
-            {showSuggestions && filteredSuggestions.length > 0 && (
+          {/* {showSuggestions && filteredSuggestions.length > 0 && (
               <FlatList
                 style={styles.suggestionsList}
                 data={filteredSuggestions}
@@ -278,116 +277,116 @@ export function MisCartasSet({ route }) {
                   </TouchableOpacity>
                 )}
               />
-            )}
+            )} */}
 
-            <ScrollView style={styles.scrollView}>
-              <View style={styles.header__container}>
-                <Text style={styles.header__title}>Set {set.id}</Text>
-              </View>
-              <View style={styles.searchContainer}>
-                <Icon
-                  type="material-community"
-                  name="magnify"
-                  size={20}
-                  color="#000"
-                  containerStyle={styles.iconSearch}
-                />
-                <TextInput
-                  style={styles.searchBar}
-                  placeholder="Buscar carta por nombre..."
-                  value={searchText}
-                  onChangeText={handleSearchChange}
-                  onSubmitEditing={handleSubmitEditing}
-                />
-              </View>
+          <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.header__view}>
+              <Text style={styles.header__title}>Mis Cartas {set?.name}</Text>
+              <Text style={styles.header_subtitle}>
+                Estos son todas los cartas del Set {set?.name}
+              </Text>
+            </View>
+            {/* <View style={styles.searchContainer}>
+              <Icon
+                type="material-community"
+                name="magnify"
+                size={20}
+                color="#000"
+                containerStyle={styles.iconSearch}
+              />
+              <TextInput
+                style={styles.searchBar}
+                placeholder="Buscar carta por nombre..."
+                value={searchText}
+                onChangeText={handleSearchChange}
+                onSubmitEditing={handleSubmitEditing}
+              />
+            </View> */}
 
-              <View style={styles.viewSwitch}>
-                <Switch
-                  value={checked}
-                  onValueChange={(value) => setChecked(value)}
-                />
-                <Text> Ver solo las que me faltan</Text>
-              </View>
+            <View style={styles.viewSwitch}>
+              <Switch
+                value={checked}
+                onValueChange={(value) => setChecked(value)}
+              />
+              <Text> Ver solo las que me faltan</Text>
+            </View>
 
-              {mazoCompleto
-                .filter((card) => (checked ? !mazoMio.includes(card.id) : true))
-                .filter((card) =>
-                  card.name.toLowerCase().startsWith(searchText.toLowerCase())
-                )
+            {mazoCompleto
+              .filter((card) => (checked ? !mazoMio.includes(card.id) : true))
+              .filter((card) =>
+                card.name.toLowerCase().startsWith(searchText.toLowerCase())
+              )
 
-                .map((card, index) => (
-                  <View key={index} style={styles.cardContainer}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        setSelectedImage(card.images.small);
-                        setIsModalVisible(true);
-                      }}
-                    >
-                      <Image
-                        style={styles.cardImage}
-                        source={{ uri: card.images.small }}
-                      />
-                    </TouchableOpacity>
+              .map((card, index) => (
+                <View key={index} style={styles.cardContainer}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectedImage(card.images.small);
+                      setIsModalVisible(true);
+                    }}
+                  >
+                    <Image
+                      style={styles.imageCard}
+                      source={{ uri: card.images.small }}
+                    />
+                  </TouchableOpacity>
 
+                  {mazoMio.includes(card.id) ? (
+                    <Icon
+                      type="material-community"
+                      name="trophy"
+                      color={"#FFD700"}
+                      raised
+                      containerStyle={styles.iconoTrophy}
+                    />
+                  ) : null}
+
+                  {estaEnFavoritos(card.id, misFavoritosIds) ? (
+                    <Icon
+                      containerStyle={styles.iconoFavoritos}
+                      iconStyle={styles.iconoCorazonAgregado}
+                      raised
+                      name="heart"
+                      type="material-community"
+                      color="#FFFFFF"
+                      onPress={() => confirmarEliminarAfavoritos(card.id)}
+                    />
+                  ) : (
+                    <Icon
+                      containerStyle={styles.iconoFavoritos}
+                      iconStyle={styles.iconoCorazonFaltante}
+                      raised
+                      reverse
+                      name="heart-outline"
+                      type="material-community"
+                      color="#FFFFFF"
+                      onPress={() => confirmarAgregarAfavoritos(card.id)}
+                    />
+                  )}
+
+                  <View style={styles.botonesInventario}>
                     {mazoMio.includes(card.id) ? (
-                      <Icon
-                        type="material-community"
-                        name="trophy"
-                        color={"#FFD700"}
-                        raised
-                        containerStyle={styles.iconoTrophy}
+                      // Mostrar solo el botón "Eliminar" si ya tienes la carta
+                      <Button
+                        buttonStyle={styles.btnEliminar}
+                        containerStyle={styles.btnContainer}
+                        title="Eliminar del inventario"
+                        onPress={() => eliminarCardInventario(card.id)}
                       />
                     ) : (
-                      <Text style={styles.noTenes}>No la tienes</Text>
-                    )}
-
-                    {estaEnFavoritos(card.id, misFavoritosIds) ? (
-                      <Icon
-                        containerStyle={styles.iconoFavoritos}
-                        iconStyle={styles.iconoCorazonAgregado}
-                        raised
-                        name="heart"
-                        type="material-community"
-                        color="#FFFFFF"
-                        onPress={() => confirmarEliminarAfavoritos(card.id)}
-                      />
-                    ) : (
-                      <Icon
-                        containerStyle={styles.iconoFavoritos}
-                        iconStyle={styles.iconoCorazonFaltante}
-                        raised
-                        reverse
-                        name="heart-outline"
-                        type="material-community"
-                        color="#FFFFFF"
-                        onPress={() => confirmarAgregarAfavoritos(card.id)}
+                      <Button
+                        buttonStyle={styles.btnAgregar}
+                        containerStyle={styles.btnContainer}
+                        title="Agregar al inventario"
+                        onPress={() => agregarCardInventario(card.id)}
                       />
                     )}
-
-                    <View style={styles.botonesInventario}>
-                      {mazoMio.includes(card.id) ? (
-                        // Mostrar solo el botón "Eliminar" si ya tienes la carta
-                        <Button
-                          buttonStyle={styles.btnEliminar}
-                          containerStyle={styles.btnContainer}
-                          title="Eliminar del inventario"
-                          onPress={() => eliminarCardInventario(card.id)}
-                        />
-                      ) : (
-                        <Button
-                          buttonStyle={styles.btnAgregar}
-                          containerStyle={styles.btnContainer}
-                          title="Agregar al inventario"
-                          onPress={() => agregarCardInventario(card.id)}
-                        />
-                      )}
-                    </View>
                   </View>
-                ))}
-            </ScrollView>
+                </View>
+              ))}
+          </ScrollView>
 
-            {/* Modal para mostrar la imagen ampliada */}
-          </View>
+          {/* Modal para mostrar la imagen ampliada */}
           <Modal
             visible={isModalVisible}
             transparent={true}

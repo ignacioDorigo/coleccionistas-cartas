@@ -6,13 +6,7 @@ export const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: "#F3F4F6",
   },
-  imageCard: {
-    width: 260,
-    height: 380,
-    resizeMode: "contain",
-    borderRadius: 8,
-    marginBottom: 10,
-  },
+
   cardContainer: {
     flexDirection: "column",
     alignItems: "center",
@@ -27,6 +21,13 @@ export const styles = StyleSheet.create({
     elevation: 5,
     borderColor: "#DDD",
     borderWidth: 1,
+  },
+  imageCard: {
+    width: 260,
+    height: 380,
+    resizeMode: "contain",
+    borderRadius: 8,
+    marginBottom: 10,
   },
 
   overlayContainer: {
