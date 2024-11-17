@@ -24,6 +24,8 @@ export function CartasSetYugioh({ route }) {
   const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
   const [misFavoritosIds, setMisFavoritosIds] = useState([]);
 
+  const [modalCarga, setModalCarga] = useState(false);
+
   useEffect(() => {
     todasCartasSet();
   }, []);
@@ -54,6 +56,7 @@ export function CartasSetYugioh({ route }) {
 
   const todasCartasSet = async () => {
     try {
+      setModalCarga(true);
       const url = construirURL(setName);
       const response = await axios.get(url);
       const cartas = response.data.data;
@@ -67,6 +70,8 @@ export function CartasSetYugioh({ route }) {
     } catch (error) {
       console.log("Error en el fetch de buscar TODAS LAS CARTAS DE UN SET");
       console.log(error);
+    } finally {
+      setModalCarga(false);
     }
   };
 
@@ -185,7 +190,6 @@ export function CartasSetYugioh({ route }) {
 
   const agregarCardFavoritos = async (idCard) => {
     try {
-      // setVisible(true);
       const response = await axios.post(
         `http://${ipHost}:8080/coleccionistas/agregarFavoritoYugioh?idCard=${idCard}&mail=${mail}`
       );
@@ -194,8 +198,6 @@ export function CartasSetYugioh({ route }) {
       recargarFavoritos();
     } catch (error) {
       Alert.alert("Error", error.response.data);
-    } finally {
-      // setVisible(false);
     }
   };
 
@@ -243,7 +245,6 @@ export function CartasSetYugioh({ route }) {
   return (
     <>
       <>
-        <ModalCarga isVisible={false} />
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.header__view}>
             <Text style={styles.header__title}>{setName}</Text>
