@@ -7,107 +7,76 @@ import PokemonCard from "../../../components/PokemonCard";
 import axios from "axios";
 import { styles } from "./FavoritosScreen.styles";
 import { ipHost } from "../../../utils/ipHost";
+import { FavoritoPokemon } from "../CardFavoritoPokemon/FavoritoPokemon";
+
+// `https://api.pokemontcg.io/v2/cards?q=id:${id_card}`
+// );
+// return respuesta.data.data[0];
 
 export function FavoritosScreen() {
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
-
   const { favoritos } = useContext(RecargarContext);
-
-  const [pokemones, setPokemones] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [eliminarFav, setEliminarFav] = useState(false);
-
-  const eliminar = () => {
-    setEliminarFav((prevState) => !prevState);
-  };
+  const [misFavoritosIdsPokemon, setMisFavoritosIdsPokemon] = useState([]);
+  const [misFavoritosIdsYugioh, setMisFavoritosIdsYugioh] = useState([]);
+  const { recargarFavoritos } = useContext(RecargarContext);
 
   useEffect(() => {
-    buscarPokemones();
-  }, [favoritos, eliminarFav]);
+    buscarMisFavoritosYugioh();
+    buscarMisFavoritosPokemon();
+  }, [favoritos]);
 
-  const buscarPokemones = async () => {
-    setLoading(true);
+  const buscarMisFavoritosYugioh = async () => {
     try {
-      // Primero buscamos los IDS DE LOS FAVORITOS
       const response = await axios.get(
-        `http://${ipHost}:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`
+        `http://${ipHost}:8080/coleccionistas/misFavoritosYugioh?mail=${mail}`
       );
-      const ids = response.data;
-
-      // Despues buscamos cada detalle de cada carta favorita
-      const objetos = await Promise.all(
-        ids.map(async (element) => {
-          const { id_card } = element;
-          const respuesta = await axios.get(
-            `https://api.pokemontcg.io/v2/cards?q=id:${id_card}`
-          );
-          return respuesta.data.data[0];
-        })
+      const misFavoritos = response.data;
+      const misFavoritosIdsss = misFavoritos.map(
+        (favorito) => favorito.id_card
       );
-
-      setPokemones(objetos);
+      setMisFavoritosIdsYugioh(misFavoritosIdsss);
+      // console.log("Mis favoritos YUGIOH");
+      // console.log(misFavoritosIdsss);
     } catch (error) {
-      console.log(error);
-      Alert.alert(
-        "Error",
-        "Hubo un problema al buscar los pokemones favoritos."
-      );
-    } finally {
-      setLoading(false); // Asegúrate de que el loading se apague en caso de error también
+      console.log(error.response.data);
     }
   };
 
-  const eliminarCardFavorito = async (id) => {
+  const buscarMisFavoritosPokemon = async () => {
     try {
-      const response = await axios.delete(
-        `http://${ipHost}:8080/coleccionistas/eliminarFavoritoPokemon?idCard=${id}&mail=${mail}`
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`
       );
-      Alert.alert("Éxito", response.data);
-      eliminar();
+      const misFavoritos = response.data;
+      const misFavoritosIdsss = misFavoritos.map(
+        (favorito) => favorito.id_card
+      );
+      setMisFavoritosIdsPokemon(misFavoritosIdsss);
+      // console.log("Mis favoritos POKEMON");
+      // console.log(misFavoritosIdsss);
     } catch (error) {
-      console.log(error);
-      Alert.alert(
-        "Error",
-        error.response?.data || "Hubo un problema al eliminar el favorito."
-      );
+      console.log(error.response.data);
     }
   };
 
   return (
-    <View>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <ScrollView contentContainerStyle={styles.container}>
-          <View style={styles.viewHeader}>
-            <Text style={styles.header}>Tus Cartas Favoritas</Text>
-          </View>
-
-          {pokemones.length === 0 ? (
-            <Text>Aún no tenes favoritos</Text>
-          ) : (
-            pokemones.map((pokemon, index) => (
-              <View key={index} style={styles.touchable}>
-                <PokemonCard card={pokemon} />
-                <Button
-                  title="Eliminar de Favoritos"
-                  onPress={() => eliminarCardFavorito(pokemon.id)}
-                  containerStyle={styles.btnContainer}
-                  buttonStyle={styles.btn}
-                  icon={
-                    <Icon
-                      type="material-community"
-                      name="delete"
-                      color={"#FFFFFF"}
-                    />
-                  }
-                />
-              </View>
-            ))
-          )}
-        </ScrollView>
-      )}
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.header__view}>
+        <Text style={styles.header__title}>Favoritos</Text>
+        <Text style={styles.header_subtitle}>
+          Estas son todas las cartas que te gustaron
+        </Text>
+      </View>
+      {misFavoritosIdsPokemon.map((favorito, index) => (
+        <FavoritoPokemon
+          idPokemon={favorito}
+          key={index}
+          misFavoritosIdsPokemon={misFavoritosIdsPokemon}
+          recargarFavoritos={recargarFavoritos}
+          mail={mail}
+        />
+      ))}
+    </ScrollView>
   );
 }

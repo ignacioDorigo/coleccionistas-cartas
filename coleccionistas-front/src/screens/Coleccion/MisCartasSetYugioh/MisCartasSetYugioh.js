@@ -355,61 +355,6 @@ export function MisCartasSetYugioh({ route }) {
                   )}
                 </View>
               ))}
-            {/* {todasCartas.map((carta, index) => (
-              <View style={styles.cardContainer} key={index}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedImage(carta.img);
-                    setIsModalVisible(true);
-                  }}
-                >
-                  <Image source={{ uri: carta.img }} style={styles.imageCard} />
-                </TouchableOpacity>
-                {tengoCarta(carta.name, namesMisCartas) ? (
-                  <Button
-                    title={"Eliminar de mi coleccion"}
-                    buttonStyle={styles.btnEliminar}
-                    onPress={() => confirmarEliminarCarta(carta.name)}
-                    containerStyle={styles.btnContainer}
-                    iconPosition="left"
-                    icon={
-                      <Icon
-                        type="material-community"
-                        name="book-remove-outline"
-                        iconStyle={styles.iconoBtn}
-                      />
-                    }
-                  />
-                ) : (
-                  <Button
-                    title={"Agregar a mi coleccion"}
-                    onPress={() => confirmarAgregarCarta(carta.name)}
-                    buttonStyle={styles.btnAgregar}
-                    containerStyle={styles.btnContainer}
-                    iconPosition="left"
-                    icon={
-                      <Icon
-                        type="material-community"
-                        name="book-plus-outline"
-                        iconStyle={styles.iconoBtn}
-                      />
-                    }
-                  />
-                )}
-
-                {tengoCarta(carta.name, namesMisCartas) ? (
-                  <Icon
-                    type="material-community"
-                    name="trophy"
-                    color={"#FFD700"}
-                    raised
-                    containerStyle={styles.iconoTrophy}
-                  />
-                ) : (
-                  <></>
-                )}
-              </View>
-            ))} */}
           </ScrollView>
 
           <Modal
