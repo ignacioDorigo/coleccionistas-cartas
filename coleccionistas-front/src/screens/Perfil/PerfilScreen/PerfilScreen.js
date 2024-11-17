@@ -170,8 +170,8 @@ export function PerfilScreen() {
       };
       reader.readAsDataURL(blob);
     } catch (error) {
-      console.error("Error al obtener el avatar:", error);
-      setAvatar(null); // Optional: fallback or error handling
+      // console.error("Error al obtener el avatar:", error);
+      setAvatar(null);
     }
   };
 
