@@ -1,4 +1,6 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   container: {
@@ -18,6 +20,8 @@ export const styles = StyleSheet.create({
     elevation: 5,
     borderColor: "#DDD",
     borderWidth: 1,
+    width: "90%",
+    alignSelf: "center",
   },
   publicacionText: {
     fontSize: 18,
@@ -57,8 +61,8 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   carouselImage: {
-    width: 270,
-    height: 380,
+    width: width / 1.6,
+    height: 200,
     resizeMode: "cover",
     borderRadius: 10,
     borderColor: "#DDD",
@@ -83,6 +87,17 @@ export const styles = StyleSheet.create({
   titleIcon: {
     display: "flex",
     flexDirection: "row",
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+  },
+  imagenAmpliada: {
+    width: width - 40,
+    height: height / 1.5,
+    resizeMode: "contain",
   },
 });
 
