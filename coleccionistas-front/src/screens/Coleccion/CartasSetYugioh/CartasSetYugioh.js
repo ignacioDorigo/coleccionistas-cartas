@@ -243,7 +243,7 @@ export function CartasSetYugioh({ route }) {
   return (
     <>
       <>
-        <ModalCarga isVisible={true} />
+        <ModalCarga isVisible={false} />
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.header__view}>
             <Text style={styles.header__title}>{setName}</Text>
