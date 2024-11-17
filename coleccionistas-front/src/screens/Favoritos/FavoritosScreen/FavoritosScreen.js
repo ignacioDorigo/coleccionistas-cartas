@@ -8,6 +8,7 @@ import axios from "axios";
 import { styles } from "./FavoritosScreen.styles";
 import { ipHost } from "../../../utils/ipHost";
 import { FavoritoPokemon } from "../CardFavoritoPokemon/FavoritoPokemon";
+import { FavoritoYugioh } from "../CardFavoritoYugioh/FavoritoYugioh";
 
 // `https://api.pokemontcg.io/v2/cards?q=id:${id_card}`
 // );
@@ -73,6 +74,16 @@ export function FavoritosScreen() {
           idPokemon={favorito}
           key={index}
           misFavoritosIdsPokemon={misFavoritosIdsPokemon}
+          recargarFavoritos={recargarFavoritos}
+          mail={mail}
+        />
+      ))}
+
+      {misFavoritosIdsYugioh.map((favoritoYugioh, index) => (
+        <FavoritoYugioh
+          idYugioh={favoritoYugioh}
+          key={index}
+          misFavoritosIdsYugioh={misFavoritosIdsYugioh}
           recargarFavoritos={recargarFavoritos}
           mail={mail}
         />
