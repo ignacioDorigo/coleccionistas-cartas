@@ -29,9 +29,11 @@ export function CartasSet({ route, navigation }) {
   const [reload, setReload] = useState(false);
   const [misCartas, setMisCartas] = useState([]);
   const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
+  const [misFavoritosIds, setMisFavoritosIds] = useState([]);
   // Modal Img
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { recargarFavoritos } = useContext(RecargarContext);
 
   const recargarScreen = () => {
     setReload((prevState) => !prevState);
@@ -43,6 +45,7 @@ export function CartasSet({ route, navigation }) {
 
   useEffect(() => {
     buscarMisCartas();
+    buscarMisFavoritos();
   }, [reload]);
 
   useEffect(() => {
@@ -115,7 +118,7 @@ export function CartasSet({ route, navigation }) {
 
   const eliminarCarta = async (idCard) => {
     try {
-      console.log(idCard);
+      console.log("ID CARD A ELIMINAR DEL INVENTARIO: ", idCard);
       const response = await axios.delete(
         `http://${ipHost}:8080/coleccionistas/eliminarCartaInventario?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`
       );
@@ -147,9 +150,105 @@ export function CartasSet({ route, navigation }) {
 
   const tengoCarta = (carta, cartas) => {
     // console.log(carta.id);
-    console.log(cartas);
+    // console.log(cartas);
     return cartas.includes(carta.id);
   };
+
+  // ------------------ TODO LO DE FAVORITOS ------------------
+
+  const buscarMisFavoritos = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`
+      );
+      const misFavoritos = response.data;
+      const misFavoritosIdsss = misFavoritos.map(
+        (favorito) => favorito.id_card
+      );
+      setMisFavoritosIds(misFavoritosIdsss);
+      // console.log("Mis favoritos");
+      // console.log(misFavoritosIdsss);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
+  const confirmarAgregarAfavoritos = async (idCard) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que queres agregar esta carta a tus favoritos?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Agregar",
+          style: "default",
+          onPress: () => agregarCardFavoritos(idCard),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const agregarCardFavoritos = async (idCard) => {
+    try {
+      setVisible(true);
+      const response = await axios.post(
+        `http://${ipHost}:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+      recargarFavoritos();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    } finally {
+      setVisible(false);
+    }
+  };
+
+  const estaEnFavoritos = (cardId, favoritos) => {
+    // console.log(favoritos.includes(cardId));
+    return favoritos.includes(cardId);
+  };
+
+  const confirmarEliminarAfavoritos = async (idCard) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que queres eliminar esta carta de tus favoritos?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Eliminar",
+          style: "default",
+          onPress: () => eliminarCardFavoritos(idCard),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const eliminarCardFavoritos = async (idCard) => {
+    try {
+      console.log("ID CARD A ELIMINAR DE FAVORITOS: ", idCard);
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/eliminarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+      recargarFavoritos();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    } finally {
+      setVisible(false);
+    }
+  };
+
+  // -----------------------------------------------------------
 
   return (
     <>
@@ -213,6 +312,29 @@ export function CartasSet({ route, navigation }) {
                       iconStyle={styles.iconoBtn}
                     />
                   }
+                />
+              )}
+
+              {estaEnFavoritos(card.id, misFavoritosIds) ? (
+                <Icon
+                  containerStyle={styles.iconoFavoritos}
+                  iconStyle={styles.iconoCorazonAgregado}
+                  raised
+                  name="heart"
+                  type="material-community"
+                  color="#FFFFFF"
+                  onPress={() => confirmarEliminarAfavoritos(card.id)}
+                />
+              ) : (
+                <Icon
+                  containerStyle={styles.iconoFavoritos}
+                  iconStyle={styles.iconoCorazonFaltante}
+                  raised
+                  reverse
+                  name="heart-outline"
+                  type="material-community"
+                  color="#FFFFFF"
+                  onPress={() => confirmarAgregarAfavoritos(card.id)}
                 />
               )}
 

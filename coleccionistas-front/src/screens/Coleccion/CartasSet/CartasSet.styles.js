@@ -69,10 +69,21 @@ export const styles = StyleSheet.create({
   view__switch__texto: {
     fontWeight: "bold",
   },
+  iconoFavoritos: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+  },
+  iconoCorazonFaltante: {
+    color: "#240046",
+  },
+  iconoCorazonAgregado: {
+    color: "#240046",
+  },
   iconoTrophy: {
     position: "absolute",
     right: 0,
-    top: 20,
+    top: 60,
   },
   imageCard: {
     width: 260,
