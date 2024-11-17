@@ -45,6 +45,7 @@ export function FavoritosScreen() {
   };
 
   const buscarMisFavoritosPokemon = async () => {
+    setMisFavoritosIdsPokemon([]);
     try {
       const response = await axios.get(
         `http://${ipHost}:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`
@@ -54,8 +55,6 @@ export function FavoritosScreen() {
         (favorito) => favorito.id_card
       );
       setMisFavoritosIdsPokemon(misFavoritosIdsss);
-      // console.log("Mis favoritos POKEMON");
-      // console.log(misFavoritosIdsss);
     } catch (error) {
       console.log(error.response.data);
     }

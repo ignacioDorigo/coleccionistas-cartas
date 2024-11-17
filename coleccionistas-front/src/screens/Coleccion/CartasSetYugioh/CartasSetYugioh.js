@@ -226,7 +226,6 @@ export function CartasSetYugioh({ route }) {
 
   const eliminarCardFavoritos = async (idCard) => {
     try {
-      // setVisible(true);
       const response = await axios.delete(
         `http://${ipHost}:8080/coleccionistas/eliminarFavoritoYugioh?idCard=${idCard}&mail=${mail}`
       );
@@ -236,7 +235,6 @@ export function CartasSetYugioh({ route }) {
     } catch (error) {
       Alert.alert("Error", error.response.data);
     } finally {
-      // setVisible(false);
     }
   };
 
@@ -286,7 +284,7 @@ export function CartasSetYugioh({ route }) {
                     <Button
                       title={"Eliminar de mi coleccion"}
                       buttonStyle={styles.btnEliminar}
-                      // onPress={() => confirmarEliminarCarta(carta.name)}
+                      onPress={() => confirmarEliminarCarta(carta.name)}
                       containerStyle={styles.btnContainer}
                       iconPosition="left"
                       icon={
