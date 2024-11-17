@@ -109,6 +109,38 @@ export function CartasSet({ route, navigation }) {
     );
   };
 
+  const eliminarCarta = async (idCard) => {
+    try {
+      console.log(idCard);
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/eliminarCartaInventario?mail=${mail}&idSet=${mazo.id}&idCard=${idCard}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    }
+  };
+
+  const confimarEliminarCarta = (idCard) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Está seguro que quiere eliminar esta carta de tu inventario?",
+      [
+        {
+          text: "CANCELAR",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "destructive",
+        },
+        {
+          text: "ACEPTO",
+          onPress: () => eliminarCarta(idCard),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const tengoCarta = (carta, cartas) => {
     // console.log(carta.id);
     console.log(cartas);
@@ -121,64 +153,70 @@ export function CartasSet({ route, navigation }) {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.viewHeader}>
           <Text style={styles.header}>Mazo {mazo.name}</Text>
-          <Text style>Estas son las cartas del Mazo {mazo.name}</Text>
+          <Text>Estas son las cartas del Mazo {mazo.name}</Text>
         </View>
         <View style={styles.view__switch}>
           <Switch value={mostrarSoloObtenidas} onValueChange={clickSwitch} />
-          <Text style={styles.view__switch__texto}>
-            Obtenidas(TODAVIA NO ANDA)
-          </Text>
+          <Text style={styles.view__switch__texto}>Obtenidas</Text>
         </View>
-        {cards.map((card, index) => (
-          <View key={index} style={styles.touchable}>
-            <Image
-              style={styles.image}
-              resizeMode="contain"
-              source={{ uri: `${card.images.large}` }}
-            />
-            {tengoCarta(card, misCartas) ? (
-              <Button
-                title={"Eliminar de mi coleccion"}
-                onPress={() => confirmarEliminarCarta(carta.name)}
-                buttonStyle={styles.btnEliminar}
-                containerStyle={styles.btnContainer}
-                iconPosition="left"
-                icon={
-                  <Icon
-                    type="material-community"
-                    name="book-remove-outline"
-                    iconStyle={styles.iconoBtn}
-                  />
-                }
-              />
-            ) : (
-              <Button
-                title={"Agregar al inventario"}
-                onPress={() => confimarAgregarCarta(card.id)}
-                buttonStyle={styles.btnAgregar}
-                containerStyle={styles.btnContainer}
-                iconPosition="left"
-                icon={
-                  <Icon
-                    type="material-community"
-                    name="book-plus-outline"
-                    iconStyle={styles.iconoBtn}
-                  ></Icon>
-                }
-              />
-            )}
 
-            {tengoCarta(card, misCartas) ? (
-              <Icon
-                type="material-community"
-                name="trophy"
-                color={"#FFD700"}
-                raised
-                containerStyle={styles.iconoTrophy}
+        {/* Filtrado de cartas según el estado del switch */}
+        {cards
+          .filter((card) => {
+            // Si el switch está activado, mostramos solo las cartas que tienes
+            // Si está desactivado, mostramos todas las cartas
+            return !mostrarSoloObtenidas || tengoCarta(card, misCartas);
+          })
+          .map((card, index) => (
+            <View key={index} style={styles.touchable}>
+              <Image
+                style={styles.image}
+                resizeMode="contain"
+                source={{ uri: `${card.images.large}` }}
               />
-            ) : null}
-          </View>
-        ))}
+              {tengoCarta(card, misCartas) ? (
+                <Button
+                  title={"Eliminar de mi coleccion"}
+                  onPress={() => confimarEliminarCarta(card.id)}
+                  buttonStyle={styles.btnEliminar}
+                  containerStyle={styles.btnContainer}
+                  iconPosition="left"
+                  icon={
+                    <Icon
+                      type="material-community"
+                      name="book-remove-outline"
+                      iconStyle={styles.iconoBtn}
+                    />
+                  }
+                />
+              ) : (
+                <Button
+                  title={"Agregar al inventario"}
+                  onPress={() => confimarAgregarCarta(card.id)}
+                  buttonStyle={styles.btnAgregar}
+                  containerStyle={styles.btnContainer}
+                  iconPosition="left"
+                  icon={
+                    <Icon
+                      type="material-community"
+                      name="book-plus-outline"
+                      iconStyle={styles.iconoBtn}
+                    />
+                  }
+                />
+              )}
+
+              {tengoCarta(card, misCartas) ? (
+                <Icon
+                  type="material-community"
+                  name="trophy"
+                  color={"#FFD700"}
+                  raised
+                  containerStyle={styles.iconoTrophy}
+                />
+              ) : null}
+            </View>
+          ))}
       </ScrollView>
     </>
   );
