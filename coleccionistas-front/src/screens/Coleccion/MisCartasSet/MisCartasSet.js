@@ -64,9 +64,9 @@ export function MisCartasSet({ route }) {
 
   // Este useEffect es para traer los datos de las cartas que tengo yo (id, id_set, id_card, mail)
   useEffect(() => {
-    navigation.setOptions({ title:  set.name });
+    navigation.setOptions({ title: set.name });
     buscarMisFavoritos();
-    setVisible(true);
+    setVisible(true);;
     axios
       .get(
         `http://${ipHost}:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id}`
@@ -286,22 +286,6 @@ export function MisCartasSet({ route }) {
                 Estos son todas los cartas del Set {set?.name}
               </Text>
             </View>
-            {/* <View style={styles.searchContainer}>
-              <Icon
-                type="material-community"
-                name="magnify"
-                size={20}
-                color="#000"
-                containerStyle={styles.iconSearch}
-              />
-              <TextInput
-                style={styles.searchBar}
-                placeholder="Buscar carta por nombre..."
-                value={searchText}
-                onChangeText={handleSearchChange}
-                onSubmitEditing={handleSubmitEditing}
-              />
-            </View> */}
 
             <View style={styles.viewSwitch}>
               <Switch
@@ -372,6 +356,14 @@ export function MisCartasSet({ route }) {
                         containerStyle={styles.btnContainer}
                         title="Eliminar del inventario"
                         onPress={() => eliminarCardInventario(card.id)}
+                        iconPosition="left"
+                        icon={
+                          <Icon
+                            type="material-community"
+                            name="book-remove-outline"
+                            iconStyle={styles.iconoBtn}
+                          />
+                        }
                       />
                     ) : (
                       <Button
@@ -379,6 +371,14 @@ export function MisCartasSet({ route }) {
                         containerStyle={styles.btnContainer}
                         title="Agregar al inventario"
                         onPress={() => agregarCardInventario(card.id)}
+                        iconPosition="left"
+                        icon={
+                          <Icon
+                            type="material-community"
+                            name="book-plus-outline"
+                            iconStyle={styles.iconoBtn}
+                          />
+                        }
                       />
                     )}
                   </View>

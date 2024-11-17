@@ -70,15 +70,15 @@ export const styles = StyleSheet.create({
   btnContainer: {
     width: "100%",
   },
-
+  iconoBtn: {
+    marginRight: 10,
+    color: "#FFF",
+  },
   btnAgregar: {
-    marginRight: 5, // Spacing between buttons
     backgroundColor: "#4caf50",
     borderRadius: 5,
   },
-
   btnEliminar: {
-    marginLeft: 5, // Spacing between buttons
     backgroundColor: "#f44336",
     borderRadius: 5,
   },
