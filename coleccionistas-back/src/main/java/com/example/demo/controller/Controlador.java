@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.modelo.Avatar;
@@ -36,6 +39,7 @@ import com.example.demo.modelo.UsuarioSetYugioh;
 import com.example.demo.repository.AvatarRepository;
 import com.example.demo.repository.FotoPublicacionRepository;
 import com.example.demo.repository.PublicacionRepository;
+import com.example.demo.service.ChatgptService;
 import com.example.demo.service.ColeccionService;
 import com.example.demo.service.FavoritosPokemonService;
 import com.example.demo.service.FavoritosYugiohService;
@@ -85,6 +89,9 @@ public class Controlador {
 
 	@Autowired
 	UsuarioCardYugiohService usuarioCardYugiohService;
+
+	@Autowired
+	ChatgptService chatgptService;
 
 //	FotoPublicacion foto;
 
@@ -456,6 +463,16 @@ public class Controlador {
 		} else {
 			return ResponseEntity.status(400).body(resultado);
 		}
+	}
+
+	@PostMapping("/obtenerFiabilidadDeTarjeta")
+	public ResponseEntity<String> obtenerFiabilidadDeTarjeta(@RequestParam String imageUrl) {
+				String resultado = chatgptService.obtenerFiabilidadDeTarjeta(imageUrl);
+				if (resultado.contains("Score de la carte es:")) {
+					return ResponseEntity.ok(resultado);
+				} else {
+					return ResponseEntity.badRequest().body(resultado);
+				}
 	}
 
 }
