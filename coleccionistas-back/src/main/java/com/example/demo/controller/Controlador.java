@@ -36,6 +36,7 @@ import com.example.demo.modelo.UsuarioSetYugioh;
 import com.example.demo.repository.AvatarRepository;
 import com.example.demo.repository.FotoPublicacionRepository;
 import com.example.demo.repository.PublicacionRepository;
+import com.example.demo.service.ChatgptService;
 import com.example.demo.service.ColeccionService;
 import com.example.demo.service.FavoritosPokemonService;
 import com.example.demo.service.FavoritosYugiohService;
@@ -85,6 +86,9 @@ public class Controlador {
 
 	@Autowired
 	UsuarioCardYugiohService usuarioCardYugiohService;
+
+	@Autowired
+	ChatgptService chatgptService;
 
 //	FotoPublicacion foto;
 
@@ -455,6 +459,16 @@ public class Controlador {
 			return ResponseEntity.ok(resultado);
 		} else {
 			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+
+	@PostMapping("/obtenerFiabilidadDeTarjeta")
+	public ResponseEntity<String> obtenerFiabilidadDeTarjeta(@RequestParam String imageUrl) {
+		String resultado = chatgptService.obtenerFiabilidadDeTarjeta(imageUrl);
+		if (resultado.contains("Score de la carte es:")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
 		}
 	}
 

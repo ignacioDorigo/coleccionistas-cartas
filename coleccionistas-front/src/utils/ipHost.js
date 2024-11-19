@@ -1,1 +1,1 @@
-export const ipHost = "192.168.1.69";
+export const ipHost = "192.168.1.45";
