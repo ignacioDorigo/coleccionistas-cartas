@@ -1,6 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, Alert, TextInput, FlatList, TouchableOpacity } from "react-native";
-import { styles } from "./MisCartaSet.styles";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  Alert,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  Modal,
+} from "react-native";
+import { styles } from "./MisCartasSet.styles";
 import axios from "axios";
 import { Button, Icon, Switch } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
@@ -21,6 +31,10 @@ export function MisCartasSet({ route }) {
 
   // De alguna manera tengo que recargar el screen de favoritos, entonces cree un context de eso
   const { recargarFavoritos } = useContext(RecargarContext);
+  // Modal para imagen ampliada
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [misFavoritosIds, setMisFavoritosIds] = useState([]);
 
   const navigation = useNavigation();
 
@@ -50,8 +64,9 @@ export function MisCartasSet({ route }) {
 
   // Este useEffect es para traer los datos de las cartas que tengo yo (id, id_set, id_card, mail)
   useEffect(() => {
-    navigation.setOptions({ title: "Inventario " + set.id });
-    setVisible(true);
+    navigation.setOptions({ title: set.name });
+    buscarMisFavoritos();
+    setVisible(true);;
     axios
       .get(
         `http://${ipHost}:8080/coleccionistas/misCartasSet?mail=${mail}&idSet=${set.id}`
@@ -77,22 +92,6 @@ export function MisCartasSet({ route }) {
       .catch((error) => console.log(error));
     setVisible(false);
   }, []);
-
-  const agregarCardFavoritos = async (idCard) => {
-    try {
-      setVisible(true);
-      const response = await axios.post(
-        `http://${ipHost}:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
-      );
-      Alert.alert("Exito", response.data);
-      recargarFavoritos();
-    } catch (error) {
-      Alert.alert("Error", error.response.data);
-      recargarFavoritos();
-    } finally {
-      setVisible(false);
-    }
-  };
 
   const agregarCardInventario = async (idCard) => {
     try {
@@ -144,7 +143,7 @@ export function MisCartasSet({ route }) {
 
   const handleSearchChange = (text) => {
     setSearchText(text);
-    
+
     // Filtrar solo cartas cuyos nombres empiezan con el texto de búsqueda
     const suggestions = mazoCompleto.filter((card) =>
       card.name.toLowerCase().startsWith(text.toLowerCase())
@@ -152,16 +151,111 @@ export function MisCartasSet({ route }) {
     setFilteredSuggestions(suggestions);
     setShowSuggestions(true);
   };
-  
+
   const handleSuggestionSelect = (name) => {
-    setSearchText(name);  // Coloca el nombre en la barra de busqueda
-    setFilteredSuggestions([]);  // Vacia las sugerencias para cerrar la lista
+    setSearchText(name);
+    setFilteredSuggestions([]);
   };
 
   const handleSubmitEditing = () => {
-    setShowSuggestions(false); // Oculta la lista de sugerencias
+    setShowSuggestions(false);
   };
 
+  // ------------------ TODO LO DE FAVORITOS ------------------
+
+  const buscarMisFavoritos = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/misFavoritosPokemon?mail=${mail}`
+      );
+      const misFavoritos = response.data;
+      const misFavoritosIdsss = misFavoritos.map(
+        (favorito) => favorito.id_card
+      );
+      setMisFavoritosIds(misFavoritosIdsss);
+      // console.log("Mis favoritos");
+      // console.log(misFavoritosIdsss);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
+  const confirmarAgregarAfavoritos = async (idCard) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que queres agregar esta carta a tus favoritos?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Agregar",
+          style: "default",
+          onPress: () => agregarCardFavoritos(idCard),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const agregarCardFavoritos = async (idCard) => {
+    try {
+      setVisible(true);
+      const response = await axios.post(
+        `http://${ipHost}:8080/coleccionistas/agregarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+      recargarFavoritos();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    } finally {
+      setVisible(false);
+    }
+  };
+
+  const estaEnFavoritos = (cardId, favoritos) => {
+    // console.log(favoritos.includes(cardId));
+    return favoritos.includes(cardId);
+  };
+
+  const confirmarEliminarAfavoritos = async (idCard) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que queres eliminar esta carta de tus favoritos?",
+      [
+        {
+          text: "Cancelar",
+          style: "destructive",
+        },
+        {
+          text: "Eliminar",
+          style: "default",
+          onPress: () => eliminarCardFavoritos(idCard),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const eliminarCardFavoritos = async (idCard) => {
+    try {
+      setVisible(true);
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/eliminarFavoritoPokemon?idCard=${idCard}&mail=${mail}`
+      );
+      Alert.alert("Exito", response.data);
+      recargarScreen();
+      recargarFavoritos();
+    } catch (error) {
+      Alert.alert("Error", error.response.data);
+    } finally {
+      setVisible(false);
+    }
+  };
+
+  // -----------------------------------------------------------
   return (
     <>
       {mazoCompleto.length === 0 ? (
@@ -170,103 +264,147 @@ export function MisCartasSet({ route }) {
         <>
           <ModalCarga isVisible={visible} />
 
-          <View style={styles.container}>
-            <Text style={styles.title}>Tus Cartas Del Set {set.id}</Text>
-            <View style={styles.searchContainer}>
-              <Icon
-                type="material-community"
-                name="magnify"
-                size={20}
-                color="#000"
-                containerStyle={styles.iconSearch}
-              />
-              <TextInput
-                style={styles.searchBar}
-                placeholder="Buscar carta por nombre..."
-                value={searchText}
-                onChangeText={handleSearchChange}
-                onSubmitEditing={handleSubmitEditing}
-              />
-            </View>
-
-            {showSuggestions && filteredSuggestions.length > 0 && (
+          {/* {showSuggestions && filteredSuggestions.length > 0 && (
               <FlatList
                 style={styles.suggestionsList}
                 data={filteredSuggestions}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleSuggestionSelect(item.name)}>
+                  <TouchableOpacity
+                    onPress={() => handleSuggestionSelect(item.name)}
+                  >
                     <Text style={styles.suggestionItem}>{item.name}</Text>
                   </TouchableOpacity>
                 )}
               />
-            )}
+            )} */}
 
-            <ScrollView style={styles.scrollView}>
-              <View style={styles.viewSwitch}>
-                <Switch
-                  value={checked}
-                  onValueChange={(value) => setChecked(value)}
-                />
-                <Text> Ver solo las que me faltan</Text>
-              </View>
+          <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.header__view}>
+              <Text style={styles.header__title}>Mis Cartas {set?.name}</Text>
+              <Text style={styles.header_subtitle}>
+                Estos son todas los cartas del Set {set?.name}
+              </Text>
+            </View>
 
-              {mazoCompleto
-                .filter((card) => (checked ? !mazoMio.includes(card.id) : true)) // Filtrar cartas cuando el switch está activo
-                .filter((card) => card.name.toLowerCase().startsWith(searchText.toLowerCase())) // Filtrar cartas por nombre
+            <View style={styles.viewSwitch}>
+              <Switch
+                value={checked}
+                onValueChange={(value) => setChecked(value)}
+              />
+              <Text> Ver solo las que me faltan</Text>
+            </View>
 
-                .map((card, index) => (
-                  <View key={index} style={styles.cardContainer}>
+            {mazoCompleto
+              .filter((card) => (checked ? !mazoMio.includes(card.id) : true))
+              .filter((card) =>
+                card.name.toLowerCase().startsWith(searchText.toLowerCase())
+              )
+
+              .map((card, index) => (
+                <View key={index} style={styles.cardContainer}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectedImage(card.images.small);
+                      setIsModalVisible(true);
+                    }}
+                  >
                     <Image
-                      style={styles.cardImage}
+                      style={styles.imageCard}
                       source={{ uri: card.images.small }}
                     />
+                  </TouchableOpacity>
 
-                    {mazoMio.includes(card.id) ? (
-                      <Icon
-                        type="material-community"
-                        name="trophy"
-                        color={"#FFD700"}
-                        raised
-                        containerStyle={styles.iconoTrophy}
-                      />
-                    ) : (
-                      <Text style={styles.noTenes}>No la tienes</Text>
-                    )}
+                  {mazoMio.includes(card.id) ? (
+                    <Icon
+                      type="material-community"
+                      name="trophy"
+                      color={"#FFD700"}
+                      raised
+                      containerStyle={styles.iconoTrophy}
+                    />
+                  ) : null}
 
+                  {estaEnFavoritos(card.id, misFavoritosIds) ? (
                     <Icon
                       containerStyle={styles.iconoFavoritos}
+                      iconStyle={styles.iconoCorazonAgregado}
+                      raised
+                      name="heart"
+                      type="material-community"
+                      color="#FFFFFF"
+                      onPress={() => confirmarEliminarAfavoritos(card.id)}
+                    />
+                  ) : (
+                    <Icon
+                      containerStyle={styles.iconoFavoritos}
+                      iconStyle={styles.iconoCorazonFaltante}
                       raised
                       reverse
-                      name="heart-plus"
+                      name="heart-outline"
                       type="material-community"
-                      color="#240046"
-                      onPress={() => agregarCardFavoritos(card.id)}
+                      color="#FFFFFF"
+                      onPress={() => confirmarAgregarAfavoritos(card.id)}
                     />
+                  )}
 
-                    <View style={styles.botonesInventario}>
-                      {mazoMio.includes(card.id) ? (
-                        // Mostrar solo el botón "Eliminar" si ya tienes la carta
-                        <Button
-                          buttonStyle={styles.btnEliminar}
-                          containerStyle={styles.btnContainer}
-                          title="Eliminar del inventario"
-                          onPress={() => eliminarCardInventario(card.id)}
-                        />
-                      ) : (
-                        // Mostrar solo el botón "Agregar" si no tienes la carta
-                        <Button
-                          buttonStyle={styles.btnAgregar}
-                          containerStyle={styles.btnContainer}
-                          title="Agregar al inventario"
-                          onPress={() => agregarCardInventario(card.id)}
-                        />
-                      )}
-                    </View>
+                  <View style={styles.botonesInventario}>
+                    {mazoMio.includes(card.id) ? (
+                      // Mostrar solo el botón "Eliminar" si ya tienes la carta
+                      <Button
+                        buttonStyle={styles.btnEliminar}
+                        containerStyle={styles.btnContainer}
+                        title="Eliminar del inventario"
+                        onPress={() => eliminarCardInventario(card.id)}
+                        iconPosition="left"
+                        icon={
+                          <Icon
+                            type="material-community"
+                            name="book-remove-outline"
+                            iconStyle={styles.iconoBtn}
+                          />
+                        }
+                      />
+                    ) : (
+                      <Button
+                        buttonStyle={styles.btnAgregar}
+                        containerStyle={styles.btnContainer}
+                        title="Agregar al inventario"
+                        onPress={() => agregarCardInventario(card.id)}
+                        iconPosition="left"
+                        icon={
+                          <Icon
+                            type="material-community"
+                            name="book-plus-outline"
+                            iconStyle={styles.iconoBtn}
+                          />
+                        }
+                      />
+                    )}
                   </View>
-                ))}
-            </ScrollView>
-          </View>
+                </View>
+              ))}
+          </ScrollView>
+
+          {/* Modal para mostrar la imagen ampliada */}
+          <Modal
+            visible={isModalVisible}
+            transparent={true}
+            onRequestClose={() => setIsModalVisible(false)}
+          >
+            <View style={styles.overlayContainer}>
+              <TouchableOpacity
+                style={styles.overlayBackground}
+                onPress={() => setIsModalVisible(false)}
+              />
+              <View style={styles.modalImageContainer}>
+                <Image
+                  style={[styles.modalImage, { resizeMode: "contain" }]}
+                  source={{ uri: selectedImage }}
+                />
+              </View>
+            </View>
+          </Modal>
         </>
       )}
     </>

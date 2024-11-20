@@ -3,25 +3,27 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     marginTop: 10,
-    padding: 10,
+    padding: 15,
     backgroundColor: "#f5f5f5",
     alignItems: "center",
   },
-  viewHeader: {
+  header__view: {
     alignSelf: "flex-start",
     width: "100%",
-    marginBottom: 20,
+    marginBottom: 5,
     borderBottomWidth: 1,
     borderColor: "#C1C1C1",
+    marginBottom:20,
   },
-  header: {
+  header__title: {
     fontWeight: "bold",
     fontSize: 30,
     textAlign: "left",
   },
+  header_subtitle: {},
   touchable: {
     flexDirection: "row",
-    backgroundColor: "#fff", 
+    backgroundColor: "#fff",
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: {
@@ -34,7 +36,7 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 10,
     elevation: 3,
-    alignItems:'center',
+    alignItems: "center",
   },
   idSet: {
     flex: 1,
@@ -46,10 +48,14 @@ export const styles = StyleSheet.create({
     height: 40,
   },
   PrintedTotal: {
-    flex:1,
-    textAlign:'right',
-    textAlignVertical:'center',
-    borderRadius:50,
-    
+    flex: 1,
+    textAlign: "right",
+    textAlignVertical: "center",
+    borderRadius: 50,
+  },
+  iconEliminar: {
+    position: "absolute",
+    right: 0,
+    top: 0,
   },
 });

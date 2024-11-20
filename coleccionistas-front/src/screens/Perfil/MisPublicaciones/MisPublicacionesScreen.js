@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, Image, ScrollView, Alert } from "react-native";
+import { View, Text, Image, ScrollView, Alert, Modal, TouchableWithoutFeedback } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { styles } from "./MisPublicacionesScreen.styles";
 import axios from "axios";
@@ -17,6 +17,7 @@ export function MisPublicacionesScreen() {
   const mail = isLoggedIn;
   const [publicaciones, setPublicaciones] = useState([]);
   const [imagenesPublicacion, setImagenesPublicacion] = useState({});
+  const [imagenAmpliada, setImagenAmpliada] = useState(null); // Estado para la imagen ampliada
   const [indiceImagenActual, setIndiceImagenActual] = useState({});
   const [recargar, setRecargar] = useState(false);
 
@@ -89,6 +90,14 @@ export function MisPublicacionesScreen() {
     }));
   };
 
+  const mostrarImagenAmpliada = (imagen) => {
+    setImagenAmpliada(imagen);
+  };
+
+  const cerrarImagenAmpliada = () => {
+    setImagenAmpliada(null);
+  };
+
   const confirmarEliminarPublicacion = (idPublicacion) => {
     Alert.alert(
       "Confirmación",
@@ -96,13 +105,13 @@ export function MisPublicacionesScreen() {
       [
         {
           text: "Cancelar",
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "Eliminar",
           style: "destructive",
-          onPress: () => eliminarPublicacion(idPublicacion)
-        }
+          onPress: () => eliminarPublicacion(idPublicacion),
+        },
       ],
       { cancelable: true }
     );
@@ -117,7 +126,10 @@ export function MisPublicacionesScreen() {
       repintarScreen();
       recargarMarketplace();
     } catch (error) {
-      Alert.alert("Error", error.response?.data || "Error al eliminar la publicación");
+      Alert.alert(
+        "Error",
+        error.response?.data || "Error al eliminar la publicación"
+      );
     }
   };
 
@@ -184,7 +196,7 @@ export function MisPublicacionesScreen() {
               containerStyle={styles.iconCancel}
               size={30}
               onPress={() => confirmarEliminarPublicacion(publicacion.id)}
-            ></Icon>
+            />
 
             {imagenesPublicacion[publicacion.id]?.length ? (
               <View style={styles.carouselContainer}>
@@ -194,7 +206,7 @@ export function MisPublicacionesScreen() {
                   <Text style={styles.arrow}>{"<"}</Text>
                 </TouchableOpacity>
 
-                <Image
+                {/* <Image
                   source={{
                     uri: `data:image/jpeg;base64,${
                       imagenesPublicacion[publicacion.id][
@@ -203,7 +215,28 @@ export function MisPublicacionesScreen() {
                     }`,
                   }}
                   style={styles.carouselImage}
-                />
+                /> */}
+                {/* NUevo */}
+                <TouchableOpacity
+                  onPress={() =>
+                    mostrarImagenAmpliada(
+                      imagenesPublicacion[publicacion.id][
+                        indiceImagenActual[publicacion.id]
+                      ]
+                    )
+                  }
+                >
+                  <Image
+                    source={{
+                      uri: `data:image/jpeg;base64,${
+                        imagenesPublicacion[publicacion.id][
+                          indiceImagenActual[publicacion.id]
+                        ]
+                      }`,
+                    }}
+                    style={styles.carouselImage}
+                  />
+                </TouchableOpacity>
 
                 <TouchableOpacity
                   onPress={() => cambiarImagen(publicacion.id, 1)}
@@ -239,6 +272,26 @@ export function MisPublicacionesScreen() {
         publicacion={publicacionClickeada}
         repintarMisPublicaciones={repintarScreen}
       />
+      {/* Modal para imagen ampliada */}
+      <Modal
+        visible={imagenAmpliada !== null}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={cerrarImagenAmpliada}
+      >
+        <TouchableWithoutFeedback onPress={cerrarImagenAmpliada}>
+          <View style={styles.overlay}>
+            <TouchableWithoutFeedback>
+              <Image
+                source={{
+                  uri: `data:image/jpeg;base64,${imagenAmpliada}`,
+                }}
+                style={styles.imagenAmpliada}
+              />
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </ScrollView>
   );
 }

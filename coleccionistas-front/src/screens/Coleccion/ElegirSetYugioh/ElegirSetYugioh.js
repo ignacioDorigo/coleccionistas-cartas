@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, Alert } from "react-native";
+import { View, Text, Alert, FlatList, Image } from "react-native";
 import { styles } from "./ElegirSetYugioh.styles";
 import { ModalCarga } from "../../../components/ModalCarga";
 import axios from "axios";
-import { Button, Image } from "@rneui/themed";
+import { Switch } from "@rneui/themed";
 import { TouchableOpacity } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
@@ -14,44 +14,87 @@ export function ElegirSetYugioh({ route }) {
   const navigation = useNavigation();
   const [modal, setModal] = useState(false);
   const [sets, setSets] = useState([]);
-
-  //   Para pedir el mail
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [misSets, setMisSets] = useState([]);
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
+  const [reload, setReload] = useState(false);
 
-  //   Para recargar las paginas
+  const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
+
+  const clickSwitch = () => {
+    setMostrarSoloObtenidas((prevState) => !prevState);
+  };
+
+  const repintarScreen = () => {
+    setReload((prevState) => !prevState);
+  };
+
+  // Para recargar las paginas
   const { recargarColecciones } = useContext(RecargarContext);
 
-  //   Para saber que coleccion se creo
+  // Para saber qué colección se creó
   const { coleccion } = route.params;
-  //   console.log(coleccion);
+
+  const buscarMisSetsYugioh = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/yugioh/misSets?mail=${mail}`
+      );
+      const setsId = response.data.map((objeto) => objeto.id_set);
+      setMisSets(setsId);
+    } catch (error) {
+      console.log("SCREEN ELEGIR SET YUGIOH :" + error);
+    }
+  };
+
+  function tengoSet(item, sets) {
+    // console.log(item.set_name);
+    return sets.includes(item.set_name);
+  }
 
   useEffect(() => {
+    buscarMisSetsYugioh();
     buscarSets();
-  }, []);
+  }, [page, reload]);
 
   const buscarSets = async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
     try {
       mostrarOcultarModal();
       const response = await axios.get(
-        `https://db.ygoprodeck.com/api/v7/cardsets.php`
+        `https://db.ygoprodeck.com/api/v7/cardsets.php`,
+        {
+          params: { page: page, per_page: 20 }, // Llamada paginada
+        }
       );
-      setSets(response.data);
+      if (response.data.length > 0) {
+        setSets((prevSets) => [...prevSets, ...response.data]);
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       console.log(error);
     } finally {
+      setLoading(false);
       mostrarOcultarModal();
     }
   };
 
   const handleMazoPress = (setName) => {
+    // Codificar el nombre del set antes de enviarlo al backend
+    const encodedSetName = encodeURIComponent(setName);
     Alert.alert(
       "Confirmación",
       "¿Está seguro que quiere crear una colección de este mazo?",
       [
         {
           text: "CANCELAR",
-          onPress: () => console.log("Operacion Cncelada "),
+          onPress: () => console.log("Operación Cancelada"),
           style: "cancel",
         },
         {
@@ -59,7 +102,7 @@ export function ElegirSetYugioh({ route }) {
           onPress: () => {
             axios
               .post(
-                `http://${ipHost}:8080/coleccionistas/yugioh/crearColeccion?mail=${mail}&setName=${setName}&idColeccion=${coleccion.id}`
+                `http://${ipHost}:8080/coleccionistas/yugioh/crearColeccion?mail=${mail}&setName=${encodedSetName}&idColeccion=${coleccion.id}`
               )
               .then((response) => {
                 recargarColecciones();
@@ -67,8 +110,11 @@ export function ElegirSetYugioh({ route }) {
                   coleccion,
                   setName,
                 });
+                repintarScreen();
               })
-              .catch((error) => Alert.alert("Error", `${error.response.data}`));
+              .catch((error) =>
+                Alert.alert("Error", `${error.response?.data || error.message}`)
+              );
           },
         },
       ],
@@ -80,43 +126,64 @@ export function ElegirSetYugioh({ route }) {
     setModal((prevState) => !prevState);
   };
 
-  function construirURL(cardSetName) {
-    const baseUrl = "https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=";
-    const encodedCardSetName = encodeURIComponent(cardSetName.trim());
-    return `${baseUrl}${encodedCardSetName}`;
-  }
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={[
+        styles.setContainer,
+        tengoSet(item, misSets)
+          ? { ...styles.tengoSet }
+          : { ...styles.noTengoSet },
+      ]}
+      onPress={() => handleMazoPress(item.set_name)}
+    >
+      {tengoSet(item.set_name, misSets)}
+      <Image
+        source={{
+          uri:
+            item.set_image ||
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQumqw6UawRn7rOgAvevIfEnX55015CA-oTeA&s",
+        }}
+        style={styles.imageSet}
+      />
+      <View style={styles.setTextContainer}>
+        <Text style={styles.setName}>{item.set_name}</Text>
+        <Text style={styles.setNumCards}>{`${item.num_of_cards} cartas`}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const loadMore = () => {
+    if (!loading && hasMore) {
+      setPage(page + 1);
+    }
+  };
 
   return (
     <>
       <ModalCarga isVisible={modal} />
-      {/* <Button onPress={soloIds} title={"Ver ids"}></Button> */}
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.viewHeader}>
-          <Text style={styles.header}>Sets Disponibles</Text>
+      <View style={styles.padding}>
+        <View style={styles.header__view}>
+          <Text style={styles.header__title}>Sets Disponibles</Text>
+          <Text style={styles.header_subtitle}>
+            Estos son todos los sets de YuGiOh, elegí uno
+          </Text>
         </View>
-        {sets.map((set, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.setContainer}
-            onPress={() => handleMazoPress(set.set_name)}
-          >
-            <Image
-              source={{
-                uri:
-                  set.set_image ||
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQumqw6UawRn7rOgAvevIfEnX55015CA-oTeA&s",
-              }}
-              style={styles.imageSet}
-            />
-            <View style={styles.setTextContainer}>
-              <Text style={styles.setName}>{set.set_name}</Text>
-              <Text style={styles.setNumCards}>
-                {`${set.num_of_cards} cartas`}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+        <View style={styles.view__switch}>
+          <Switch value={mostrarSoloObtenidas} onValueChange={clickSwitch} />
+          <Text style={styles.view__switch__texto}>
+            Obtenidas(TODAVIA NO ANDA)
+          </Text>
+        </View>
+      </View>
+      <FlatList
+        data={sets}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.container}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={loading ? <Text>Cargando...</Text> : null} // Mostrar mensaje mientras carga
+      />
     </>
   );
 }

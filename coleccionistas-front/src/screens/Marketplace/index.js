@@ -1,1 +1,2 @@
-export * from './MarketplaceScreen'
+export * from "./MarketplaceScreen";
+export * from "./DetallePublicacion";

@@ -7,18 +7,19 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     alignItems: "center",
   },
-  viewHeader: {
+  header__view: {
     alignSelf: "flex-start",
     width: "100%",
     marginBottom: 20,
     borderBottomWidth: 1,
     borderColor: "#C1C1C1",
   },
-  header: {
+  header__title: {
     fontWeight: "bold",
     fontSize: 25,
     textAlign: "left",
   },
+  header_subtitle: {},
   touchable: {
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -36,7 +37,6 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    // flex: ,
     width: "100%",
     resizeMode: "contain",
     height: 200,

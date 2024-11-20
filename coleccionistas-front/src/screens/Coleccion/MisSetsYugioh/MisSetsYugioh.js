@@ -1,11 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { ModalCarga } from "../../../components/ModalCarga";
 import { styles } from "./MisSetsYugioh.styles";
 import axios from "axios";
 import { ipHost } from "../../../utils/ipHost";
 import { TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { screen } from "../../../utils";
+import { Icon } from "@rneui/themed";
 
 export function MisSetsYugioh() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -14,7 +17,13 @@ export function MisSetsYugioh() {
   const [modal, setModal] = useState(false);
   const [misSets, setMisSets] = useState([]);
   const [setCompletos, setSetsCompletos] = useState([]);
-  const [setsCoincidentes, setSetsCoincidentes] = useState([]); // Estado para los sets coincidentes
+  const [repintar, setRepintar] = useState(false);
+  const [setsCoincidentes, setSetsCoincidentes] = useState([]);
+  const navigation = useNavigation();
+
+  const actualizarScreen = () => {
+    setRepintar((prevState) => !prevState);
+  };
 
   const mostrarOcultarModal = () => {
     setModal((prevState) => !prevState);
@@ -45,11 +54,10 @@ export function MisSetsYugioh() {
     }
   };
 
-  // Filtra los sets coincidentes
   const filtrarSetsCoincidentes = () => {
     const idsMisSets = misSets.map((set) => set.id_set);
-    const coincidencias = setCompletos.filter(
-      (set) => idsMisSets.includes(set.set_name) // O `set.set_code`, si el campo coincide
+    const coincidencias = setCompletos.filter((set) =>
+      idsMisSets.includes(set.set_name)
     );
     setSetsCoincidentes(coincidencias);
   };
@@ -57,24 +65,89 @@ export function MisSetsYugioh() {
   useEffect(() => {
     buscarTodosSets();
     buscarMisSets();
-  }, []);
+  }, [repintar]);
 
-  // Ejecuta el filtro cuando cambian los sets
   useEffect(() => {
     if (misSets.length > 0 && setCompletos.length > 0) {
       filtrarSetsCoincidentes();
     }
-  }, [misSets, setCompletos]);
+  }, [misSets, setCompletos, repintar]);
+
+  const irAmisCartasSetYugioh = (set) => {
+    navigation.navigate(screen.coleccion.misCartasSetYugioh, {
+      setName: set.set_name,
+    });
+  };
+
+  const confirmarEliminarSet = (idSet) => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que deseas eliminar este set de tu inventario?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: () => eliminarSet(idSet),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const eliminarSet = async (setName) => {
+    try {
+      const encodedSetName = encodeURIComponent(setName);
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/yugioh/eliminarSet?mail=${mail}&idSet=${encodedSetName}`
+      );
+
+      // Actualiza el estado local de `misSets`
+      const nuevosMisSets = misSets.filter((set) => set.id_set !== setName);
+      setMisSets(nuevosMisSets);
+
+      // Recalcula los sets coincidentes con el nuevo estado
+      const idsMisSets = nuevosMisSets.map((set) => set.id_set);
+      const nuevasCoincidencias = setCompletos.filter((set) =>
+        idsMisSets.includes(set.set_name)
+      );
+      setSetsCoincidentes(nuevasCoincidencias);
+
+      Alert.alert("Éxito", response.data);
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        error.response?.data || "No se pudo eliminar el set."
+      );
+    }
+  };
 
   return (
     <>
       <ModalCarga isVisible={modal} />
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.viewHeader}>
-          <Text style={styles.header}>Sets Yugioh armados</Text>
+        <View style={styles.header__view}>
+          <Text style={styles.header__title}>Tus Sets YuGiOh</Text>
+          <Text style={styles.header_subtitle}>
+            Estos son todos los sets YuGiOh que empezaste
+          </Text>
         </View>
         {setsCoincidentes.map((set, index) => (
-          <TouchableOpacity key={index} style={styles.setContainer}>
+          <TouchableOpacity
+            key={index}
+            style={styles.setContainer}
+            onPress={() => irAmisCartasSetYugioh(set)}
+          >
+            <Icon
+              type="material-community"
+              name="close-circle"
+              color={"#FF0000"}
+              containerStyle={styles.iconEliminar}
+              onPress={() => confirmarEliminarSet(set.set_name)}
+            />
             <Image
               source={{
                 uri:
@@ -83,7 +156,6 @@ export function MisSetsYugioh() {
               }}
               style={styles.imageSet}
             />
-
             <View style={styles.setTextContainer}>
               <Text style={styles.setName}>{set.set_name}</Text>
               <Text style={styles.setNumCards}>

@@ -1,5 +1,14 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Alert, Image, FlatList, TextInput, TouchableOpacity, ActivityIndicator  } from "react-native";
+import {
+  View,
+  Text,
+  Alert,
+  Image,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { useFormik } from "formik";
 import { initialValues, validationSchema } from "./VenderCartaForm.data";
@@ -79,11 +88,17 @@ export function VenderCartaForm(props) {
             Alert.alert("Error", "No se pudo generar la publicación");
           }
         } else {
-          Alert.alert("Error", "Para enviar el formulario debe aceptar la declaración jurada");
+          Alert.alert(
+            "Error",
+            "Para enviar el formulario debe aceptar la declaración jurada"
+          );
         }
       } catch (error) {
         console.error(error);
-        Alert.alert("Error", "Hubo un problema al enviar la publicación. Verifique su conexión y los datos ingresados.");
+        Alert.alert(
+          "Error",
+          "Hubo un problema al enviar la publicación. Verifique su conexión y los datos ingresados."
+        );
       }
     },
   });
@@ -94,13 +109,13 @@ export function VenderCartaForm(props) {
 
   const subirFoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images", "videos"],
       allowsEditing: false,
-
     });
-  
+
     if (!result.canceled) {
       const uriFoto = result.assets[0].uri;
-      
+
       setValidandoImagen(true);
 
       // Validar la imagen antes de agregarla
@@ -127,7 +142,13 @@ export function VenderCartaForm(props) {
         placeholder="Ingrese Titulo"
         errorMessage={formik.errors.titulo}
         onChangeText={(texto) => formik.setFieldValue("titulo", texto)}
-        rightIcon={<Icon type="material-community" name="pencil-circle-outline" color="#C1C1C1" />}
+        rightIcon={
+          <Icon
+            type="material-community"
+            name="pencil-circle-outline"
+            color="#C1C1C1"
+          />
+        }
       />
 
       <Text style={styles.camposForm}>Descripcion:</Text>
@@ -151,11 +172,13 @@ export function VenderCartaForm(props) {
         errorMessage={formik.errors.precio}
         containerStyle={styles.inputContainer}
         onChangeText={(texto) => formik.setFieldValue("precio", texto)}
-        rightIcon={<Icon type="material-community" name="currency-usd" color="#C1C1C1" />}
+        rightIcon={
+          <Icon type="material-community" name="currency-usd" color="#C1C1C1" />
+        }
       />
 
       <CheckBox
-        title="Declaracion Jurada"
+        title="Usted declara que la carta es original"
         checked={check1}
         containerStyle={styles.checkbox}
         onPress={() => setCheck1(!check1)}
@@ -170,17 +193,21 @@ export function VenderCartaForm(props) {
         columnWrapperStyle={styles.columnWrapper}
       />
 
-      <Button onPress={subirFoto} radius={"sm"} type="solid">
-        Subir Imagen
-        <Icon name="upload" color="white" />
-      </Button>
+      <Button
+        onPress={subirFoto}
+        title={validandoImagen ? "" : "Subir Imagen"}
+        disabled={validandoImagen}
+      >
+        {validandoImagen ? (
+          <ActivityIndicator size="small" color="#ffffff" />
+        ) : (
+          <>
+            <Text style={{ color: '#fff', fontSize: 18 }}>Subir Imagen</Text>
+            <Icon name="upload" color="white"/>
+          </>
 
-      {validandoImagen && (
-        <Overlay isVisible={true} overlayStyle={styles.overlayValidando}>
-          <ActivityIndicator size="large" color="#0000ff" />
-          <Text>Validando imagen...</Text>
-        </Overlay>
-      )}
+        )}
+      </Button>
 
       <Button
         title={"Publicar"}

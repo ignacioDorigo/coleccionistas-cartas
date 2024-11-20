@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  View,
-  Text,
-  Button,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { useTheme } from "context/ThemeContext";
 import { lightTheme, darkTheme } from "constants/themes";
 import createStyles from "./ColeccionScreen.styles";
@@ -45,7 +38,6 @@ export function ColeccionScreen({ navigation }) {
   }, [colecciones]);
 
   const irAScreenColeccion = (nombre) => {
-    console.log("COLECCION SCREEN: Coleccion elegida --> " + nombre);
     let nombreScreen;
     if (nombre === "Pokemon") {
       nombreScreen = screen.coleccion.misSetsPokemon;
@@ -59,7 +51,7 @@ export function ColeccionScreen({ navigation }) {
   return (
     <>
       <View style={styles.container}>
-        <View style={styles.header}>
+        <View style={(styles.header)}>
           <Text style={styles.header__text}>Mis Colecciones</Text>
           <TouchableOpacity
             onPress={() => {
@@ -85,9 +77,10 @@ export function ColeccionScreen({ navigation }) {
               <TouchableOpacity
                 key={index}
                 onPress={() => irAScreenColeccion(coleccion.nombre)}
+                style={estilos.coleccion_container}
               >
                 <Image
-                  style={style.imagen}
+                  style={estilos.coleccion__imagen}
                   source={{ uri: `${coleccion.imagen}` }}
                 ></Image>
               </TouchableOpacity>
@@ -98,15 +91,27 @@ export function ColeccionScreen({ navigation }) {
     </>
   );
 }
-const style = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  imagen: {
+
+const estilos = StyleSheet.create({
+  coleccion_container: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
     width: "100%",
-    height: 120,
-    marginBottom: 10,
+    shadowRadius: 4,
+    marginBottom: 15,
+    padding: 10,
+    elevation: 3,
+    alignItems: "center",
+  },
+  coleccion__imagen: {
+    width: "100%",
     resizeMode: "contain",
+    height: 200,
   },
 });

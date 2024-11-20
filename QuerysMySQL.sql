@@ -58,6 +58,8 @@ CREATE TABLE favoritos_pokemon(
     foreign key (mail) references usuarios(mail)
 );
 
+
+
 CREATE TABLE avatares(
 	mail VARCHAR(50) NOT NULL,
 	foto LONGBLOB,
@@ -99,6 +101,14 @@ CREATE TABLE usuarios_cards_yugioh(
 	id_card VARCHAR(255) NOT NULL,
 	PRIMARY KEY(id),
 	FOREIGN KEY (mail) REFERENCES usuarios(mail)
+);
+
+CREATE TABLE favoritos_yugioh( 
+	id INTEGER AUTO_INCREMENT NOT NULL,
+    mail VARCHAR(50) NOT NULL,
+	id_card VARCHAR(255) NOT NULL,
+    primary key (id), 
+    foreign key (mail) references usuarios(mail)
 );
 
 

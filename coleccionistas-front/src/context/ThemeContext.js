@@ -8,7 +8,7 @@ export const ThemeProvider = ({ children }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(systemColorScheme === "dark");
 
   useEffect(() => {
-    console.log("System color scheme: ", systemColorScheme);
+    // console.log("System color scheme: ", systemColorScheme);
     setIsDarkTheme(systemColorScheme === "dark");
   }, [systemColorScheme]);
 

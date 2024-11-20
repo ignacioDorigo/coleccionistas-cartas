@@ -24,18 +24,22 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.modelo.Avatar;
 import com.example.demo.modelo.Coleccion;
 import com.example.demo.modelo.FavoritosPokemon;
+import com.example.demo.modelo.FavoritosYugioh;
 import com.example.demo.modelo.FotoPublicacion;
 import com.example.demo.modelo.PerfilUsuario;
 import com.example.demo.modelo.Publicacion;
 import com.example.demo.modelo.Usuario;
 import com.example.demo.modelo.UsuarioCard;
+import com.example.demo.modelo.UsuarioCardYugioh;
 import com.example.demo.modelo.UsuarioSet;
 import com.example.demo.modelo.UsuarioSetYugioh;
 import com.example.demo.repository.AvatarRepository;
 import com.example.demo.repository.FotoPublicacionRepository;
 import com.example.demo.repository.PublicacionRepository;
+import com.example.demo.service.ChatgptService;
 import com.example.demo.service.ColeccionService;
 import com.example.demo.service.FavoritosPokemonService;
+import com.example.demo.service.FavoritosYugiohService;
 import com.example.demo.service.PublicacionService;
 import com.example.demo.service.UsuarioCardService;
 import com.example.demo.service.UsuarioCardYugiohService;
@@ -63,6 +67,9 @@ public class Controlador {
 	FavoritosPokemonService favoritosPokemonService;
 
 	@Autowired
+	FavoritosYugiohService favoritosYugiohService;
+
+	@Autowired
 	PublicacionRepository publicacionRepository;
 
 	@Autowired
@@ -79,6 +86,9 @@ public class Controlador {
 
 	@Autowired
 	UsuarioCardYugiohService usuarioCardYugiohService;
+
+	@Autowired
+	ChatgptService chatgptService;
 
 //	FotoPublicacion foto;
 
@@ -396,10 +406,70 @@ public class Controlador {
 			return ResponseEntity.status(400).body(resultado);
 		}
 	}
-	
+
 	@GetMapping("yugioh/misSets")
 	public List<UsuarioSetYugioh> misSetsYugioh(@RequestParam String mail) {
 		return usuarioSetYugiohService.misSets(mail);
+	}
+
+	@DeleteMapping("pokemon/eliminarSet")
+	public ResponseEntity<String> eliminarSetPokemon(@RequestParam String mail, @RequestParam String idSet) {
+		String resultado = usuarioSetService.eliminarSet(mail, idSet);
+		if (resultado.contains("Set eliminado")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
+	@GetMapping("/yugioh/misCartas")
+	public List<UsuarioCardYugioh> misCartasSetYugioh(@RequestParam String mail, @RequestParam String idSet) {
+		return usuarioCardYugiohService.misCartasSet(mail, idSet);
+	}
+
+	@DeleteMapping("yugioh/eliminarSet")
+	public ResponseEntity<String> eliminarSetYugioh(@RequestParam String mail, @RequestParam String idSet) {
+		String resultado = usuarioSetYugiohService.eliminarSet(mail, idSet);
+		if (resultado.contains("Set eliminado")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
+	@GetMapping("/misFavoritosYugioh")
+	public List<FavoritosYugioh> misFavoritosYugioh(@RequestParam String mail) {
+		return favoritosYugiohService.misFavoritos(mail);
+	}
+
+	@PostMapping("/agregarFavoritoYugioh")
+	public ResponseEntity<String> agregarFavoritoYugioh(@RequestParam String idCard, @RequestParam String mail) {
+		String resultado = favoritosYugiohService.agregarFavorito(idCard, mail);
+		if (resultado.contains("Agregado a favoritos")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+
+	@DeleteMapping("/eliminarFavoritoYugioh")
+	public ResponseEntity<String> eliminarFavoritoYugioh(@RequestParam String idCard, @RequestParam String mail) {
+		String resultado = favoritosYugiohService.eliminarFavorito(idCard, mail);
+		if (resultado.contains("Eliminado de Favoritos")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.status(400).body(resultado);
+		}
+	}
+
+	@PostMapping("/obtenerFiabilidadDeTarjeta")
+	public ResponseEntity<String> obtenerFiabilidadDeTarjeta(@RequestParam String imageUrl) {
+		String resultado = chatgptService.obtenerFiabilidadDeTarjeta(imageUrl);
+		if (resultado.contains("Score de la carte es:")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
 	}
 
 }

@@ -9,60 +9,47 @@ import {
 } from "react-native";
 import axios from "axios";
 import { ModalCarga } from "../../../components/ModalCarga";
-
-import { ipHost } from "../../../utils";
-
-// Contexto
+import { ipHost, screen } from "../../../utils";
 import { AuthContext } from "../../../context/AuthContext";
 import { RecargarContext } from "../../../context/RecargarContext";
-
-// Fichero Screen
-import { screen } from "../../../utils";
-
 import { styles } from "./ElegirSetPokemon.styles";
-import { Button } from "@rneui/themed";
+import { Switch } from "@rneui/themed";
 
 export function ElegirSetPokemon({ route, navigation }) {
-  //   Context para identificar al usuario con su mail
   const { isLoggedIn } = useContext(AuthContext);
   const mail = isLoggedIn;
-
-  //   Para recargar las paginas
   const { recargarColecciones } = useContext(RecargarContext);
-
-  //   Cosas que vienen desde otra Screen
   const { coleccion } = route.params;
   const [mazosDisponibles, setMazosDisponibles] = useState([]);
-
-  // Visiblidad del modal
   const [visible, setVisible] = useState(false);
+  const [misSets, setMisSets] = useState([]);
+  const [reload, setReload] = useState(false);
+  const [mostrarSoloObtenidas, setMostrarSoloObtenidas] = useState(false);
+
+  const clickSwitch = () => {
+    setMostrarSoloObtenidas((prevState) => !prevState);
+  };
+
+  const repintarScreen = () => {
+    setReload((prevState) => !prevState);
+  };
 
   useEffect(() => {
     buscarSetsDisponibles();
-  }, []);
+    buscarMisSetsPokemon();
+  }, [reload]);
 
   const buscarSetsDisponibles = async () => {
     try {
       setVisible(true);
       const response = await axios.get(`https://api.pokemontcg.io/v2/sets`);
       setMazosDisponibles(response.data.data);
-      for (let index = 0; index < response.data.data.length; index++) {
-        const element = response.data.data[index];
-      }
     } catch (error) {
       console.log(error);
     } finally {
       setVisible(false);
     }
   };
-
-  // Funcion auxiliar para ver los ids
-  // const soloIdsPokemon = async () => {
-  //   const response = await axios.get("https://api.pokemontcg.io/v2/sets");
-  //   const sets = response.data.data;
-  //   const ids = sets.map((set)=>set.id);
-  //   console.log(ids)
-  // };
 
   const handleMazoPress = (mazo) => {
     Alert.alert(
@@ -72,7 +59,7 @@ export function ElegirSetPokemon({ route, navigation }) {
         {
           text: "CANCELAR",
           onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
+          style: "destructive",
         },
         {
           text: "ACEPTO",
@@ -87,33 +74,70 @@ export function ElegirSetPokemon({ route, navigation }) {
                   coleccion,
                   mazo,
                 });
+                repintarScreen();
               })
-              .catch((error) => Alert.alert("Error", `${error.response.data}`));
+              .catch((error) =>
+                Alert.alert("Error", `${error.response?.data || error.message}`)
+              );
           },
         },
       ],
       { cancelable: false }
     );
-    console.log("mazo: ", mazo);
   };
+
+  const buscarMisSetsPokemon = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/misSets?mail=${mail}`
+      );
+      const sets = response.data;
+      const idSetPropios = sets.map((set) => set.id_set);
+      setMisSets(idSetPropios);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  function tengoSet(set, sets) {
+    return sets.includes(set);
+  }
 
   return (
     <>
       <ModalCarga isVisible={visible} />
-      {/* <Button onPress={soloIdsPokemon} title={"Ver ids"}></Button> */}
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.viewHeader}>
-          <Text style={styles.header}>Sets Disponibles</Text>
+        <View style={styles.header__view}>
+          <Text style={styles.header__title}>Sets Disponibles</Text>
+          <Text style={styles.header_subtitle}>
+            Estos son todos los sets de Pokemon, elegí uno
+          </Text>
         </View>
-        {mazosDisponibles.map((mazo, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.touchable}
-            onPress={() => handleMazoPress(mazo)}
-          >
-            <Image style={styles.image} source={{ uri: mazo.images.logo }} />
-          </TouchableOpacity>
-        ))}
+        <View style={styles.view__switch}>
+          <Switch value={mostrarSoloObtenidas} onValueChange={clickSwitch} />
+          <Text style={styles.view__switch__texto}>
+            {mostrarSoloObtenidas
+              ? "Mostrando solo obtenidas"
+              : "Mostrar todos"}
+          </Text>
+        </View>
+
+        {mazosDisponibles
+          .filter((mazo) => !mostrarSoloObtenidas || tengoSet(mazo.id, misSets))
+          .map((mazo, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.touchable,
+                tengoSet(mazo.id, misSets)
+                  ? { ...styles.tengoSet }
+                  : { ...styles.noTengoSet },
+              ]}
+              onPress={() => handleMazoPress(mazo)}
+            >
+              <Image style={styles.image} source={{ uri: mazo.images.logo }} />
+            </TouchableOpacity>
+          ))}
       </ScrollView>
     </>
   );
