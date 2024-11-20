@@ -18,6 +18,8 @@ export function DetallePublicacion({ route }) {
   const [imagenesPublicacion, setImagenesPublicacion] = useState({});
   const [indiceImagenActual, setIndiceImagenActual] = useState({});
   const [imagenAmpliada, setImagenAmpliada] = useState(null); // Estado para la imagen ampliada
+  const [fiabilidad, setFiabilidad] = useState(""); // Estado para la fiabilidad de la carta
+
   const { publicacion } = route.params;
 
   useEffect(() => {
@@ -42,6 +44,24 @@ export function DetallePublicacion({ route }) {
         `Error al obtener imágenes para la publicación ${idPublicacion}:`,
         error
       );
+    }
+  };
+
+  const verificarFiabilidad = async () => {
+    try {
+      const imageUrl = `http://${ipHost}:8080/coleccionistas/imagenes/${publicacion.id}`;
+      const response = await axios.post(
+        `http://${ipHost}:8080/coleccionistas/obtenerFiabilidadDeTarjeta`,
+        null,
+        {
+          params: { imageUrl: imageUrl },
+        }
+      );
+      setFiabilidad(response.data);
+      Alert.alert("Resultado de Fiabilidad", response.data);
+    } catch (error) {
+      console.log("Error al verificar la fiabilidad de la carta:", error);
+      Alert.alert("Error", "No se pudo verificar la fiabilidad de la carta.");
     }
   };
 
@@ -141,10 +161,16 @@ export function DetallePublicacion({ route }) {
           onPress={confirmarComprarCarta}
           containerStyle={styles.buttonComprar}
         />
+        <Button
+          title={"Verificar Fiabilidad"}
+          onPress={verificarFiabilidad}
+          containerStyle={styles.buttonVerificar}
+        />
+        {fiabilidad && <Text style={styles.resultadoFiabilidad}>{fiabilidad}</Text>}
       </View>
 
-      {/* Modal para imagen ampliada */}
-      <Modal
+            {/* Modal para imagen ampliada */}
+            <Modal
         visible={imagenAmpliada !== null}
         transparent={true}
         animationType="fade"
