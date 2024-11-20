@@ -18,6 +18,7 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { ipHost } from "../../../utils/ipHost";
 import { RecargarContext } from "../../../context/RecargarContext";
+import { validarImagen } from "./ValidarImagen";
 
 export function VenderCartaForm(props) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -26,7 +27,7 @@ export function VenderCartaForm(props) {
   const [check1, setCheck1] = useState(false);
   const [imagenes, setImagenes] = useState([]);
   const { recargarMarketplace } = useContext(RecargarContext);
-
+  const [validandoImagen, setValidandoImagen] = useState(false);
   const renderImagen = ({ item, index }) => (
     <View style={styles.imageContainer}>
       <Image source={{ uri: item }} style={styles.image} />
@@ -114,10 +115,20 @@ export function VenderCartaForm(props) {
 
     if (!result.canceled) {
       const uriFoto = result.assets[0].uri;
-      setImagenes((prevImagenes) => [...prevImagenes, uriFoto]);
+
+      setValidandoImagen(true);
+
+      // Validar la imagen antes de agregarla
+      const esValida = await validarImagen(uriFoto);
+      setValidandoImagen(false);
+
+      if (esValida) {
+        setImagenes((prevImagenes) => [...prevImagenes, uriFoto]);
+      } else {
+        Alert.alert("Imagen no válida", "La imagen no parece ser una carta.");
+      }
     }
   };
-
   return (
     <Overlay
       isVisible={visible}
@@ -182,9 +193,20 @@ export function VenderCartaForm(props) {
         columnWrapperStyle={styles.columnWrapper}
       />
 
-      <Button onPress={subirFoto} radius={"sm"} type="solid">
-        Subir Imagen
-        <Icon name="upload" color="white" />
+      <Button
+        onPress={subirFoto}
+        title={validandoImagen ? "" : "Subir Imagen"}
+        disabled={validandoImagen}
+      >
+        {validandoImagen ? (
+          <ActivityIndicator size="small" color="#ffffff" />
+        ) : (
+          <>
+            <Text style={{ color: '#fff', fontSize: 18 }}>Subir Imagen</Text>
+            <Icon name="upload" color="white"/>
+          </>
+
+        )}
       </Button>
 
       <Button
