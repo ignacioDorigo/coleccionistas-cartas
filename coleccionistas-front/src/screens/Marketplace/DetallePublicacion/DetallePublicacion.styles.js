@@ -10,11 +10,11 @@ export const styles = StyleSheet.create({
   carouselImage: {
     width: width,
     height: 370,
-    resizeMode: "cover",
+    resizeMode: "contain",
   },
   arrow: {
     fontSize: 30,
-    color: "#FFFFFF",
+    color: "black",
     paddingHorizontal: 10,
     zIndex: 1,
     opacity: 0.7,

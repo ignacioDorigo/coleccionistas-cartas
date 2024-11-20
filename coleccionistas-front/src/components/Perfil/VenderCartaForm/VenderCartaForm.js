@@ -178,7 +178,7 @@ export function VenderCartaForm(props) {
       />
 
       <CheckBox
-        title="Declaracion Jurada"
+        title="Usted declara que la carta es original"
         checked={check1}
         containerStyle={styles.checkbox}
         onPress={() => setCheck1(!check1)}

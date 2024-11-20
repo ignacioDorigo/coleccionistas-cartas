@@ -84,7 +84,7 @@ export const styles = StyleSheet.create({
   carouselImage: {
     width: "80%",
     height: 270,
-    resizeMode: "cover",
+    resizeMode: "contain",
     marginHorizontal: 10,
     borderRadius: 10,
     borderColor: "#DDD",

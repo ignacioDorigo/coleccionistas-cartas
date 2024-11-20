@@ -86,9 +86,9 @@ export const styles = StyleSheet.create({
     top: 60,
   },
   imageCard: {
-    width: 240,
+    width: 260,
     height: 380,
-    resizeMode: "cover",
+    resizeMode: "contain",
     marginBottom: 10,
   },
   cardContainer: {

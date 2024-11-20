@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
   },
   carouselImage: {
     width: width / 1.6,
-    height: 200,
+    height: 350,
     resizeMode: "cover",
     borderRadius: 10,
     borderColor: "#DDD",

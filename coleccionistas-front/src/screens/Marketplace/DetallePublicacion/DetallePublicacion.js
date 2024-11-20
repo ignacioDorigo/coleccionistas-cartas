@@ -161,14 +161,14 @@ export function DetallePublicacion({ route }) {
           onPress={confirmarComprarCarta}
           containerStyle={styles.buttonComprar}
         />
-        <Button
+        {/* <Button
           title={"Verificar Fiabilidad"}
           onPress={verificarFiabilidad}
           containerStyle={styles.buttonVerificar}
         />
         {fiabilidad && (
           <Text style={styles.resultadoFiabilidad}>{fiabilidad}</Text>
-        )}
+        )} */}
       </View>
 
       {/* Modal para imagen ampliada */}
