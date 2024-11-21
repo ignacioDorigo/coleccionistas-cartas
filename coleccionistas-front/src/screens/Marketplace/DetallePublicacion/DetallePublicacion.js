@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Button } from "@rneui/themed";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   View,
   Text,
@@ -13,12 +13,21 @@ import {
 } from "react-native";
 import { ipHost } from "../../../utils";
 import { styles } from "./DetallePublicacion.styles";
+import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../../context/AuthContext";
+import { screen } from "../../../utils";
+import { RecargarContext } from "../../../context/RecargarContext";
+import { mpIntegration } from "../../../utils/MpIntegration";
 
 export function DetallePublicacion({ route }) {
   const [imagenesPublicacion, setImagenesPublicacion] = useState({});
   const [indiceImagenActual, setIndiceImagenActual] = useState({});
   const [imagenAmpliada, setImagenAmpliada] = useState(null); // Estado para la imagen ampliada
   const [fiabilidad, setFiabilidad] = useState(""); // Estado para la fiabilidad de la carta
+  const { isLoggedIn, logout } = useContext(AuthContext);
+  const mail = isLoggedIn;
+  const navigation = useNavigation();
+  const { recargarMarketplace } = useContext(RecargarContext);
 
   const { publicacion } = route.params;
 
@@ -89,15 +98,50 @@ export function DetallePublicacion({ route }) {
         {
           text: "Comprar",
           style: "default",
-          onPress: () => comprar(),
+          onPress: () => validarCompra(),
         },
       ],
       { cancelable: true }
     );
   };
 
-  const comprar = () => {
-    Alert.alert("Exito");
+  const validarCompra = async () => { 
+
+    const result = await mpIntegration(publicacion);
+
+    if (result === "success") {
+      eliminarPublicacion(publicacion.mail, publicacion.id);
+    } else if (result === "cancel") {
+      Alert.alert(
+        "Compra Cancelada", // Título del alerta
+        "Intenta nuevamente.", // Mensaje adicional
+        [
+          {
+            text: "Ok",
+            style: "default",
+          }
+        ]
+      );
+    } else {
+      console.log("Error", "No se pudo completar la compra.");
+    }
+
+  };
+
+  const eliminarPublicacion = async (mail, idPublicacion) => {
+    try {
+      const response = await axios.delete(
+        `http://${ipHost}:8080/coleccionistas/eliminarPublicacion?mail=${mail}&idPublicacion=${idPublicacion}`
+      );
+      recargarMarketplace();
+      navigation.navigate(screen.marketplace.marketplace);
+      navigation.navigate(screen.perfil.misCompras);
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        error.response?.data || "Error al eliminar la publicación"
+      );
+    }
   };
 
   const mostrarImagenAmpliada = (imagen) => {

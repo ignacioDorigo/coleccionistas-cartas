@@ -1,8 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { API_KEY_GEMINI } from "../../../utils/ipHost";
 
-const API_KEY = "....";
+const API_KEY = `${API_KEY_GEMINI}`;
 const genAI = new GoogleGenerativeAI(API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b"});
 
 async function fileToGenerativePart(uri) {
     const response = await fetch(uri);

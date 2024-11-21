@@ -27,7 +27,7 @@ const perfilStack = {
   perfilTab: "PerfilTab",
   perfil: "Perfil",
   misPublicaciones: "MisPublicaciones",
-  misCompras: "MisCompras",
+  misCompras: "MisComprasScreen",
 };
 
 export const screen = {
