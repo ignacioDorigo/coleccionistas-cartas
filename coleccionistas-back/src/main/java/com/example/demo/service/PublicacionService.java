@@ -177,5 +177,19 @@ public class PublicacionService {
 		publicacionRepository.save(publicacion);
 		return "Precio actualizado correctamente";
 	}
+	
+	public String actualizarEstado(Integer idPublicacion) {
 
+		Optional<Publicacion> publicacionOptional = publicacionRepository.findById(idPublicacion);
+		if (publicacionOptional.isEmpty()) {
+			return "No existe ese ID publicacion";
+		}
+
+		Publicacion publicacion = publicacionOptional.get();
+
+		publicacion.setEstado("Baja");
+		publicacionRepository.save(publicacion);
+		return "Estado actualizado correctamente";
+		
+	}
 }

@@ -46,6 +46,9 @@ import com.example.demo.service.UsuarioCardYugiohService;
 import com.example.demo.service.UsuarioService;
 import com.example.demo.service.UsuarioSetService;
 import com.example.demo.service.UsuarioSetYugiohService;
+import com.example.demo.service.CompraPublicacionService;
+import com.example.demo.repository.CompraPublicacionRepository;
+
 
 @RestController
 @RequestMapping("/coleccionistas")
@@ -89,6 +92,12 @@ public class Controlador {
 
 	@Autowired
 	ChatgptService chatgptService;
+	
+	@Autowired
+	CompraPublicacionService compraPublicacionService;
+	
+	@Autowired
+	CompraPublicacionRepository compraPublicacionRepository;
 
 //	FotoPublicacion foto;
 
@@ -347,7 +356,17 @@ public class Controlador {
 			return ResponseEntity.badRequest().body(resultado);
 		}
 	}
-
+	
+	@PutMapping("/publicacion/actualizarEstado")
+	public ResponseEntity<String> actualizarEstado (@RequestParam Integer idPublicacion) {
+		String resultado = publicacionService.actualizarEstado(idPublicacion);
+		if (resultado.contains("Estado actualizado correctamente")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+	
 	@PutMapping("/editarPublicacion")
 	public ResponseEntity<String> editarPublicacion(@RequestParam String mail, @RequestParam Integer idPublicacion,
 			@RequestBody Publicacion nuevaPublicacion) {
@@ -471,5 +490,17 @@ public class Controlador {
 			return ResponseEntity.badRequest().body(resultado);
 		}
 	}
-
+	
+	
+	@PostMapping("/agregarCompra")
+	public ResponseEntity<String> agregarCompra(@RequestParam String mail, @RequestParam Integer idPublicacion) throws IOException {
+		
+		String resultado = compraPublicacionService.crearCompraPublicacion(mail, idPublicacion);
+		
+		if (resultado.contains("Compra generada con exito")) {
+			return ResponseEntity.ok(resultado);
+		} else {
+			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
 }

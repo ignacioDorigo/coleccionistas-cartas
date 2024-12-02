@@ -111,4 +111,11 @@ CREATE TABLE favoritos_yugioh(
     foreign key (mail) references usuarios(mail)
 );
 
-
+CREATE TABLE compra_publicacion(
+	id INTEGER AUTO_INCREMENT NOT NULL,
+    mail VARCHAR(50) NOT NULL,
+    id_publicacion INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (mail) REFERENCES usuarios(mail),
+    FOREIGN KEY (id_publicacion) REFERENCES publicaciones(id)
+);

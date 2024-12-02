@@ -110,8 +110,11 @@ export function DetallePublicacion({ route }) {
     const result = await mpIntegration(publicacion);
 
     if (result === "success") {
-      eliminarPublicacion(publicacion.mail, publicacion.id);
+      agregarCompra(mail, publicacion.id);
+      actualizarEstadoPublicacion(publicacion.id);
     } else if (result === "cancel") {
+      agregarCompra(mail, publicacion.id);
+      actualizarEstadoPublicacion(publicacion.id);
       Alert.alert(
         "Compra Cancelada", // Título del alerta
         "Intenta nuevamente.", // Mensaje adicional
@@ -122,16 +125,30 @@ export function DetallePublicacion({ route }) {
           }
         ]
       );
+      console.log("Compra Aprobada");
     } else {
       console.log("Error", "No se pudo completar la compra.");
     }
 
   };
-
-  const eliminarPublicacion = async (mail, idPublicacion) => {
+  
+  const agregarCompra = async (mail, idPublicacion) => { 
     try {
-      const response = await axios.delete(
-        `http://${ipHost}:8080/coleccionistas/eliminarPublicacion?mail=${mail}&idPublicacion=${idPublicacion}`
+      const response = await axios.post(
+        `http://${ipHost}:8080/coleccionistas/agregarCompra?mail=${mail}&idPublicacion=${idPublicacion}`
+      );
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        error.response?.data || "Error al agregar la compra"
+      );
+    } 
+  };
+
+  const actualizarEstadoPublicacion = async (idPublicacion) => {
+    try {
+      const response = await axios.put(
+        `http://${ipHost}:8080/coleccionistas/publicacion/actualizarEstado?idPublicacion=${idPublicacion}`
       );
       recargarMarketplace();
       navigation.navigate(screen.marketplace.marketplace);
