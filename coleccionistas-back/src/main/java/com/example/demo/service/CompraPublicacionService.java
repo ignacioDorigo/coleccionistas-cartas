@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import java.io.IOException;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,5 +44,18 @@ public class CompraPublicacionService {
 	public List<CompraPublicacion> misCompras(String mail) {
 		List<CompraPublicacion> misCompras = compraPublicacion.findByMail(mail);
 		return misCompras;
+	}
+
+	public List<CompraPublicacion> misVentas(String mail) {
+		List<Publicacion> publicaciones = publicacionRepository.findByMail(mail);
+		List<CompraPublicacion> ventas = new ArrayList<>();
+		for (Publicacion publicacion : publicaciones) {
+			Integer idPublicacion = publicacion.getId();
+			List<CompraPublicacion> compra = compraPublicacion.findByIdPublicacion(idPublicacion);
+			if (compra.size() > 0) {
+				ventas.add(compra.get(0));
+			}
+		}
+		return ventas;
 	}
 }

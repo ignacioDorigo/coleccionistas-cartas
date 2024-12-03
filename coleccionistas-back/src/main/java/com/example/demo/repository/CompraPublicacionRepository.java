@@ -13,4 +13,5 @@ public interface CompraPublicacionRepository  extends JpaRepository<CompraPublic
 	
 	List<CompraPublicacion> findByMail(String mail);
 	
+	List<CompraPublicacion> findByIdPublicacion(Integer idPublicacion);
 }

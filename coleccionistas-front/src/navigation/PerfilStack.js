@@ -9,6 +9,7 @@ import { screen } from "../utils";
 import { PerfilScreen } from "../screens/Perfil/PerfilScreen";
 import { MisPublicacionesScreen } from "../screens/Perfil/MisPublicaciones";
 import { MisComprasScreen } from "../screens/Perfil/MisCompras/MisComprasScreen";
+import { MisVentasScreen } from "../screens/Perfil/MisVentas/MisVentasScreen";
 
 export function PerfilStack() {
   const Stack = createNativeStackNavigator();
@@ -25,6 +26,11 @@ export function PerfilStack() {
         name={screen.perfil.misCompras}
         component={MisComprasScreen}
         options={{ title: "Mis Compras" }}
+      />
+      <Stack.Screen
+        name={screen.perfil.misVentas}
+        component={MisVentasScreen}
+        options={{ title: "Mis Ventas" }}
       />
     </Stack.Navigator>
   );

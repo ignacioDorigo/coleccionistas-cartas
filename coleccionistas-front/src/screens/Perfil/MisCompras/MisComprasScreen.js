@@ -96,7 +96,7 @@ export function MisComprasScreen() {
               <Text style={styles.publicacionText}>{compra.titulo}</Text>
               <Text style={styles.publicacionDetail}>{compra.descripcion}</Text>
               <Text style={styles.vendedorText}>
-                Vendedor:{" "}
+                Contactar vendedor:{" "}
                 <Text
                   style={styles.publicacionEmail}
                   onPress={() =>

@@ -129,26 +129,6 @@ export function PerfilScreen() {
     }
   };
 
-  // const obtenerAvatar = async (mail) => {
-  //   try {
-  //     const response = await fetch(
-  //       `http://${ipHost}:8080/coleccionistas/avatar/${mail}`
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error("No se pudo obtener el avatar");
-  //     }
-
-  //     const blob = await response.blob();
-  //     console.log(response);
-  //     const imageUrl = URL.createObjectURL(blob);
-  //     setAvatar(imageUrl);
-  //     return imageUrl;
-  //   } catch (error) {
-  //     console.error("Error al obtener el avatar:", error);
-  //     return null; // Retorna null o maneja el error según lo necesites
-  //   }
-  // };
   const obtenerAvatar = async (mail) => {
     try {
       const response = await fetch(
@@ -261,6 +241,24 @@ export function PerfilScreen() {
             <ListItem.Title>Mis Compras</ListItem.Title>
           </ListItem.Content>
           <Icon type="material-community" name="cart-outline" color="#CCCCCC" />
+        </ListItem>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate(screen.perfil.misVentas);
+        }}
+      >
+        <ListItem>
+          <Icon
+            type="material-community"
+            name="chevron-right"
+            color="#CCCCCC"
+          />
+          <ListItem.Content>
+            <ListItem.Title>Mis Ventas</ListItem.Title>
+          </ListItem.Content>
+          <Icon type="material-community" name="currency-usd" color="#CCCCCC" />
         </ListItem>
       </TouchableOpacity>
 

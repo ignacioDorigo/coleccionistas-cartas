@@ -518,4 +518,9 @@ public class Controlador {
 			return ResponseEntity.ok().body(publicacion);
 		}
 	}
+	
+	@GetMapping("/misVentas")
+	public List<CompraPublicacion> misVentas(@RequestParam String mail){
+		return compraPublicacionService.misVentas(mail);
+	}
 }
