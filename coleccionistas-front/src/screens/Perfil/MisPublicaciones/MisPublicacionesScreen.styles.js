@@ -53,6 +53,17 @@ export const styles = StyleSheet.create({
     backgroundColor: "#E8F5E9", // Verde claro para el fondo
     alignSelf: "flex-start",
   },
+  estadoBaja: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#D32F2F", // Rojo fuerte para el texto
+    marginBottom: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 5,
+    backgroundColor: "#FFCDD2", // Rojo claro para el fondo
+    alignSelf: "flex-start",
+  },
   carouselContainer: {
     flexDirection: "row",
     alignItems: "center",

@@ -1,5 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, Image, ScrollView, Alert, Modal, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  Alert,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { styles } from "./MisPublicacionesScreen.styles";
 import axios from "axios";
@@ -187,7 +195,15 @@ export function MisPublicacionesScreen() {
                 }}
               ></Icon>
             </View>
-            <Text style={styles.estadoText}>Estado: {publicacion.estado}</Text>
+            <Text
+              style={
+                publicacion.estado === "Activa"
+                  ? styles.estadoText
+                  : styles.estadoBaja
+              }
+            >
+              Estado: {publicacion.estado}
+            </Text>
 
             <Icon
               type="material-community"
