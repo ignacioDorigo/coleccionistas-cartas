@@ -1,10 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Linking,
+} from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
 import { styles } from "./MisComprasScreen.styles";
 import axios from "axios";
 import { ipHost } from "../../../utils/ipHost";
-import { Image } from "@rneui/themed";
 
 export function MisComprasScreen() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -26,38 +32,84 @@ export function MisComprasScreen() {
       );
       const objetos = response.data;
       const soloIds = objetos.map((objeto) => objeto.idPublicacion);
-      // console.log(soloIds);
+
       const publicacionesCompra = [];
       for (let index = 0; index < soloIds.length; index++) {
         const element = soloIds[index];
         const response2 = await axios.get(
           `http://${ipHost}:8080/coleccionistas/buscarPublicacion?idPublicacion=${element}`
         );
-        // console.log(response2.data);
         publicacionesCompra.push(response2.data);
       }
+      publicacionesCompra.forEach((publicacion) => {
+        obtenerImagenes(publicacion.id);
+      });
       setMisCompras(publicacionesCompra);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error al buscar compras:", error);
+    }
   };
+
+  const obtenerImagenes = async (idPublicacion) => {
+    try {
+      const response = await axios.get(
+        `http://${ipHost}:8080/coleccionistas/imagenes/${idPublicacion}`
+      );
+      setImagenesPublicacion((prevImagenes) => ({
+        ...prevImagenes,
+        [idPublicacion]: response.data,
+      }));
+      setIndiceImagenActual((prevIndices) => ({
+        ...prevIndices,
+        [idPublicacion]: 0,
+      }));
+    } catch (error) {
+      console.error(
+        `Error al obtener imágenes para la publicación ${idPublicacion}:`,
+        error
+      );
+    }
+  };
+
+  const cambiarImagen = (idPublicacion, direccion) => {
+    const indiceActual = indiceImagenActual[idPublicacion] || 0;
+    const totalImagenes = imagenesPublicacion[idPublicacion]?.length || 0;
+    const nuevoIndice =
+      (indiceActual + direccion + totalImagenes) % totalImagenes;
+
+    setIndiceImagenActual((prevIndices) => ({
+      ...prevIndices,
+      [idPublicacion]: nuevoIndice,
+    }));
+  };
+
   return (
-    <View>
+    <View style={styles.container}>
       {misCompras.length === 0 ? (
         <View style={styles.viewSinCompra}>
-          <Text style={styles.sinCompras}>Aún tenes compras</Text>
+          <Text style={styles.sinCompras}>Aún no tenés compras</Text>
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.publicaciones}>
-          {misCompras.map((compra,index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.publicacionContainer}
-              // onPress={() => goToDetalleCard(compra)}
-            >
+          {misCompras.map((compra, index) => (
+            <View key={index} style={styles.publicacionContainer}>
               <Text style={styles.publicacionText}>{compra.titulo}</Text>
               <Text style={styles.publicacionDetail}>{compra.descripcion}</Text>
-              <Text style={styles.priceText}>${compra.precio}</Text>
+              <Text style={styles.vendedorText}>
+                Vendedor:{" "}
+                <Text
+                  style={styles.publicacionEmail}
+                  onPress={() =>
+                    Linking.openURL(
+                      `googlegmail://co?to=${compra.mail}&subject=Coordinar Compra&body=Hola buenas tardes quisiera coordinar para la entrega de ${compra.titulo} !`
+                    )
+                  }
+                >
+                  {compra.mail}
+                </Text>
+              </Text>
 
-              {/* Carrusel de imágenes */}
+              <Text style={styles.priceText}>${compra.precio}</Text>
               {imagenesPublicacion[compra.id]?.length ? (
                 <View style={styles.carouselContainer}>
                   <TouchableOpacity
@@ -82,9 +134,9 @@ export function MisComprasScreen() {
                   </TouchableOpacity>
                 </View>
               ) : (
-                <Text>No hay imágenes</Text>
+                <Text style={styles.noImagesText}>No hay imágenes</Text>
               )}
-            </TouchableOpacity>
+            </View>
           ))}
         </ScrollView>
       )}
