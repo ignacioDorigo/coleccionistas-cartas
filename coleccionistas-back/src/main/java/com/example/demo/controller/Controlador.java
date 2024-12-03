@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.modelo.Avatar;
 import com.example.demo.modelo.Coleccion;
+import com.example.demo.modelo.CompraPublicacion;
 import com.example.demo.modelo.FavoritosPokemon;
 import com.example.demo.modelo.FavoritosYugioh;
 import com.example.demo.modelo.FotoPublicacion;
@@ -48,7 +49,6 @@ import com.example.demo.service.UsuarioSetService;
 import com.example.demo.service.UsuarioSetYugiohService;
 import com.example.demo.service.CompraPublicacionService;
 import com.example.demo.repository.CompraPublicacionRepository;
-
 
 @RestController
 @RequestMapping("/coleccionistas")
@@ -92,10 +92,10 @@ public class Controlador {
 
 	@Autowired
 	ChatgptService chatgptService;
-	
+
 	@Autowired
 	CompraPublicacionService compraPublicacionService;
-	
+
 	@Autowired
 	CompraPublicacionRepository compraPublicacionRepository;
 
@@ -356,9 +356,9 @@ public class Controlador {
 			return ResponseEntity.badRequest().body(resultado);
 		}
 	}
-	
+
 	@PutMapping("/publicacion/actualizarEstado")
-	public ResponseEntity<String> actualizarEstado (@RequestParam Integer idPublicacion) {
+	public ResponseEntity<String> actualizarEstado(@RequestParam Integer idPublicacion) {
 		String resultado = publicacionService.actualizarEstado(idPublicacion);
 		if (resultado.contains("Estado actualizado correctamente")) {
 			return ResponseEntity.ok(resultado);
@@ -366,7 +366,7 @@ public class Controlador {
 			return ResponseEntity.badRequest().body(resultado);
 		}
 	}
-	
+
 	@PutMapping("/editarPublicacion")
 	public ResponseEntity<String> editarPublicacion(@RequestParam String mail, @RequestParam Integer idPublicacion,
 			@RequestBody Publicacion nuevaPublicacion) {
@@ -490,17 +490,32 @@ public class Controlador {
 			return ResponseEntity.badRequest().body(resultado);
 		}
 	}
-	
-	
+
 	@PostMapping("/agregarCompra")
-	public ResponseEntity<String> agregarCompra(@RequestParam String mail, @RequestParam Integer idPublicacion) throws IOException {
-		
+	public ResponseEntity<String> agregarCompra(@RequestParam String mail, @RequestParam Integer idPublicacion)
+			throws IOException {
+
 		String resultado = compraPublicacionService.crearCompraPublicacion(mail, idPublicacion);
-		
+
 		if (resultado.contains("Compra generada con exito")) {
 			return ResponseEntity.ok(resultado);
 		} else {
 			return ResponseEntity.badRequest().body(resultado);
+		}
+	}
+
+	@GetMapping("/misCompras")
+	public List<CompraPublicacion> misCompras(@RequestParam String mail) {
+		return compraPublicacionService.misCompras(mail);
+	}
+
+	@GetMapping("/buscarPublicacion")
+	public ResponseEntity<Publicacion> buscarPublicacion(@RequestParam Integer idPublicacion) {
+		Publicacion publicacion = publicacionService.buscarPublicacion(idPublicacion);
+		if (publicacion == null) {
+			return ResponseEntity.badRequest().body(null);
+		} else {
+			return ResponseEntity.ok().body(publicacion);
 		}
 	}
 }

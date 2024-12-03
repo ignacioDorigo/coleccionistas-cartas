@@ -1,3 +1,91 @@
 import { StyleSheet } from "react-native";
 
-export const styles = StyleSheet.create({});
+export const styles = StyleSheet.create({
+  viewSinCompra: {
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    gap: 10,
+    padding: 10,
+    backgroundColor: "#F3F4F6",
+  },
+  publicaciones: {
+    width: "100%",
+  },
+  publicacionContainer: {
+    backgroundColor: "#FFF",
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
+    borderColor: "#DDD",
+    borderWidth: 1,
+  },
+  publicacionText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 5,
+  },
+  publicacionDetail: {
+    fontSize: 15,
+    fontWeight: "400",
+    color: "#666",
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  priceText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#4CAF50",
+    marginBottom: 8,
+  },
+  carouselContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+    paddingVertical: 10,
+    width: "100%",
+  },
+  carouselImage: {
+    width: "80%",
+    height: 270,
+    resizeMode: "contain",
+    marginHorizontal: 10,
+    borderRadius: 10,
+    borderColor: "#DDD",
+    borderWidth: 1,
+  },
+  arrow: {
+    // position: 0,
+    fontSize: 30,
+    color: "#8D31D8",
+    paddingHorizontal: 10,
+  },
+  noImagesText: {
+    fontStyle: "italic",
+    color: "#999",
+    marginTop: 10,
+    textAlign: "center",
+  },
+  iconCancel: {
+    position: "absolute",
+    right: 10,
+    top: 10,
+  },
+  iconEdit: {
+    position: "absolute",
+    right: 40,
+    top: 10,
+  },
+});

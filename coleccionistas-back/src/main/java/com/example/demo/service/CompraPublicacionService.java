@@ -18,28 +18,31 @@ import com.example.demo.modelo.Usuario;
 import com.example.demo.repository.FotoPublicacionRepository;
 import com.example.demo.repository.PublicacionRepository;
 
-
 @Service
 public class CompraPublicacionService {
 
 	@Autowired
 	CompraPublicacionRepository compraPublicacion;
-	
+
 	@Autowired
 	PublicacionRepository publicacionRepository;
 
 	@Autowired
 	FotoPublicacionRepository fotoPublicacionRepository;
-	
+
 	UsuarioService usuarioService;
-	
-	public String crearCompraPublicacion(String mail, Integer idPublicacion)
-			throws IOException {
+
+	public String crearCompraPublicacion(String mail, Integer idPublicacion) throws IOException {
 
 		CompraPublicacion compra = new CompraPublicacion(mail, idPublicacion);
 		compraPublicacion.save(compra);
 
 		return "Compra generada con exito";
-		
+
+	}
+
+	public List<CompraPublicacion> misCompras(String mail) {
+		List<CompraPublicacion> misCompras = compraPublicacion.findByMail(mail);
+		return misCompras;
 	}
 }

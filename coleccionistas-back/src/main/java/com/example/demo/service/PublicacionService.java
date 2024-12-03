@@ -120,7 +120,7 @@ public class PublicacionService {
 		if (!publicacion.getMail().equals(mail)) {
 			return "No podes cambiar el titulo de una publicacion que no es tuya";
 		}
-		
+
 		if (!publicacion.getEstado().equals("Activa")) {
 			return "No podes editar una publicacion que no esta activa";
 		}
@@ -148,7 +148,7 @@ public class PublicacionService {
 		if (!publicacion.getEstado().equals("Activa")) {
 			return "No podes editar una publicacion que no esta activa";
 		}
-		
+
 		publicacion.setDescripcion(descripcion);
 		publicacionRepository.save(publicacion);
 		return "Descripcion actualizada correctamente";
@@ -177,7 +177,7 @@ public class PublicacionService {
 		publicacionRepository.save(publicacion);
 		return "Precio actualizado correctamente";
 	}
-	
+
 	public String actualizarEstado(Integer idPublicacion) {
 
 		Optional<Publicacion> publicacionOptional = publicacionRepository.findById(idPublicacion);
@@ -190,6 +190,16 @@ public class PublicacionService {
 		publicacion.setEstado("Baja");
 		publicacionRepository.save(publicacion);
 		return "Estado actualizado correctamente";
-		
+
+	}
+
+	public Publicacion buscarPublicacion(Integer idPublicacion) {
+		Optional<Publicacion> publicacionOptional = publicacionRepository.findById(idPublicacion);
+		if (publicacionOptional.isEmpty()) {
+			return null;
+		} else {
+			Publicacion publicacion = publicacionOptional.get();
+			return publicacion;
+		}
 	}
 }

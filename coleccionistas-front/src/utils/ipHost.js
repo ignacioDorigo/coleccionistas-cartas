@@ -1,4 +1,4 @@
-export const ipHost = "192.168.0.108";
+export const ipHost = "192.168.1.17";
 
 export const API_KEY_GEMINI = "...."
 
